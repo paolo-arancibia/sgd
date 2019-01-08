@@ -1,0 +1,35 @@
+bandeja_homepage:
+    path:     //{page}
+    defaults: { _controller: BandejaBundle:Bandeja:index, page: 1 }
+    requirements:
+        page: '\d+'
+
+porrecibir_bandeja:
+    path:     /porrecibir/{page}
+    defaults: { _controller: BandejaBundle:Bandeja:porrecibir, page: 1  }
+    requirements:
+        page: '\d+'
+
+recibidos_bandeja:
+    path:     /recibidos/{page}
+    defaults: { _controller: BandejaBundle:Bandeja:recibidos, page: 1  }
+    requirements:
+        page: '\d+'
+
+despachados_bandeja:
+    path:     /despachados/{page}
+    defaults: { _controller: BandejaBundle:Bandeja:despachados, page: 1  }
+    requirements:
+        page: '\d+'
+
+ver_bandeja:
+    path:     /ver/{id}
+    defaults: { _controller: BandejaBundle:Bandeja:ver, id: 1  }
+    requirements:
+        id: '\d+'
+
+editar_bandeja:
+    path: /editar/{id}
+    defaults: { _controller: BandejaBundle:Bandeja:editar, id: 1 }
+    requirements:
+        id: '\d+'

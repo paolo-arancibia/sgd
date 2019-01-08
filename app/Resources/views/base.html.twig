@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}SGD - @usuario{% endblock %}</title>
+    {% block stylesheets %}
+      {% stylesheets
+        '../vendor/twbs/bootstrap/dist/css/bootstrap.min.css'
+        filter='cssrewrite'
+        output='css/bootstrap.min.css'
+        combine=true %}
+          <link rel="stylesheet" href="{{ asset_url }}" />
+      {% endstylesheets %} 
+
+      {% stylesheets
+        '../vendor/components/font-awesome/css/fontawesome-all.min.css'
+        filter='cssrewrite'
+        output='css/font-awesome.css'
+        combine=true %}
+          <link rel="stylesheet" href="{{ asset_url }}" />
+      {% endstylesheets %}
+
+      <style type="text/css">
+        .wrapper {
+          display: flex;
+          align-items: stretch;
+        }
+
+        #sidebar {
+          min-width: 250px;
+          max-width: 250px;
+          min-height: 100vh;
+          transition: all 0.3s;
+        }
+
+        #sidebar.active {
+          margin-left: -250px;
+        }
+
+        #content {
+          transition: all 0.3s;
+        }
+      </style>
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('ico.ico') }}" />
+  </head>
+  <body>
+    <div class="wrapper">
+     <!-- Sidebar -->
+      <nav id="sidebar" class="px-2">
+        <h1 class="text-center"><a href="{{ url('bandeja_homepage') }}">SGD</a></h1>
+        {% include 'menu.html.twig' %}
+      </nav>
+
+      <!-- Content  -->
+      <div id="content" class="px-2 w-100">
+        <nav class="navbar px-0">
+          <div class="container-fluid px-0">
+            <button id="sidebarCollapse" type="button" class="btn btn-light">
+              <i class="fa fa-bars"></i>
+            </button>
+
+            <span class="">@username</span>
+          </div>
+        </nav>
+
+        {% block body %}{% endblock %}
+      </div>
+
+    </div>
+
+    {% block javascripts %}
+      {% javascripts
+        '../vendor/components/jquery/jquery.min.js'
+        output='js/jquery.min.js'
+        combine=true %}
+        <script src="{{ asset_url }}"></script>
+      {% endjavascripts %}
+
+      {% javascripts
+        '../vendor/twbs/bootstrap/dist/js/bootstrap.min.js'
+        output='js/bootstrap.min.js'
+        combine=true %}
+          <script src="{{ asset_url }}"></script>
+      {% endjavascripts %}
+    {% endblock %}
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+
+        $('#sidebarCollapse').on('click', function () {
+          $('#sidebar').toggleClass('active');
+        });
+
+        $( function() {
+          var allRadios = $(':radio')
+          var booRadio;
+
+          $.each( allRadios, function(){
+            this.onclick = function() {
+              if(booRadio == this) {
+                this.checked = false;
+                booRadio = null;
+                
+              } else {
+                booRadio = this;
+              }
+            }
+          });
+        })
+      });
+    </script>
+  </body>
+</html>

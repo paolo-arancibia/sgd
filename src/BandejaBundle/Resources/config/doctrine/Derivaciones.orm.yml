@@ -1,0 +1,94 @@
+BandejaBundle\Entity\Derivaciones:
+    type: entity
+    table: DERIVACIONES
+    indexes:
+        FK_ID_DOC:
+            columns:
+                - FK_ID_DOC
+        FK_ID_DEPTO:
+            columns:
+                - FK_ID_DEPTO
+        FK_ID_REMITENTE:
+            columns:
+                - FK_ID_REMITENTE
+        FK_ID_DESTINATARIO:
+            columns:
+                - FK_ID_DESTINATARIO
+    id:
+        idDerivacion:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_DERIVACION
+            generator:
+                strategy: IDENTITY
+    fields:
+        tipo:
+            type: boolean
+            nullable: true
+            options:
+                comment: '1=ORIGINAL, 2=COPIA'
+            column: TIPO
+        nota:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: NOTA
+        fechaC:
+            type: datetime
+            nullable: true
+            column: FECHA_C
+        fechaM:
+            type: datetime
+            nullable: true
+            column: FECHA_M
+        fechaE:
+            type: datetime
+            nullable: true
+            column: FECHA_E
+    manyToOne:
+        fkDoc:
+            targetEntity: Documentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_DOC:
+                    referencedColumnName: ID_DOC
+            orphanRemoval: false
+        fkDepto:
+            targetEntity: Departamentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_DEPTO:
+                    referencedColumnName: ID_DEPARTAMENTO
+            orphanRemoval: false
+        fkRemitente:
+            targetEntity: Usuarios
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_REMITENTE:
+                    referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+        fkDestinatario:
+            targetEntity: Usuarios
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_DESTINATARIO:
+                    referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

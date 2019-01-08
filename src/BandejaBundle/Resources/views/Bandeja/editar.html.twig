@@ -1,0 +1,190 @@
+{% extends '::/Bandeja/layout2col.html.twig' %}
+
+{% block page_title %}
+<h2 class="col-4">Nuevo Documento</h2>
+{% endblock %}
+
+{% block filters %}
+<div class="col"> 
+  <button type="button" class="btn btn-primary">Guardar y Derivar</button>
+  <button type="button" class="btn btn-secondary">Guardar</button>
+</div>
+{% endblock %}
+
+{% block content %}
+  <div id="data" class="col">
+    <div class="row">
+      <div class="col-5"><h5>Tipo Documento</h5></div>
+      <div class="col">
+        <select class="chosen-select" name="tipo">
+        {% for t in tipos %}
+          <option value="{{ t.idTiposDoc}}">{{t.abrev}} &ndash; {{ t.descripcion }}</option>
+        {% endfor %}
+</select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-5"><h5>Número Expediente</h5></div>
+      <div class="col"><input class="form-control" type="number" min="1" name="nroexp" /></div>
+    </div>
+    <div class="row">
+      <div class="col-5"><h5>Fecha Recepción</h5></div>
+      <div class="col"><input class="form-control" type="date" name="f_recep" /></div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5>Antecedentes</h5>
+        <textarea class="form-control" name="antecedentes" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5>Materia</h5>
+        <textarea class="form-control" name="materia" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5>Expediente</h5>
+        <textarea class="form-control" name="expediente" rows="4"></textarea>
+      </div>
+    </div>
+
+  </div>
+  <div class="col">
+    <div class="row">
+      <div class="col">
+        <h5>Derivar a</h5>
+        <div class="form-group">
+          <label class="form-label mt-1" for="originales" >Enviar Originales a</label>
+          <select class="chosen-select" id="originales" multiple="true" data-placeholder="">
+            {% for d in deptos %}
+            <option value="{{ d.idDepartamento}}">{{ d.descripcion }}</option>
+            {% endfor %}
+          </select>
+
+          <label class="form-label mt-2" for="nota-original">Nota para originales</label>
+          <textarea class="form-control" id="nota-original"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="copias" >Enviar Copias a</label>
+          <select class="chosen-select" id="copias" multiple="true" data-placeholder="">
+            {% for d in deptos %}
+            <option value="{{ d.idDepartamento}}">{{ d.descripcion }}</option>
+            {% endfor %}
+          </select>
+
+          <label class="form-label mt-2" for="nota-copia">Nota para copias</label>
+          <textarea class="form-control" id="nota-copia"></textarea>
+        </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5>Archivos Adjuntos</h5>
+        <div class="form-group">
+          <input id="adjuntos" class="file" type="file" name="archivos[]" multiple="multiple"/>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% stylesheets
+    '../vendor/harvesthq/chosen/chosen.css'
+    filter='cssrewrite'
+    output='css/chosen.css'
+    combine=true %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+  {% endstylesheets %}
+
+
+  {% stylesheets
+    '../vendor/kartik-v/bootstrap-fileinput/css/fileinput.css'
+    output='css/fileinput.css'
+    combine=true %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+  {% endstylesheets %}
+  <style ttype="text/css">
+    #data > div.row {
+      margin-bottom: .5rem !important;
+    }
+  </style>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  {% javascripts
+    '../vendor/harvesthq/chosen/chosen.jquery.js'
+    output='js/chosen.jquery.js'
+    combine=true %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+    '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
+    output='js/fileinput.min.js'
+    combine=true %}
+    <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+    '../vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js'
+    output='js/theme.min.js'
+    combine=true %}
+    <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  <script type="text/javascript">
+  $(".chosen-select").chosen({width: "100%"});
+
+  $("#adjuntos").fileinput({
+    maxFileSize: 100,
+    overwriteInitial: false,
+    uploadAsync: false,
+    uploadUrl: '/editar/guardar',
+    overwriteInitial: false,
+    msgPlaceholder: 'Seleccionar archivos...',
+    theme: "fas",
+    preferIconicPreview: true,
+    previewFileIcon: '<i class="fas fa-ban text-danger"></i>',
+    allowedPreviewTypes: null,
+    msgInvalidFileType: 'Tipo de archivo inválido',
+    allowedPreviewMimeTypes: [
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/pdf',
+      'image/jpeg', 'image/x-citrix-jpeg', 
+      'image/png', 
+      'image/tiff',
+      'text/plain'
+    ],
+    previewFileIconSettings: {
+      'doc':  '<i class="fas fa-file-word text-primary"></i>',
+      'docx': '<i class="fas fa-file-word text-primary"></i>',
+      'xls':  '<i class="fas fa-file-excel text-success"></i>',
+      'xlsx': '<i class="fas fa-file-excel text-success"></i>',
+      'ppt':  '<i class="fas fa-file-powerpoint text-danger"></i>',
+      'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
+      'pdf':  '<i class="fas fa-file-pdf text-danger"></i>',
+      'jpg':  '<i class="fas fa-file-image text-warning"></i>',
+      'jpeg': '<i class="fas fa-file-image text-warning"></i>',
+      'png':  '<i class="fas fa-file-image text-warning"></i>',
+      'tif':  '<i class="fas fa-file-image text-warning"></i>',
+      'tiff':  '<i class="fas fa-file-image text-warning"></i>',
+      'txt': '<i class="fas fa-file-alt text-secondary"></i>',
+      '': '<i class="fas fa-file-alt text-secondary"></i>'
+    },
+  });
+  </script>
+{% endblock %}

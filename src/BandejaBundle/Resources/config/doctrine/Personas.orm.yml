@@ -1,0 +1,45 @@
+BandejaBundle\Entity\Personas:
+    type: entity
+    table: personas
+    indexes:
+        rut:
+            columns:
+                - rut
+        vrut:
+            columns:
+                - vrut
+    id:
+        rut:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        vrut:
+            type: string
+            nullable: false
+            length: 1
+            options:
+                fixed: false
+        nombres:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        apellidopaterno:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        apellidomaterno:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+    lifecycleCallbacks: {  }

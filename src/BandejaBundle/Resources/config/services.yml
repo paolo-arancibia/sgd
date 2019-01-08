@@ -1,0 +1,4 @@
+services:
+#    bandeja.example:
+#        class: BandejaBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

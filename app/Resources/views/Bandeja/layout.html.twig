@@ -1,0 +1,30 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+<!-- Page Title -->
+  <div class="">
+    {% block page_title %}{% endblock %}
+  </div>
+
+<!-- Searcher -->
+  <div class="row py-3">
+    {% block searcher %}{% endblock %}
+  </div>
+
+  <div class="row pb-3">
+<!-- Filters -->
+    <div class="col pr-0">
+      {% block filters %}{% endblock %}
+    </div>
+
+<!-- Paginator -->
+    <div class="col-md-auto">
+      {% block pager %}{% endblock %}
+    </div>
+  </div>
+
+<!-- Content -->
+  <div class="">
+    {% block content %}{% endblock %}
+  </div>
+{% endblock %}

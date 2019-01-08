@@ -1,0 +1,65 @@
+BandejaBundle\Entity\Usuarios:
+    type: entity
+    table: USUARIOS
+    indexes:
+        FK_ID_PERSONA:
+            columns:
+                - FK_ID_PERSONA
+    id:
+        idUsuario:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_USUARIO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nombre:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: NOMBRE
+        contraseÑa:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: CONTRASEÑA
+        fechaC:
+            type: datetime
+            nullable: false
+            column: FECHA_C
+        fechaM:
+            type: datetime
+            nullable: false
+            column: FECHA_M
+        fechaE:
+            type: datetime
+            nullable: false
+            column: FECHA_E
+    manyToOne:
+        fkPersona:
+            targetEntity: Personas
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_PERSONA:
+                    referencedColumnName: rut
+            orphanRemoval: false
+    manyToMany:
+        fkDepto:
+            targetEntity: Departamentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: fkUsuario
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+    lifecycleCallbacks: {  }

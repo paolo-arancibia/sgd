@@ -1,0 +1,74 @@
+BandejaBundle\Entity\Adjuntos:
+    type: entity
+    table: ADJUNTOS
+    indexes:
+        FK_ID_DOC:
+            columns:
+                - FK_ID_DOC
+        FK_ID_USUARIO:
+            columns:
+                - FK_ID_USUARIO
+    id:
+        idAdjunto:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_ADJUNTO
+            generator:
+                strategy: IDENTITY
+    fields:
+        url:
+            type: string
+            nullable: false
+            length: 512
+            options:
+                fixed: false
+            column: URL
+        tipo:
+            type: boolean
+            nullable: true
+            options:
+                comment: '1=PNG, 2=JPEG, 3=DOCX,4=XLSX, 5=PDF'
+            column: TIPO
+        fechaC:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: FECHA_C
+        fechaM:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: FECHA_M
+        fechaE:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: FECHA_E
+    manyToOne:
+        fkDoc:
+            targetEntity: Departamentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_DOC:
+                    referencedColumnName: ID_DEPARTAMENTO
+            orphanRemoval: false
+        fkUsuario:
+            targetEntity: Usuarios
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_USUARIO:
+                    referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

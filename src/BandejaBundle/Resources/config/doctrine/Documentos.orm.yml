@@ -1,0 +1,92 @@
+BandejaBundle\Entity\Documentos:
+    type: entity
+    table: DOCUMENTOS
+    indexes:
+        FK_ID_USUARIO:
+            columns:
+                - FK_ID_USUARIO
+        FK_ID_TIPO_DOC:
+            columns:
+                - FK_ID_TIPO_DOC
+    id:
+        idDoc:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_DOC
+            generator:
+                strategy: IDENTITY
+    fields:
+        nroExpediente:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: NRO_EXPEDIENTE
+        estado:
+            type: boolean
+            nullable: true
+            options:
+                comment: '1=NORMAL,2=ARCHIVADO'
+            column: ESTADO
+        fechaDoc:
+            type: date
+            nullable: true
+            column: FECHA_DOC
+        ant:
+            type: text
+            nullable: true
+            length: 65535
+            options:
+                fixed: false
+            column: ANT
+        mat:
+            type: text
+            nullable: true
+            length: 65535
+            options:
+                fixed: false
+            column: MAT
+        ext:
+            type: text
+            nullable: true
+            length: 65535
+            options:
+                fixed: false
+            column: EXT
+        fehcaC:
+            type: datetime
+            nullable: true
+            column: FEHCA_C
+        fechaM:
+            type: datetime
+            nullable: true
+            column: FECHA_M
+        fechaE:
+            type: datetime
+            nullable: true
+            column: FECHA_E
+    manyToOne:
+        fkUsuario:
+            targetEntity: Usuarios
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_USUARIO:
+                    referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+        fkTipoDoc:
+            targetEntity: TiposDocumentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_TIPO_DOC:
+                    referencedColumnName: ID_TIPOS_DOC
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

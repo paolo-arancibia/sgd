@@ -1,0 +1,14 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+  <div class="row pt-3">
+    {% block page_title %}{% endblock %}
+  </div>
+  <div class="row pt-3">
+    {% block filters %}{% endblock %}
+    {% block pager %}{% endblock %}
+  </div>
+  <div class="row pt-3">
+    {% block content %}{% endblock %}
+  </div>
+{% endblock %}

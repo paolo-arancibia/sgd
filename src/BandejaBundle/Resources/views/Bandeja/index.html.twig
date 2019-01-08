@@ -1,0 +1,324 @@
+{% extends '::/Bandeja/layout.html.twig' %}
+
+{% block page_title %}
+<h2 class="">Bandeja Recibidos</h2>
+{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% stylesheets
+    '../vendor/harvesthq/chosen/chosen.css'
+    filter='cssrewrite'
+    output='css/chosen.css'
+    combine=true %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+  {% endstylesheets %}
+
+  {% stylesheets
+    '../vendor/kartik-v/bootstrap-fileinput/css/fileinput.css'
+    output='css/fileinput.css'
+    combine=true %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+  {% endstylesheets %}
+
+  <style type="text/css">
+    .doc-pendiente {
+      background-color: rgb(255, 248, 0, 0.1);
+    }
+
+    .doc-archivado {
+      background-color: rgb(0, 123, 255, 0.1);
+    }
+  </style>
+
+{% endblock %}
+
+{% block searcher %}
+  {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
+{% endblock %}
+
+{% block filters %}
+  <form id="filters" class="collapse show">
+    <div class="form-row">
+      <div class="col-md-auto">
+        {# <div class="form-check">
+	  <input class="form-check-input" type="radio" name="mostrar" id="todos" value="todos" checked />
+	  <label class="form-check-label px-2 py-1" for="todos">Todos</label>
+        </div> #}
+
+        <div class="form-check">
+	  <input class="form-check-input" type="radio" name="mostrar" id="pendientes" value="pendientes" />
+	  <label class="form-check-label doc-pendiente px-2 py-1" for="pendientes">Pendientes</label>
+        </div>
+
+        <div class="form-check">
+	  <input class="form-check-input" type="radio" name="mostrar" id="archivados" value="archivados"/>
+	  <label class="form-check-label doc-archivado px-2 py-1" for="archivados">Archivados</label>
+        </div>
+      </div>
+    
+      <div class="col-md-auto px-3">
+        {# <div class="form-check">
+          <input class="form-check-input" type="radio" name="limite" id="limite1" value="sinres" checked/>
+          <label class="form-check-label" for="limite1">
+            <i class="fas fa-circle text-light" >&nbsp;</i>Sin límite de fecha
+          </label>
+        </div>
+#}
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="limite" id="limite4" value="vencida" />
+          <label class="form-check-label" for="limite4">
+            <i class="fas fa-circle text-danger" >&nbsp;</i>Vencidos
+          </label> 
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="limite" id="limite3" value="mas5" />
+          <label class="form-check-label" for="limite3">
+            <i class="fas fa-circle text-warning" >&nbsp;</i>&le; 5 días
+          </label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="limite" id="limite2" value="menos" />
+          <label class="form-check-label" for="limite2">
+            <i class="fas fa-circle text-success" >&nbsp;</i>&gt; 5 días
+          </label>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="col">
+    <div id="actions" class="row collapse">
+      <button class="btn btn-primary mx-1" data-toggle="modal" data-target="#derivarModal">Derivar</button>
+      <button type="button" class="btn btn-danger mx-1" data-toggle="modal" data-target="#archivarModal">Archivar</button>
+      <button class="btn btn-danger mx-1">Desarchivar</button>
+    </div>
+  </div>
+
+  {% include 'BandejaBundle:Bandeja:archivar.html.twig' %}
+
+  {% include 'BandejaBundle:Bandeja:derivar.html.twig' %}
+
+{% endblock %}
+
+{% block pager %}
+  {% include 'Bandeja/pager.html.twig' %}
+{% endblock %}
+
+{% block content %}
+<table id="doc-table" class="table">
+  <thead>
+    <tr>
+      <th scope="col"><input id="selectAll" class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
+      <th scope="col">IDDOC</th>
+      <th scope="col">Fecha Recepción</th>
+      <th scope="col">Origen</th>
+      <th scope="col">DOC</th>
+      <th scope="col">Tipo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="doc-pendiente" data-docid="1">
+      <th scope="row"><input class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
+      <td><i class="fas fa-circle text-danger" >&nbsp;</i>1</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr class="doc-archivado">
+      <th scope="row"><input class="" type="checkbox" id="doc2" name="doc2" value="2" /></th>
+      <td><i class="fas fa-circle text-success" >&nbsp;</i>2</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc3" name="doc3" value="3" /></th>
+      <td><i class="fas fa-circle text-warning" >&nbsp;</i>3</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-primary" >&nbsp;</i>4</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-info" >&nbsp;</i>5</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-secondary" >&nbsp;</i>6</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-light" >&nbsp;</i>7</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-light" >&nbsp;</i>7</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-dark" >&nbsp;</i>8</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-muted" >&nbsp;</i>9</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td><i class="fas fa-circle text-white" >&nbsp;</i>10</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+  </tbody>
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  {% javascripts
+    '../vendor/harvesthq/chosen/chosen.jquery.js'
+    output='js/chosen.jquery.js'
+    combine=true %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+    '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
+    output='js/fileinput.min.js'
+    combine=true %}
+    <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+    '../vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js'
+    output='js/theme.min.js'
+    combine=true %}
+    <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  <script type="text/javascript">
+  $('#selectAll').click( function() {
+      if( $(this).is(':checked') )
+      {
+	  $('input[type=checkbox]').prop('checked',true);
+      } else
+      {
+	  $('input[type=checkbox]').prop('checked',false);
+      }
+  });
+
+  /** Mostrar acciones o filtros */
+  if( $('input[type=checkbox]').is(':checked') )
+  {
+      $('#filters').collapse('hide');
+      $('#actions').collapse('show');
+  }
+
+  $('input[type=checkbox]').click( function() {
+      var checked = false;
+      if( $('input[type=checkbox]').is(':checked') )
+      {
+	  $('#filters').collapse('hide');
+	  $('#actions').collapse('show');
+      } else
+      {
+	  $('#filters').collapse('show');
+	  $('#actions').collapse('hide');
+      }
+  });
+
+  /** ver documento */
+  $('#doc-table > tbody > tr > td:not(:first-child)').click( function() {
+      window.location.href = "{{ url('ver_bandeja', {id: 1}) }}";
+      return false;
+  }).css('cursor','pointer');
+
+  /** Form Derivar  */
+  $(".chosen-select").chosen({width: "100%"});
+
+  $("#adjuntos").fileinput({
+    maxFileSize: 100,
+    overwriteInitial: false,
+    uploadAsync: false,
+    uploadUrl: '/editar/guardar',
+    overwriteInitial: false,
+    msgPlaceholder: 'Seleccionar archivos...',
+    theme: "fas",
+    preferIconicPreview: true,
+    previewFileIcon: '<i class="fas fa-ban text-danger"></i>',
+    allowedPreviewTypes: null,
+    msgInvalidFileType: 'Tipo de archivo inválido',
+    allowedPreviewMimeTypes: [
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/pdf',
+      'image/jpeg', 'image/x-citrix-jpeg', 
+      'image/png', 
+      'image/tiff',
+      'text/plain'
+    ],
+    previewFileIconSettings: {
+      'doc':  '<i class="fas fa-file-word text-primary"></i>',
+      'docx': '<i class="fas fa-file-word text-primary"></i>',
+      'xls':  '<i class="fas fa-file-excel text-success"></i>',
+      'xlsx': '<i class="fas fa-file-excel text-success"></i>',
+      'ppt':  '<i class="fas fa-file-powerpoint text-danger"></i>',
+      'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
+      'pdf':  '<i class="fas fa-file-pdf text-danger"></i>',
+      'jpg':  '<i class="fas fa-file-image text-warning"></i>',
+      'jpeg': '<i class="fas fa-file-image text-warning"></i>',
+      'png':  '<i class="fas fa-file-image text-warning"></i>',
+      'tif':  '<i class="fas fa-file-image text-warning"></i>',
+      'tiff':  '<i class="fas fa-file-image text-warning"></i>',
+      'txt': '<i class="fas fa-file-alt text-secondary"></i>',
+      '': '<i class="fas fa-file-alt text-secondary"></i>'
+    },
+  });
+  </script>
+{% endblock %}

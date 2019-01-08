@@ -1,0 +1,66 @@
+BandejaBundle\Entity\Departamentos:
+    type: entity
+    table: DEPARTAMENTOS
+    id:
+        idDepartamento:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_DEPARTAMENTO
+            generator:
+                strategy: IDENTITY
+    fields:
+        descripcion:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: DESCRIPCION
+        direccion:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: DIRECCION
+        abrev:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: ABREV
+        fechaC:
+            type: datetime
+            nullable: true
+            column: FECHA_C
+        fechaM:
+            type: datetime
+            nullable: true
+            column: FECHA_M
+        fechaE:
+            type: datetime
+            nullable: true
+            column: FECHA_E
+    manyToMany:
+        fkUsuario:
+            targetEntity: Usuarios
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: fkDepto
+            joinTable:
+                name: dep_usu
+                joinColumns:
+                    -
+                        name: FK_ID_DEPTO
+                        referencedColumnName: ID_DEPARTAMENTO
+                inverseJoinColumns:
+                    -
+                        name: FK_ID_USUARIO
+                        referencedColumnName: ID_USUARIO
+            orderBy: null
+    lifecycleCallbacks: {  }

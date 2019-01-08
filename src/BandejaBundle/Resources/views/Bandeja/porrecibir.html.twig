@@ -1,0 +1,129 @@
+{% extends '::/Bandeja/layout.html.twig' %}
+
+{% block page_title %}
+   <h2 class="">Bandeja Por Recibir</h2>
+{% endblock %}
+
+{% block search %}
+<form class="col-4">
+  <input class="form-control form-control-sm" placeholder="Buscar..." />
+</form>
+{% endblock %}
+
+{% block tabs %}
+  {% include 'BandejaBundle:Bandeja:menu.html.twig' %}
+{% endblock %}
+
+{% block filters %}
+  <div class="col">
+    <div id="actions" class="row collapse">
+      <button type="button" class="btn btn-danger mx-1" data-toggle="modal" data-target="#recibidoModal">Recibido</button>
+    </div>
+  </div>
+
+  {% include 'BandejaBundle:Bandeja:recibir.html.twig' %}
+{% endblock %}
+
+{% block searcher %}
+  {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
+{% endblock %}
+
+{% block pager %}
+  {% include 'Bandeja/pager.html.twig' %}
+{% endblock %}
+
+{% block content %}
+<table class="table table-striped table-borderless table-hover">
+  <thead>
+    <tr>
+      <th scope="col"><input id="selectAll" class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
+      <th scope="col">IDDOC</th>
+      <th scope="col">Fecha Recepción</th>
+      <th scope="col">Origen</th>
+      <th scope="col">DOC</th>
+      <th scope="col">Tipo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-docid="1">
+      <th scope="row"><input class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
+      <td>1</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc2" name="doc2" value="2" /></th>
+      <td>2</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc3" name="doc3" value="3" /></th>
+      <td>3</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+    <tr>
+      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
+      <td>4</td>
+      <td>20/11/2018</td>
+      <td>Administracion Municipal</td>
+      <td>CAR</td>
+      <td>Copia</td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+
+$('#selectAll').click( function() {
+    if( $(this).is(':checked') )
+    {
+        $('input[type=checkbox]').prop('checked',true);
+    } else
+    {
+        $('input[type=checkbox]').prop('checked',false);
+    }
+});
+
+/** Mostrar acciones o filtros */
+if( $('input[type=checkbox]').is(':checked') )
+{
+    $('#filters').collapse('hide');
+    $('#actions').collapse('show');
+}
+
+$('input[type=checkbox]').click( function() {
+    var checked = false;
+    if( $('input[type=checkbox]').is(':checked') )
+    {
+        $('#filters').collapse('hide');
+        $('#actions').collapse('show');
+    } else
+    {
+        $('#filters').collapse('show');
+        $('#actions').collapse('hide');
+    }
+});
+
+/** ver documento */
+$('tr > td:not(:first-child)').click( function() {
+    window.location.href = "ver/1";
+    return false;
+}).css('cursor','pointer');
+
+
+</script>
+
+{% endblock %}
+

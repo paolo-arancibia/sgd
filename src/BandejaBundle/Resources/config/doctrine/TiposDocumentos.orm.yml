@@ -1,0 +1,29 @@
+BandejaBundle\Entity\TiposDocumentos:
+    type: entity
+    table: TIPOS_DOCUMENTOS
+    id:
+        idTiposDoc:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_TIPOS_DOC
+            generator:
+                strategy: IDENTITY
+    fields:
+        descripcion:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: DESCRIPCION
+        abrev:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: ABREV
+    lifecycleCallbacks: {  }
