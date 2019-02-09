@@ -77,5 +77,182 @@ class Adjuntos
     private $fkUsuario;
 
 
-}
 
+    /**
+     * Get idAdjunto
+     *
+     * @return integer
+     */
+    public function getIdAdjunto()
+    {
+        return $this->idAdjunto;
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     *
+     * @return Adjuntos
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set tipo
+     *
+     * @param boolean $tipo
+     *
+     * @return Adjuntos
+     */
+    public function setTipo($tipo)
+    {
+        $this->tipo = $tipo;
+
+        return $this;
+    }
+
+    /**
+     * Get tipo
+     *
+     * @return boolean
+     */
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    /**
+     * Set fechaC
+     *
+     * @param integer $fechaC
+     *
+     * @return Adjuntos
+     */
+    public function setFechaC($fechaC)
+    {
+        $this->fechaC = $fechaC;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaC
+     *
+     * @return integer
+     */
+    public function getFechaC()
+    {
+        return $this->fechaC;
+    }
+
+    /**
+     * Set fechaM
+     *
+     * @param integer $fechaM
+     *
+     * @return Adjuntos
+     */
+    public function setFechaM($fechaM)
+    {
+        $this->fechaM = $fechaM;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaM
+     *
+     * @return integer
+     */
+    public function getFechaM()
+    {
+        return $this->fechaM;
+    }
+
+    /**
+     * Set fechaE
+     *
+     * @param integer $fechaE
+     *
+     * @return Adjuntos
+     */
+    public function setFechaE($fechaE)
+    {
+        $this->fechaE = $fechaE;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaE
+     *
+     * @return integer
+     */
+    public function getFechaE()
+    {
+        return $this->fechaE;
+    }
+
+    /**
+     * Set fkDoc
+     *
+     * @param \BandejaBundle\Entity\Departamentos $fkDoc
+     *
+     * @return Adjuntos
+     */
+    public function setFkDoc(\BandejaBundle\Entity\Departamentos $fkDoc = null)
+    {
+        $this->fkDoc = $fkDoc;
+
+        return $this;
+    }
+
+    /**
+     * Get fkDoc
+     *
+     * @return \BandejaBundle\Entity\Departamentos
+     */
+    public function getFkDoc()
+    {
+        return $this->fkDoc;
+    }
+
+    /**
+     * Set fkUsuario
+     *
+     * @param \BandejaBundle\Entity\Usuarios $fkUsuario
+     *
+     * @return Adjuntos
+     */
+    public function setFkUsuario(\BandejaBundle\Entity\Usuarios $fkUsuario = null)
+    {
+        $this->fkUsuario = $fkUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get fkUsuario
+     *
+     * @return \BandejaBundle\Entity\Usuarios
+     */
+    public function getFkUsuario()
+    {
+        return $this->fkUsuario;
+    }
+}

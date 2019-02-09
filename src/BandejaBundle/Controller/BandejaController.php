@@ -1,13 +1,18 @@
 <?php
 namespace BandejaBundle\Controller;
- 
-// use Symfony\Component\HttpFoundation\Response;
+
+
+use BandejaBundle\Entity\Departamentos;
+use BandejaBundle\Entity\Documentos;
+use BandejaBundle\Entity\TiposDocumentos;
+// use BandejaBundle\Form\DerivarType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use BandejaBundle\Entity\Departamentos;
+// use Symfony\Component\HttpFoundation\Response;
     
 class BandejaController extends Controller
 {
@@ -29,6 +34,7 @@ class BandejaController extends Controller
 
         /*
         $filtersForm = $this->createFormBuilder()
+
                      ->add('clases', ChoiceType::class, [
                          'choices' => [
                              'Pendientes' => 'pendientes',
@@ -79,6 +85,7 @@ class BandejaController extends Controller
     public function verAction($id)
     {
         $derivarForm = $this->getDerivarForm();
+        //$derivarForm = $this->createForm(DerivarType::class);
 
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
@@ -91,15 +98,17 @@ class BandejaController extends Controller
 
     public function editarAction($id)
     {
-        $deptos = $this->getDeptos();
         $tipos = $this->getTiposDocs();
+        $derivarForm = $this->getDerivarForm();
+        $nuevoForm = $this->getNuevoForm();
 
         return $this->render(
             'BandejaBundle:Bandeja:editar.html.twig',
             array(
                 'id' => $id,
-                'deptos' => $deptos,
-                'tipos' => $tipos
+                'tipos' => $tipos,
+                'derivarForm' => $derivarForm->createView(),
+                'nuevoForm' => $nuevoForm->createView()
             )
         );
     }
@@ -173,11 +182,40 @@ class BandejaController extends Controller
                          'required' => false,
                          'multiple' => true,
                          'attr' => ['class' => 'adjuntos'],
-                         'label_attr' => ['class' => 'form-label'],
+                         'label_attr' => ['class' => 'form-label mt-2'],
                          'label' => 'Adjuntos',
                      ])
                      ->getForm();
         return $derivarForm;
     }
 
+    private function getNuevoForm()
+    {
+        $tiposDocs = $this->getTiposDocs();
+
+        $doc = new Documentos();
+        $nuevoForm = $this->createFormBuilder($doc)
+                   ->add('fkTipoDoc', ChoiceType::class, [
+                       'choices'=> $tiposDocs,
+                       'choices_as_values' => true,
+                       'expanded' => false,
+                       'multiple' => false,
+                       'attr' => ['class' => 'chosen-select'],
+                       'label_attr' => ['class' => ''],
+                       'label' => 'Tipo Documento',
+                       'choice_value' => function (TiposDocumentos $td = null) {
+                           return $td ? $td->getIdTiposDoc() : '';
+                       },
+                       'choice_label' => function (TiposDocumentos $td = null) {
+                           return $td ? $td->getAbrev() . ' - ' . $td->getDescripcion() : '';
+                       }
+                   ])->add('nroExpediente', NumberType::class, [
+                       'attr' => ['class' => 'chosen-select'],
+                       'label_attr' => ['class' => ''],
+                       'label' => 'Número Expediente',
+                   ])
+                   ->getForm();
+
+        return $nuevoForm;
+    }
 }

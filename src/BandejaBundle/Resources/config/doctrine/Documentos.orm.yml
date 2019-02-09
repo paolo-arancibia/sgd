@@ -56,10 +56,10 @@ BandejaBundle\Entity\Documentos:
             options:
                 fixed: false
             column: EXT
-        fehcaC:
+        fechaC:
             type: datetime
             nullable: true
-            column: FEHCA_C
+            column: FECHA_C
         fechaM:
             type: datetime
             nullable: true
