@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af424d6bd75a507776e612258d363ba4",
+    "content-hash": "7704dea7ac48f5a0159ba65851a1f2e9",
     "packages": [
         {
             "name": "components/font-awesome",
@@ -1053,7 +1053,7 @@
         },
         {
             "name": "kartik-v/bootstrap-fileinput",
-            "version": "dev-master",
+            "version": "v4.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/bootstrap-fileinput.git",
@@ -2764,9 +2764,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "kartik-v/bootstrap-fileinput": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
