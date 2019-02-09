@@ -33,18 +33,13 @@
 {% endblock %}
 
 {% block searcher %}
-  {% include 'BandejaBundle:Bandeja:buscador.html.twig' with {'searchForm': searchForm} %}
+  {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
 {% endblock %}
 
 {% block filters %}
   <form id="filters" class="collapse show">
     <div class="form-row">
-      <div class="col-md-auto">
-        {# <div class="form-check">
-	  <input class="form-check-input" type="radio" name="mostrar" id="todos" value="todos" checked />
-	  <label class="form-check-label px-2 py-1" for="todos">Todos</label>
-        </div> #}
-
+      <div class="col-md-auto px-2">
         <div class="form-check">
 	  <input class="form-check-input" type="radio" name="mostrar" id="pendientes" value="pendientes" />
 	  <label class="form-check-label doc-pendiente px-2 py-1" for="pendientes">Pendientes</label>
@@ -57,13 +52,6 @@
       </div>
     
       <div class="col-md-auto px-3">
-        {# <div class="form-check">
-          <input class="form-check-input" type="radio" name="limite" id="limite1" value="sinres" checked/>
-          <label class="form-check-label" for="limite1">
-            <i class="fas fa-circle text-light" >&nbsp;</i>Sin límite de fecha
-          </label>
-        </div>
-#}
         <div class="form-check">
           <input class="form-check-input" type="radio" name="limite" id="limite4" value="vencida" />
           <label class="form-check-label" for="limite4">
@@ -134,87 +122,24 @@
     <script src="{{ asset_url }}"></script>
   {% endjavascripts %}
 
-  <script type="text/javascript">
-  $('#selectAll').click( function() {
-      if( $(this).is(':checked') )
-      {
-	  $('input[type=checkbox]').prop('checked',true);
-      } else
-      {
-	  $('input[type=checkbox]').prop('checked',false);
-      }
-  });
+  {% javascripts
+    '../vendor/kartik-v/bootstrap-fileinput/js/locales/es.js'
+    output='js/fileinput-es.js'
+    combine=true %}
+    <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
 
-  /** Mostrar acciones o filtros */
-  if( $('input[type=checkbox]').is(':checked') )
-  {
-      $('#filters').collapse('hide');
-      $('#actions').collapse('show');
-  }
+  {% javascripts
+    '../src/BandejaBundle/Resources/js/_table_documentos.js'
+    output='js/_table_documentos.js'
+    combine=true %}
+  <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
 
-  $('input[type=checkbox]').click( function() {
-      var checked = false;
-      if( $('input[type=checkbox]').is(':checked') )
-      {
-	  $('#filters').collapse('hide');
-	  $('#actions').collapse('show');
-      } else
-      {
-	  $('#filters').collapse('show');
-	  $('#actions').collapse('hide');
-      }
-  });
-
-  /** ver documento */
-  $('#doc-table > tbody > tr > td:not(:first-child)').click( function() {
-      window.location.href = "{{ url('ver_bandeja', {id: 1}) }}";
-      return false;
-  }).css('cursor','pointer');
-
-  /** Form Derivar  */
-  $(".chosen-select").chosen({width: "100%"});
-
-  $("#adjuntos").fileinput({
-    maxFileSize: 100,
-    overwriteInitial: false,
-    uploadAsync: false,
-    uploadUrl: '/editar/guardar',
-    overwriteInitial: false,
-    msgPlaceholder: 'Seleccionar archivos...',
-    theme: "fas",
-    preferIconicPreview: true,
-    previewFileIcon: '<i class="fas fa-ban text-danger"></i>',
-    allowedPreviewTypes: null,
-    msgInvalidFileType: 'Tipo de archivo inválido',
-    allowedPreviewMimeTypes: [
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'application/pdf',
-      'image/jpeg', 'image/x-citrix-jpeg', 
-      'image/png', 
-      'image/tiff',
-      'text/plain'
-    ],
-    previewFileIconSettings: {
-      'doc':  '<i class="fas fa-file-word text-primary"></i>',
-      'docx': '<i class="fas fa-file-word text-primary"></i>',
-      'xls':  '<i class="fas fa-file-excel text-success"></i>',
-      'xlsx': '<i class="fas fa-file-excel text-success"></i>',
-      'ppt':  '<i class="fas fa-file-powerpoint text-danger"></i>',
-      'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
-      'pdf':  '<i class="fas fa-file-pdf text-danger"></i>',
-      'jpg':  '<i class="fas fa-file-image text-warning"></i>',
-      'jpeg': '<i class="fas fa-file-image text-warning"></i>',
-      'png':  '<i class="fas fa-file-image text-warning"></i>',
-      'tif':  '<i class="fas fa-file-image text-warning"></i>',
-      'tiff':  '<i class="fas fa-file-image text-warning"></i>',
-      'txt': '<i class="fas fa-file-alt text-secondary"></i>',
-      '': '<i class="fas fa-file-alt text-secondary"></i>'
-    },
-  });
-  </script>
+  {% javascripts
+    '../src/BandejaBundle/Resources/js/_form_derivar.js'
+    output='js/_form_derivar.js'
+    combine=true %}
+  <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
 {% endblock %}

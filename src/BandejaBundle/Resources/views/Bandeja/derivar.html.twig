@@ -8,34 +8,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label class="form-label mt-1" for="originales" >Enviar Originales a</label>
-            <select class="chosen-select" id="originales" multiple="true" data-placeholder="">
-              {% for d in deptos %}
-              <option value="{{ d.idDepartamento}}">{{ d.descripcion }}</option>
-              {% endfor %}
-	    </select>
-
-            <label class="form-label mt-2" for="nota-original">Nota para originales</label>
-            <textarea class="form-control" id="nota-original"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="copias" >Enviar Copias a</label>
-            <select class="chosen-select" id="copias" multiple="true" data-placeholder="">
-              {% for d in deptos %}
-              <option value="{{ d.idDepartamento}}">{{ d.descripcion }}</option>
-              {% endfor %}
-            </select>
-
-            <label class="form-label mt-2" for="nota-copia">Nota para copias</label>
-            <textarea class="form-control" id="nota-copia"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="archivo_adjunto">Archivos adjuntos</label>
-            <input id="adjuntos" class="file" type="file" name="archivos[]" multiple="multiple"/>
-          </div>
-        </form>
+        {{ form_start(derivarForm) }}
+        {{ form_end(derivarForm) }}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

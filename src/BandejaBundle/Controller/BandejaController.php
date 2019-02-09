@@ -3,7 +3,11 @@ namespace BandejaBundle\Controller;
  
 // use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use BandejaBundle\Entity\Departamentos;
     
 class BandejaController extends Controller
 {
@@ -14,21 +18,37 @@ class BandejaController extends Controller
 
     public function recibidosAction($page = 0)
     {
-        $deptos = $this->getDeptos();
-
         $searchForm = $this->createFormBuilder(null, array(
             'action' => '',
             'method' => 'GET'))
-                    ->add('searchText', TextType::class)
+                    ->add('searchText', SearchType::class, [
+                        'required' => false,
+                        'attr' => ['placeholder' => 'Buscar...'],
+                    ])
                     ->getForm();
+
+        /*
+        $filtersForm = $this->createFormBuilder()
+                     ->add('clases', ChoiceType::class, [
+                         'choices' => [
+                             'Pendientes' => 'pendientes',
+                             'Archivados' => 'archivados',
+                         ],
+                         'choices_as_values' => true,
+                         'expanded' => true,
+                         'multiple' => false,
+                         'label_attr' => ['class' => 'form-check-label px-2 py-1'],
+                     ])
+                     ->getForm();*/
+        $derivarForm = $this->getDerivarForm();
 
         return $this->render(
             'BandejaBundle:Bandeja:index.html.twig', 
             array(
                 'page' => $page,
                 'menu_op' => 'bandeja',
-                'deptos' => $deptos,
                 'searchForm' => $searchForm->createView(),
+                'derivarForm' => $derivarForm->createView(),
             )
         );
    
@@ -58,13 +78,13 @@ class BandejaController extends Controller
 
     public function verAction($id)
     {
-        $deptos = $this->getDeptos();
+        $derivarForm = $this->getDerivarForm();
 
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
             array(
                 'id' => $id,
-                'deptos' => $deptos
+                'derivarForm' => $derivarForm->createView()
             )
         );
     }
@@ -105,6 +125,59 @@ class BandejaController extends Controller
                ->getQuery();
 
         return $query->getResult();
+    }
+
+    private function getDerivarForm()
+    {
+        $deptos = $this->getDeptos();
+
+        $derivarForm = $this->createFormBuilder()
+                     ->add('originales', ChoiceType::class, [
+                         'choices'=> $deptos,
+                         'choices_as_values' => true,
+                         'expanded' => false,
+                         'multiple' => true,
+                         'label_attr' => ['class' => 'form-label mt-1'],
+                         'attr' => ['class' => 'chosen-select'],
+                         'label' => 'Enviar Originales a',
+                         'choice_value' => function (Departamentos $depto = null) {
+                             return $depto ? $depto->getIdDepartamento() : '';
+                         },
+                         'choice_label' => function (Departamentos $depto = null) {
+                             return $depto ? $depto->getDescripcion() : '';
+                         }
+                     ])->add('nota-original', TextareaType::class, [
+                         'label' => 'Nota para originales',
+                         'label_attr' => ['class' => 'form-label mt-2'],
+                         'attr' => ['class' => 'form-control']
+                     ])
+                     ->add('copias', ChoiceType::class, [
+                         'choices'=> $deptos,
+                         'choices_as_values' => true,
+                         'expanded' => false,
+                         'multiple' => true,
+                         'label_attr' => ['class' => 'form-label mt-1'],
+                         'attr' => ['class' => 'chosen-select'],
+                         'label' => 'Enviar Copias a',
+                         'choice_value' => function (Departamentos $depto = null) {
+                             return $depto ? $depto->getIdDepartamento() : '';
+                         },
+                         'choice_label' => function (Departamentos $depto = null) {
+                             return $depto ? $depto->getDescripcion() : '';
+                         }
+                     ])->add('nota-copias', TextareaType::class, [
+                         'label' => 'Nota para copias',
+                         'label_attr' => ['class' => 'form-label mt-2'],
+                         'attr' => ['class' => 'form-control']
+                     ])->add('adjuntos', FileType::class, [
+                         'required' => false,
+                         'multiple' => true,
+                         'attr' => ['class' => 'adjuntos'],
+                         'label_attr' => ['class' => 'form-label'],
+                         'label' => 'Adjuntos',
+                     ])
+                     ->getForm();
+        return $derivarForm;
     }
 
 }

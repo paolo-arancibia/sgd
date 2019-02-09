@@ -1,0 +1,45 @@
+$(".chosen-select").chosen({width: "100%"});
+
+$(".adjuntos").fileinput({
+    maxFileSize: 100,
+    overwriteInitial: false,
+    uploadAsync: false,
+    uploadUrl: '/editar/guardar',
+    overwriteInitial: false,
+    msgPlaceholder: 'Seleccionar archivos...',
+    theme: 'fas',
+    language: 'es',
+    preferIconicPreview: true,
+    previewFileIcon: '<i class="fas fa-ban text-danger"></i>',
+    allowedPreviewTypes: null,
+    msgInvalidFileType: 'Tipo de archivo inválido',
+    allowedPreviewMimeTypes: [
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/pdf',
+        'image/jpeg', 'image/x-citrix-jpeg', 
+        'image/png', 
+        'image/tiff',
+        'text/plain'
+    ],
+    previewFileIconSettings: {
+        'doc':  '<i class="fas fa-file-word text-primary"></i>',
+        'docx': '<i class="fas fa-file-word text-primary"></i>',
+        'xls':  '<i class="fas fa-file-excel text-success"></i>',
+        'xlsx': '<i class="fas fa-file-excel text-success"></i>',
+        'ppt':  '<i class="fas fa-file-powerpoint text-danger"></i>',
+        'pptx': '<i class="fas fa-file-powerpoint text-danger"></i>',
+        'pdf':  '<i class="fas fa-file-pdf text-danger"></i>',
+        'jpg':  '<i class="fas fa-file-image text-warning"></i>',
+        'jpeg': '<i class="fas fa-file-image text-warning"></i>',
+        'png':  '<i class="fas fa-file-image text-warning"></i>',
+        'tif':  '<i class="fas fa-file-image text-warning"></i>',
+        'tiff':  '<i class="fas fa-file-image text-warning"></i>',
+        'txt': '<i class="fas fa-file-alt text-secondary"></i>',
+        '': '<i class="fas fa-file-alt text-secondary"></i>'
+    },
+});
