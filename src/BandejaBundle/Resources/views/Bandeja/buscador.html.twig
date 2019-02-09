@@ -1,3 +1,3 @@
-<form class="col" method="get">
-    <input type="text" class="form-control" name="buscar" placeholder="Buscar..."/>
-</form>
+{{ form_start(searchForm, {'attr': {'class': 'col', 'novalidate': 'novalidate'}}) }}
+{{ form_widget(searchForm.searchText, {'attr': {'class': 'form-control', 'placeholder': 'Buscar...'}}) }}
+{{ form_end(searchForm) }}

@@ -34,7 +34,7 @@
         }
 
         #sidebar.active {
-          margin-left: -250px;
+          margin-left: -245px;
         }
 
         #content {
@@ -48,7 +48,7 @@
     <div class="wrapper">
      <!-- Sidebar -->
       <nav id="sidebar" class="px-2">
-        <h1 class="text-center"><a href="{{ url('bandeja_homepage') }}">SGD</a></h1>
+        <h1 class="text-center pt-2"><a href="{{ url('bandeja_homepage') }}">SGD</a></h1>
         {% include 'menu.html.twig' %}
       </nav>
 
@@ -88,10 +88,12 @@
     <script type="text/javascript">
       $(document).ready(function () {
 
+        // Sidebar menu control toggle
         $('#sidebarCollapse').on('click', function () {
           $('#sidebar').toggleClass('active');
         });
 
+        // activate deselect radio button
         $( function() {
           var allRadios = $(':radio')
           var booRadio;

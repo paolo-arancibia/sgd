@@ -2,7 +2,7 @@
 
 namespace {
     error_reporting(error_reporting() & ~E_USER_DEPRECATED);
-    $loader = require_once __DIR__.'/./autoload.php';
+    $loader = require_once __DIR__.'/autoload.php';
 }
 
  
@@ -2928,6 +2928,7 @@ $this->__construct($environment, $debug);
 }
 }
 }
+namespace {require __DIR__.'/../vendor/symfony/symfony/src/Symfony/Component/ClassLoader/ApcClassLoader.php';}
 namespace Symfony\Component\HttpKernel\Bundle
 {
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

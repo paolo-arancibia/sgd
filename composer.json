@@ -2,6 +2,7 @@
     "name": "vagrant/dev",
     "license": "proprietary",
     "type": "project",
+    "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
         "psr-4": {
             "AppBundle\\": "src/AppBundle",
@@ -26,9 +27,10 @@
         "harvesthq/chosen": "^1.8",
         "incenteev/composer-parameter-handler": "~2.0",
         "kartik-v/bootstrap-fileinput": "@dev",
-        "sensio/distribution-bundle": "~4.0",
+        "sensio/distribution-bundle": "~2.2",
         "sensio/framework-extra-bundle": "^3.0.2",
         "symfony/assetic-bundle": "^2.8",
+        "symfony/form": "~2.6",
         "symfony/monolog-bundle": "^3.0.2",
         "symfony/swiftmailer-bundle": "~2.3,>=2.3.10",
         "symfony/symfony": "2.8.*",

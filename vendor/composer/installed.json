@@ -1448,42 +1448,28 @@
     },
     {
         "name": "sensio/distribution-bundle",
-        "version": "v4.0.41",
-        "version_normalized": "4.0.41.0",
+        "version": "v2.3.22",
+        "version_normalized": "2.3.22.0",
         "target-dir": "Sensio/Bundle/DistributionBundle",
         "source": {
             "type": "git",
             "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-            "reference": "a0d13880526e85262388e66e165e4c152396ff45"
+            "reference": "98bdda791e7c2dfb5fd55781e69a4b00e4f751a6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/a0d13880526e85262388e66e165e4c152396ff45",
-            "reference": "a0d13880526e85262388e66e165e4c152396ff45",
+            "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/98bdda791e7c2dfb5fd55781e69a4b00e4f751a6",
+            "reference": "98bdda791e7c2dfb5fd55781e69a4b00e4f751a6",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3.9",
-            "sensiolabs/security-checker": "~3.0|~4.0|~5.0",
-            "symfony/class-loader": "~2.2",
-            "symfony/framework-bundle": "~2.3",
-            "symfony/process": "~2.2"
+            "symfony/framework-bundle": "~2.2"
         },
-        "require-dev": {
-            "symfony/form": "~2.2",
-            "symfony/validator": "~2.2",
-            "symfony/yaml": "~2.2"
-        },
-        "suggest": {
-            "symfony/form": "If you want to use the configurator",
-            "symfony/validator": "If you want to use the configurator",
-            "symfony/yaml": "If you want to use  the configurator"
-        },
-        "time": "2018-12-04T16:12:38+00:00",
+        "time": "2015-06-05T22:32:08+00:00",
         "type": "symfony-bundle",
         "extra": {
             "branch-alias": {
-                "dev-master": "4.0.x-dev"
+                "dev-master": "2.3.x-dev"
             }
         },
         "installation-source": "dist",
@@ -1502,7 +1488,7 @@
                 "email": "fabien@symfony.com"
             }
         ],
-        "description": "Base bundle for Symfony Distributions",
+        "description": "The base bundle for the Symfony Distributions",
         "keywords": [
             "configuration",
             "distribution"
