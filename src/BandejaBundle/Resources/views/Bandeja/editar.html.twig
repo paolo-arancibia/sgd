@@ -17,37 +17,41 @@
     <div class="row">
       <div class="col-5"><h5>{{ form_label(nuevoForm.fkTipoDoc) }}</h5></div>
       <div class="col">
-          {{ form_widget(nuevoForm.fkTipoDoc) }}
+        {{ form_widget(nuevoForm.fkTipoDoc) }}
       </div>
     </div>
 
     <div class="row">
-      <div class="col-5"><h5>Número Expediente</h5></div>
-      <div class="col"><input class="form-control" type="number" min="1" name="nroexp" /></div>
-    </div>
-
-    <div class="row">
-      <div class="col-5"><h5>Fecha Recepción</h5></div>
-      <div class="col"><input class="form-control" type="date" name="f_recep" /></div>
-    </div>
-
-    <div class="row">
+      <div class="col-5"><h5>{{ form_label(nuevoForm.nroExpediente) }}</h5></div>
       <div class="col">
-        <h5>Antecedentes</h5>
-        <textarea class="form-control" name="antecedentes" rows="4"></textarea>
+        {{ form_widget(nuevoForm.nroExpediente) }}
       </div>
     </div>
+
     <div class="row">
+      <div class="col-5"><h5>{{ form_label(nuevoForm.fechaDoc) }}</h5></div>
       <div class="col">
-        <h5>Materia</h5>
-        <textarea class="form-control" name="materia" rows="4"></textarea>
+        {{ form_widget(nuevoForm.fechaDoc) }}
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <h5>Expediente</h5>
-        <textarea class="form-control" name="expediente" rows="4"></textarea>
+        <h5>{{ form_label(nuevoForm.ant) }}</h5>
+        {{ form_widget(nuevoForm.ant) }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h5>{{ form_label(nuevoForm.mat) }}</h5>
+	{{ form_widget(nuevoForm.mat) }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h5>{{ form_label(nuevoForm.ext) }}</h5>
+	{{ form_widget(nuevoForm.ext) }}
       </div>
     </div>
   </div>
