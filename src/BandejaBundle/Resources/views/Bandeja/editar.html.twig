@@ -1,11 +1,11 @@
 {% extends '::/Bandeja/layout2col.html.twig' %}
 
 {% block page_title %}
-<h2 class="col-4">Nuevo Documento</h2>
+<h2 class="">NUEVO DOCUMENTO</h2>
 {% endblock %}
 
 {% block filters %}
-<div class="col"> 
+<div class=""> 
   <button type="button" class="btn btn-primary">Guardar y Derivar</button>
   <button type="button" class="btn btn-secondary">Guardar</button>
 </div>
@@ -14,6 +14,34 @@
 {% block content %}
 {{ form_start(nuevoForm) }}
   <div id="data" class="col">
+    <div class="row">
+      <div class="col-5"><h5>Remitemte</h5></div>
+      <div class="col">
+        <input class="form-control" type="text"/>
+      </div>
+    </div>
+    {# plantillas_remitentes #}
+    <div id="template_depto" class="card mb-3" style="display:none;">
+      <div class="card-header">
+        Departamento
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Administración Municipal</h5>
+        <h6 class="card-subtitle mb-3 text-muted">Juan Andrés Perez Gonzales</h6>
+        <a href="#" class="card-link">Eliminar</a>
+      </div>
+    </div>
+    <div id="template_persona" class="card mb-3" style="display:none;">
+      <div class="card-header">
+        Persona Natural
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Juan Andrés Perez Gonzales</h5>
+        <h6 class="card-subtitle mb-3 text-muted">Rut 12.345.678-9</h6>
+        <a href="#" class="card-link">Eliminar</a>
+      </div>
+    </div>
+    {# fin plantillas_remitentes #}
     <div class="row">
       <div class="col-5"><h5>{{ form_label(nuevoForm.fkTipoDoc) }}</h5></div>
       <div class="col">

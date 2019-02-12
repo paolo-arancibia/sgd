@@ -1,24 +1,12 @@
 {% extends '::/Bandeja/layout.html.twig' %}
 
 {% block page_title %}
-   <h2 class="">Bandeja Por Recibir</h2>
-{% endblock %}
-
-{% block search %}
-<form class="col-4">
-  <input class="form-control form-control-sm" placeholder="Buscar..." />
-</form>
-{% endblock %}
-
-{% block tabs %}
-  {% include 'BandejaBundle:Bandeja:menu.html.twig' %}
+   <h2 class="">BANDEJA POR RECIBIR</h2>
 {% endblock %}
 
 {% block filters %}
-  <div class="col">
-    <div id="actions" class="row collapse">
-      <button type="button" class="btn btn-danger mx-1" data-toggle="modal" data-target="#recibidoModal">Recibido</button>
-    </div>
+  <div id="actions" class="collapse">
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#recibidoModal">Recibido</button>
   </div>
 
   {% include 'BandejaBundle:Bandeja:recibir.html.twig' %}

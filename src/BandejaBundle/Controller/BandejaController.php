@@ -24,14 +24,7 @@ class BandejaController extends Controller
 
     public function recibidosAction($page = 0)
     {
-        $searchForm = $this->createFormBuilder(null, array(
-            'action' => '',
-            'method' => 'GET'))
-                    ->add('searchText', SearchType::class, [
-                        'required' => false,
-                        'attr' => ['placeholder' => 'Buscar...'],
-                    ])
-                    ->getForm();
+        $searchForm = $this->getSearchForm();
 
         $derivarForm = $this->getDerivarForm();
 
@@ -49,22 +42,28 @@ class BandejaController extends Controller
  
     public function porrecibirAction($page = 0)
     {
+        $searchForm = $this->getSearchForm();
+
         return $this->render(
             'BandejaBundle:Bandeja:porrecibir.html.twig',
             array(
                 'page' => $page,
-                'menu_op' => 'porrecibir'
+                'menu_op' => 'porrecibir',
+                'searchForm' => $searchForm->createView(),
             )
         );
     }
 
     public function despachadosAction($page = 0)
     {
+        $searchForm = $this->getSearchForm();
+
         return $this->render(
             'BandejaBundle:Bandeja:despachados.html.twig',
             array(
                 'page' => $page,
-                'menu_op' => 'despachados'
+                'menu_op' => 'despachados',
+                'searchForm' => $searchForm->createView(),
             )
         );
     }
@@ -111,6 +110,17 @@ class BandejaController extends Controller
         return $query->getResult();
     }
 
+    private function getSearchForm()
+    {
+        return $this->createFormBuilder(null, [
+            'action' => '',
+            'method' => 'GET'])
+            ->add('searchText', SearchType::class, [
+                'required' => false,
+                'attr' => ['placeholder' => 'Buscar...'],
+            ])
+            ->getForm();
+    }
 
     private function getTiposDocs()
     {
@@ -181,7 +191,7 @@ class BandejaController extends Controller
 
         $doc = new Documentos();
 
-        return $this->createFormBuilder($doc)
+        return $this->createFormBuilder($doc, ['attr' => ['class' => 'col']])
             //->add('')
             ->add('fkTipoDoc', ChoiceType::class, [
                 'choices'=> $tiposDocs,
