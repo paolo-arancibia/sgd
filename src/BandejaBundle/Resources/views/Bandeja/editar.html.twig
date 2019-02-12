@@ -17,7 +17,7 @@
     <div class="row">
       <div class="col-5"><h5>Remitemte</h5></div>
       <div class="col">
-        <input class="form-control" type="text"/>
+        <input id="buscadorRemitentes" class="form-control" type="text"/>
       </div>
     </div>
     {# plantillas_remitentes #}
@@ -111,6 +111,7 @@
     combine=true %}
     <link rel="stylesheet" href="{{ asset_url }}" />
   {% endstylesheets %}
+
   <style ttype="text/css">
     #data > div.row {
       margin-bottom: .5rem !important;
@@ -154,5 +155,26 @@
     output='js/_form_derivar.js'
     combine=true %}
   <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+    '../vendor/twitter/typeahead.js/dist/typeahead.jquery.min.js'
+    output='js/typeahead.js'
+    combine=true %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+    '../vendor/twitter/typeahead.js/dist/bloodhound.min.js'
+    output='js/bloodhound.js'
+    combine=true %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+    '../src/BandejaBundle/Resources/js/_editar.js'
+    output='js/editar.js'
+    combine=true %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
 {% endblock %}
