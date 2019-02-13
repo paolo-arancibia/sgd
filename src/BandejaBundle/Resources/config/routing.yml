@@ -33,3 +33,8 @@ editar_bandeja:
     defaults: { _controller: BandejaBundle:Bandeja:editar, id: 1 }
     requirements:
         id: '\d+'
+
+personas_typeahead:
+    path: /personas/{str}
+    defaults: { _controller: BandejaBundle:Bandeja:personas }
+    methods: [GET]

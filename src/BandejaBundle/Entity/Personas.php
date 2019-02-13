@@ -86,6 +86,16 @@ class Personas
     }
 
     /**
+     * Get completed rut
+     *
+     * @return string
+     */
+    public function getRutV()
+    {
+        return (string)$this->rut . '-' . $this->vrut;
+    }
+
+    /**
      * Set nombres
      *
      * @param string $nombres

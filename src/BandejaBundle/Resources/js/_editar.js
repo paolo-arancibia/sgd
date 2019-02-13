@@ -1,20 +1,24 @@
-function datas(){
-    return ['lalalala', 'lelelele', 'lililili', 'lolololo', 'lulululu']
-}
-
 var personas = new Bloodhound({
-    local: ['lalalala', 'lelelele', 'lililili', 'lolololo', 'lulululu'],
+    remote: {
+        url: 'personas/%QUERY',
+        wildcard: '%QUERY'
+    },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     datumTokenizer: Bloodhound.tokenizers.whitespace
 });
 
 $('#buscadorRemitentes').typeahead({
-    minLength: 4,
+    minLength: 2,
     highlight: true,
     classNames: {input: 'form-control'}
 },{
     name: 'personas',
     source: personas,
     async: true,
-    limit: 7
+    limit: 7,
+    display: function(obj){
+        return obj.nombre + ' ' + obj.rut;
+    }
+}).on('typeahead:select', function(ev) {
+    $('#template_personanueva').hide();
 });

@@ -15,7 +15,7 @@
 {{ form_start(nuevoForm) }}
   <div id="data" class="col">
     <div class="row">
-      <div class="col-5"><h5>Remitemte</h5></div>
+      <div class="col-5"><h5>Buscar Remitemte</h5></div>
       <div class="col">
         <input id="buscadorRemitentes" class="form-control" type="text"/>
       </div>
@@ -31,6 +31,7 @@
         <a href="#" class="card-link">Eliminar</a>
       </div>
     </div>
+
     <div id="template_persona" class="card mb-3" style="display:none;">
       <div class="card-header">
         Persona Natural
@@ -39,6 +40,42 @@
         <h5 class="card-title">Juan Andrés Perez Gonzales</h5>
         <h6 class="card-subtitle mb-3 text-muted">Rut 12.345.678-9</h6>
         <a href="#" class="card-link">Eliminar</a>
+      </div>
+    </div>
+
+    <div id="template_personanueva" class="card mb-3" style="">
+      <div class="card-header">
+        Nueva Persona Natural
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label" for="rut">Rut</label>
+          <input id="rut" class="form-control" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="nombres">Nombres</label>
+          <input id="nombre" class="form-control" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="apellidopaterno">Apellido Paterno</label>
+          <input id="apellidopaterno" class="form-control" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="apellidomaterno">Apellido Materno</label>
+          <input id="apellidomaterno" class="form-control" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="direccion">Dirección Particular</label>
+          <input id="direccion" class="form-control" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="tel">Teléfono de contacto</label>
+          <input id="ter" class="form-control" type="tel"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="rut">Email</label>
+          <input id="emal" class="form-control" type="email"/>
+        </div>
       </div>
     </div>
     {# fin plantillas_remitentes #}
@@ -115,6 +152,9 @@
   <style ttype="text/css">
     #data > div.row {
       margin-bottom: .5rem !important;
+    }
+    .twitter-typeahead {
+      width: 100%;
     }
   </style>
 {% endblock %}

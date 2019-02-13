@@ -3,8 +3,9 @@
 {% block page_title %}
 <h2 class="">
   DOCID N° 1234567
-  <a href="#note" class="text-danger"><i class="fas fa-sticky-note"></i></a>
+  <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
 </h2>
+{% include 'BandejaBundle:Bandeja:nota.html.twig' %}
 {% endblock %}
 
 {% block filters %}

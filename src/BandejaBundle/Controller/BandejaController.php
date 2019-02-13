@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 // use Symfony\Component\HttpFoundation\Response;
     
 class BandejaController extends Controller
@@ -99,12 +100,56 @@ class BandejaController extends Controller
         );
     }
 
+    public function personasAction($str = "")
+    {
+        $personas = $this->getPersonas($str);
+        $persArray = [];
+
+        foreach($personas as $p) {
+            $persArray[ $p->getRut() ] = array(
+                'rut' => $p->getRutV(),
+                'nombre' => $p->getNombres().' '.$p->getApellidopaterno().' '.$p->getApellidomaterno(),
+            );
+        }
+
+        $response = new JsonResponse($persArray);
+
+        return $response;
+    }
+
     private function getDeptos()
     {
         $repository = $this->getDoctrine()->getRepository('BandejaBundle:Departamentos');
 
-        $query =  $repository->createQueryBuilder('depto')
+        $query = $repository->createQueryBuilder('depto')
                ->orderBy('depto.descripcion', 'ASC')
+               ->getQuery();
+
+        return $query->getResult();
+    }
+
+    private function getTiposDocs()
+    {
+        $repository = $this->getDoctrine()->getRepository('BandejaBundle:TiposDocumentos');
+
+        $query = $repository->createQueryBuilder('tipodoc')
+               ->orderBy('tipodoc.abrev', 'ASC')
+               ->getQuery();
+
+        return $query->getResult();
+    }
+
+    private function getPersonas($str)
+    {
+        $repository = $this->getDoctrine()->getRepository('BandejaBundle:Personas');
+
+        $query = $repository->createQueryBuilder('pers')
+               ->where('pers.nombres like :STR')
+               ->orWhere('pers.apellidopaterno like :STR')
+               ->orWhere('pers.apellidomaterno like :STR')
+               ->orWhere('CONCAT(pers.rut,\'-\',pers.vrut) like :STR')
+               ->setParameter(':STR', '%'.$str.'%')
+               ->orderBy('pers.apellidopaterno, pers.apellidomaterno, pers.nombres', 'ASC')
                ->getQuery();
 
         return $query->getResult();
@@ -120,17 +165,6 @@ class BandejaController extends Controller
                 'attr' => ['placeholder' => 'Buscar...'],
             ])
             ->getForm();
-    }
-
-    private function getTiposDocs()
-    {
-        $repository = $this->getDoctrine()->getRepository('BandejaBundle:TiposDocumentos');
-
-        $query =  $repository->createQueryBuilder('tipodoc')
-               ->orderBy('tipodoc.abrev', 'ASC')
-               ->getQuery();
-
-        return $query->getResult();
     }
 
     private function getDerivarForm()
