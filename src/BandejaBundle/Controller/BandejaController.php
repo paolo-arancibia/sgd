@@ -5,6 +5,7 @@ namespace BandejaBundle\Controller;
 use BandejaBundle\Entity\Departamentos;
 use BandejaBundle\Entity\Documentos;
 use BandejaBundle\Entity\TiposDocumentos;
+// formulario especial para derivar - por implementar
 // use BandejaBundle\Form\DerivarType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -109,6 +110,7 @@ class BandejaController extends Controller
             $persArray[ $p->getRut() ] = array(
                 'rut' => $p->getRutV(),
                 'nombre' => $p->getNombres().' '.$p->getApellidopaterno().' '.$p->getApellidomaterno(),
+                'tipo' => 'pers',
             );
         }
 
@@ -117,12 +119,32 @@ class BandejaController extends Controller
         return $response;
     }
 
-    private function getDeptos()
+    public function departamentosAction($str = "")
+    {
+        $deptos = $this->getDeptos($str);
+        $deptosArray = [];
+
+        foreach($deptos as $d) {
+            $deptosArray[ $d->getIdDepartamento() ] = array(
+                'idDepartamento' => $d->getIdDepartamento(),
+                'descripcion' => $d->getDescripcion(),
+                'tipo' => 'depto',
+            );
+        }
+
+        $response = new JsonResponse($deptosArray);
+
+        return $response;
+    }
+
+    private function getDeptos($str = "")
     {
         $repository = $this->getDoctrine()->getRepository('BandejaBundle:Departamentos');
 
         $query = $repository->createQueryBuilder('depto')
+               ->where('depto.descripcion like :STR')
                ->orderBy('depto.descripcion', 'ASC')
+               ->setParameter(':STR', '%'.$str.'%')
                ->getQuery();
 
         return $query->getResult();
@@ -225,7 +247,7 @@ class BandejaController extends Controller
 
         $doc = new Documentos();
 
-        return $this->createFormBuilder($doc, ['attr' => ['class' => 'col']])
+        return $this->createFormBuilder($doc)
             //->add('')
             ->add('fkTipoDoc', ChoiceType::class, [
                 'choices'=> $tiposDocs,

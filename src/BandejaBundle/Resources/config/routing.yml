@@ -38,3 +38,8 @@ personas_typeahead:
     path: /personas/{str}
     defaults: { _controller: BandejaBundle:Bandeja:personas }
     methods: [GET]
+
+departamentos_typeahead:
+    path: /departamentos/{str}
+    defaults: { _controller: BandejaBundle:Bandeja:departamentos }
+    methods: [GET]
