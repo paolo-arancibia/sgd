@@ -12,10 +12,10 @@
 {% endblock %}
 
 {% block content %}
-{{ form_start(nuevoForm) }}
-  <div id="data" class="col">
+{{ form_start(nuevoForm, {'attr': {'class': 'col'}}) }}
+  <div id="data">
     <div class="row">
-      <div class="col-5"><h5>Buscar Remitemte</h5></div>
+      <div class="col-4"><h5>Buscar Remitemte</h5></div>
       <div class="col">
         <input id="buscadorRemitentes" class="form-control" type="text"/>
       </div>
@@ -80,21 +80,21 @@
     </div>
     {# fin plantillas_remitentes #}
     <div class="row">
-      <div class="col-5"><h5>{{ form_label(nuevoForm.fkTipoDoc) }}</h5></div>
+      <div class="col-4"><h5>{{ form_label(nuevoForm.fkTipoDoc) }}</h5></div>
       <div class="col">
         {{ form_widget(nuevoForm.fkTipoDoc) }}
       </div>
     </div>
 
     <div class="row">
-      <div class="col-5"><h5>{{ form_label(nuevoForm.nroExpediente) }}</h5></div>
+      <div class="col-4"><h5>{{ form_label(nuevoForm.nroExpediente) }}</h5></div>
       <div class="col">
         {{ form_widget(nuevoForm.nroExpediente) }}
       </div>
     </div>
 
     <div class="row">
-      <div class="col-5"><h5>{{ form_label(nuevoForm.fechaDoc) }}</h5></div>
+      <div class="col-4"><h5>{{ form_label(nuevoForm.fechaDoc) }}</h5></div>
       <div class="col">
         {{ form_widget(nuevoForm.fechaDoc) }}
       </div>
