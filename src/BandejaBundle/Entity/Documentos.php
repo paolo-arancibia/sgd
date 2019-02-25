@@ -15,7 +15,7 @@ class Documentos
     /**
      * @var integer
      *
-     * @ORM\Column(name="ID_DOC", type="integer", nullable=false)
+     * @ORM\Column(name="ID_DOC", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -85,24 +85,24 @@ class Documentos
     private $fechaE;
 
     /**
-     * @var \Usuarios
+     * @var \BandejaBundle\Entity\TiposDocumentos
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="FK_ID_USUARIO", referencedColumnName="ID_USUARIO")
-     * })
-     */
-    private $fkUsuario;
-
-    /**
-     * @var \TiposDocumentos
-     *
-     * @ORM\ManyToOne(targetEntity="TiposDocumentos")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\TiposDocumentos")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_TIPO_DOC", referencedColumnName="ID_TIPOS_DOC")
      * })
      */
     private $fkTipoDoc;
+
+    /**
+     * @var \BandejaBundle\Entity\Usuarios
+     *
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="FK_ID_USUARIO", referencedColumnName="ID_USUARIO")
+     * })
+     */
+    private $fkUsuario;
 
 
 
@@ -333,30 +333,6 @@ class Documentos
     }
 
     /**
-     * Set fkUsuario
-     *
-     * @param \BandejaBundle\Entity\Usuarios $fkUsuario
-     *
-     * @return Documentos
-     */
-    public function setFkUsuario(\BandejaBundle\Entity\Usuarios $fkUsuario = null)
-    {
-        $this->fkUsuario = $fkUsuario;
-
-        return $this;
-    }
-
-    /**
-     * Get fkUsuario
-     *
-     * @return \BandejaBundle\Entity\Usuarios
-     */
-    public function getFkUsuario()
-    {
-        return $this->fkUsuario;
-    }
-
-    /**
      * Set fkTipoDoc
      *
      * @param \BandejaBundle\Entity\TiposDocumentos $fkTipoDoc
@@ -378,5 +354,29 @@ class Documentos
     public function getFkTipoDoc()
     {
         return $this->fkTipoDoc;
+    }
+
+    /**
+     * Set fkUsuario
+     *
+     * @param \BandejaBundle\Entity\Usuarios $fkUsuario
+     *
+     * @return Documentos
+     */
+    public function setFkUsuario(\BandejaBundle\Entity\Usuarios $fkUsuario = null)
+    {
+        $this->fkUsuario = $fkUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get fkUsuario
+     *
+     * @return \BandejaBundle\Entity\Usuarios
+     */
+    public function getFkUsuario()
+    {
+        return $this->fkUsuario;
     }
 }

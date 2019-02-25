@@ -15,7 +15,7 @@ class TiposDocumentos
     /**
      * @var integer
      *
-     * @ORM\Column(name="ID_TIPOS_DOC", type="integer", nullable=false)
+     * @ORM\Column(name="ID_TIPOS_DOC", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

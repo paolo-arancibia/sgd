@@ -39,11 +39,20 @@ $('#buscadorRemitentes').typeahead({
 }).on('typeahead:select', function(ev, obj) {
     if( obj.tipo == 'pers' ) {
 	$('#template_personanueva').hide();
-        $('#template_persona').show()
-        $('#template_depto').hide()
+        $('#template_depto').hide();
+
+        $('#template_persona')
+            .show()
+            .find('h5.card-title').html(obj.nombre)
+            .parent().find('h6.card-subtitle').html('Rut ' + obj.rut);
+
     } else if( obj.tipo == 'depto' ) {
 	$('#template_personanueva').hide();
         $('#template_persona').hide()
-        $('#template_depto').show()
+        $('#template_depto')
+            .show()
+            .find('h5.card-title').html(obj.descripcion)
+            //.parent().find('h6.card-subtitle').html('Rut ' + obj.rut);
+            
     }
 });

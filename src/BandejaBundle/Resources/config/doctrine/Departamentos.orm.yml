@@ -45,22 +45,4 @@ BandejaBundle\Entity\Departamentos:
             type: datetime
             nullable: true
             column: FECHA_E
-    manyToMany:
-        fkUsuario:
-            targetEntity: Usuarios
-            cascade: {  }
-            fetch: LAZY
-            mappedBy: null
-            inversedBy: fkDepto
-            joinTable:
-                name: dep_usu
-                joinColumns:
-                    -
-                        name: FK_ID_DEPTO
-                        referencedColumnName: ID_DEPARTAMENTO
-                inverseJoinColumns:
-                    -
-                        name: FK_ID_USUARIO
-                        referencedColumnName: ID_USUARIO
-            orderBy: null
     lifecycleCallbacks: {  }

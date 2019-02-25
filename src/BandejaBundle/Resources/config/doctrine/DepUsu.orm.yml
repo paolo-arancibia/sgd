@@ -1,35 +1,38 @@
-BandejaBundle\Entity\Usuarios:
+BandejaBundle\Entity\DepUsu:
     type: entity
-    table: USUARIOS
+    table: dep_usu
     indexes:
-        FK_ID_PERSONA:
+        IDX_A657D367B0349E59:
             columns:
-                - FK_ID_PERSONA
+                - FK_ID_DEPTO
+        IDX_A657D36755303CDA:
+            columns:
+                - FK_ID_USUARIO
     id:
-        idUsuario:
+        idDepUsu:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
-            column: ID_USUARIO
+            column: ID_DEP_USU
             generator:
                 strategy: IDENTITY
     fields:
-        nombre:
-            type: string
+        encargado:
+            type: boolean
             nullable: false
-            length: 255
             options:
-                fixed: false
-            column: NOMBRE
-        contrasena:
+                comment: '0: false, 1: true'
+                default: '0'
+            column: ENCARGADO
+        cargo:
             type: string
             nullable: true
             length: 255
             options:
                 fixed: false
-            column: CONTRASENA
+            column: CARGO
         fechaC:
             type: datetime
             nullable: false
@@ -43,14 +46,24 @@ BandejaBundle\Entity\Usuarios:
             nullable: true
             column: FECHA_E
     manyToOne:
-        fkPersona:
-            targetEntity: Personas
+        fkUsuario:
+            targetEntity: Usuarios
             cascade: {  }
             fetch: LAZY
             mappedBy: null
             inversedBy: null
             joinColumns:
-                FK_ID_PERSONA:
-                    referencedColumnName: rut
+                FK_ID_USUARIO:
+                    referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+        fkDepto:
+            targetEntity: Departamentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_DEPTO:
+                    referencedColumnName: ID_DEPARTAMENTO
             orphanRemoval: false
     lifecycleCallbacks: {  }

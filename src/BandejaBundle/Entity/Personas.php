@@ -15,7 +15,7 @@ class Personas
     /**
      * @var integer
      *
-     * @ORM\Column(name="rut", type="integer", nullable=false)
+     * @ORM\Column(name="rut", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -83,16 +83,6 @@ class Personas
     public function getVrut()
     {
         return $this->vrut;
-    }
-
-    /**
-     * Get completed rut
-     *
-     * @return string
-     */
-    public function getRutV()
-    {
-        return (string)$this->rut . '-' . $this->vrut;
     }
 
     /**

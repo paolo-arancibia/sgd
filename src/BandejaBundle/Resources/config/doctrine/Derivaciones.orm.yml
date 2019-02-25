@@ -61,16 +61,6 @@ BandejaBundle\Entity\Derivaciones:
                 FK_ID_DOC:
                     referencedColumnName: ID_DOC
             orphanRemoval: false
-        fkDepto:
-            targetEntity: Departamentos
-            cascade: {  }
-            fetch: LAZY
-            mappedBy: null
-            inversedBy: null
-            joinColumns:
-                FK_ID_DEPTO:
-                    referencedColumnName: ID_DEPARTAMENTO
-            orphanRemoval: false
         fkRemitente:
             targetEntity: Usuarios
             cascade: {  }
@@ -80,6 +70,16 @@ BandejaBundle\Entity\Derivaciones:
             joinColumns:
                 FK_ID_REMITENTE:
                     referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+        fkDepto:
+            targetEntity: Departamentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_DEPTO:
+                    referencedColumnName: ID_DEPARTAMENTO
             orphanRemoval: false
         fkDestinatario:
             targetEntity: Usuarios

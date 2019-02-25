@@ -69,16 +69,6 @@ BandejaBundle\Entity\Documentos:
             nullable: true
             column: FECHA_E
     manyToOne:
-        fkUsuario:
-            targetEntity: Usuarios
-            cascade: {  }
-            fetch: LAZY
-            mappedBy: null
-            inversedBy: null
-            joinColumns:
-                FK_ID_USUARIO:
-                    referencedColumnName: ID_USUARIO
-            orphanRemoval: false
         fkTipoDoc:
             targetEntity: TiposDocumentos
             cascade: {  }
@@ -88,5 +78,15 @@ BandejaBundle\Entity\Documentos:
             joinColumns:
                 FK_ID_TIPO_DOC:
                     referencedColumnName: ID_TIPOS_DOC
+            orphanRemoval: false
+        fkUsuario:
+            targetEntity: Usuarios
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_USUARIO:
+                    referencedColumnName: ID_USUARIO
             orphanRemoval: false
     lifecycleCallbacks: {  }

@@ -15,7 +15,7 @@ class Adjuntos
     /**
      * @var integer
      *
-     * @ORM\Column(name="ID_ADJUNTO", type="integer", nullable=false)
+     * @ORM\Column(name="ID_ADJUNTO", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -57,9 +57,9 @@ class Adjuntos
     private $fechaE;
 
     /**
-     * @var \Departamentos
+     * @var \BandejaBundle\Entity\Departamentos
      *
-     * @ORM\ManyToOne(targetEntity="Departamentos")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Departamentos")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_DOC", referencedColumnName="ID_DEPARTAMENTO")
      * })
@@ -67,9 +67,9 @@ class Adjuntos
     private $fkDoc;
 
     /**
-     * @var \Usuarios
+     * @var \BandejaBundle\Entity\Usuarios
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_USUARIO", referencedColumnName="ID_USUARIO")
      * })

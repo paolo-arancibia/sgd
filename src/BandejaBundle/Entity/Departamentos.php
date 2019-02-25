@@ -3,6 +3,7 @@
 namespace BandejaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Departamentos
@@ -15,7 +16,7 @@ class Departamentos
     /**
      * @var integer
      *
-     * @ORM\Column(name="ID_DEPARTAMENTO", type="integer", nullable=false)
+     * @ORM\Column(name="ID_DEPARTAMENTO", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -64,28 +65,22 @@ class Departamentos
     private $fechaE;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var \Collection
      *
-     * @ORM\ManyToMany(targetEntity="Usuarios", inversedBy="fkDepto")
-     * @ORM\JoinTable(name="dep_usu",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="FK_ID_DEPTO", referencedColumnName="ID_DEPARTAMENTO")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="FK_ID_USUARIO", referencedColumnName="ID_USUARIO")
-     *   }
-     * )
+     * @ORM\OneToMay(targetEntity="BandejaBundle:DepUsu", mappedBy="fkDepto", fetch="LAZY")
      */
-    private $fkUsuario;
+    private $depUsus;
+
 
     /**
      * Constructor
+     *
+     *
      */
-    public function __construct()
+    public function __contruct()
     {
-        $this->fkUsuario = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->$depUsus = new Collection();
     }
-
 
     /**
      * Get idDepartamento
@@ -239,39 +234,5 @@ class Departamentos
     public function getFechaE()
     {
         return $this->fechaE;
-    }
-
-    /**
-     * Add fkUsuario
-     *
-     * @param \BandejaBundle\Entity\Usuarios $fkUsuario
-     *
-     * @return Departamentos
-     */
-    public function addFkUsuario(\BandejaBundle\Entity\Usuarios $fkUsuario)
-    {
-        $this->fkUsuario[] = $fkUsuario;
-
-        return $this;
-    }
-
-    /**
-     * Remove fkUsuario
-     *
-     * @param \BandejaBundle\Entity\Usuarios $fkUsuario
-     */
-    public function removeFkUsuario(\BandejaBundle\Entity\Usuarios $fkUsuario)
-    {
-        $this->fkUsuario->removeElement($fkUsuario);
-    }
-
-    /**
-     * Get fkUsuario
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFkUsuario()
-    {
-        return $this->fkUsuario;
     }
 }

@@ -15,7 +15,7 @@ class Derivaciones
     /**
      * @var integer
      *
-     * @ORM\Column(name="ID_DERIVACION", type="integer", nullable=false)
+     * @ORM\Column(name="ID_DERIVACION", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -57,9 +57,9 @@ class Derivaciones
     private $fechaE;
 
     /**
-     * @var \Documentos
+     * @var \BandejaBundle\Entity\Documentos
      *
-     * @ORM\ManyToOne(targetEntity="Documentos")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Documentos")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_DOC", referencedColumnName="ID_DOC")
      * })
@@ -67,19 +67,9 @@ class Derivaciones
     private $fkDoc;
 
     /**
-     * @var \Departamentos
+     * @var \BandejaBundle\Entity\Usuarios
      *
-     * @ORM\ManyToOne(targetEntity="Departamentos")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="FK_ID_DEPTO", referencedColumnName="ID_DEPARTAMENTO")
-     * })
-     */
-    private $fkDepto;
-
-    /**
-     * @var \Usuarios
-     *
-     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_REMITENTE", referencedColumnName="ID_USUARIO")
      * })
@@ -87,9 +77,19 @@ class Derivaciones
     private $fkRemitente;
 
     /**
-     * @var \Usuarios
+     * @var \BandejaBundle\Entity\Departamentos
      *
-     * @ORM\ManyToOne(targetEntity="Usuarios")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Departamentos")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="FK_ID_DEPTO", referencedColumnName="ID_DEPARTAMENTO")
+     * })
+     */
+    private $fkDepto;
+
+    /**
+     * @var \BandejaBundle\Entity\Usuarios
+     *
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_DESTINATARIO", referencedColumnName="ID_USUARIO")
      * })
@@ -253,30 +253,6 @@ class Derivaciones
     }
 
     /**
-     * Set fkDepto
-     *
-     * @param \BandejaBundle\Entity\Departamentos $fkDepto
-     *
-     * @return Derivaciones
-     */
-    public function setFkDepto(\BandejaBundle\Entity\Departamentos $fkDepto = null)
-    {
-        $this->fkDepto = $fkDepto;
-
-        return $this;
-    }
-
-    /**
-     * Get fkDepto
-     *
-     * @return \BandejaBundle\Entity\Departamentos
-     */
-    public function getFkDepto()
-    {
-        return $this->fkDepto;
-    }
-
-    /**
      * Set fkRemitente
      *
      * @param \BandejaBundle\Entity\Usuarios $fkRemitente
@@ -298,6 +274,30 @@ class Derivaciones
     public function getFkRemitente()
     {
         return $this->fkRemitente;
+    }
+
+    /**
+     * Set fkDepto
+     *
+     * @param \BandejaBundle\Entity\Departamentos $fkDepto
+     *
+     * @return Derivaciones
+     */
+    public function setFkDepto(\BandejaBundle\Entity\Departamentos $fkDepto = null)
+    {
+        $this->fkDepto = $fkDepto;
+
+        return $this;
+    }
+
+    /**
+     * Get fkDepto
+     *
+     * @return \BandejaBundle\Entity\Departamentos
+     */
+    public function getFkDepto()
+    {
+        return $this->fkDepto;
     }
 
     /**

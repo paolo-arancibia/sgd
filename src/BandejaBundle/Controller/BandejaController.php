@@ -5,6 +5,8 @@ namespace BandejaBundle\Controller;
 use BandejaBundle\Entity\Departamentos;
 use BandejaBundle\Entity\Documentos;
 use BandejaBundle\Entity\TiposDocumentos;
+use Doctrine\Common\Collections\Expr\Comparison;
+use Doctrine\Common\Collections\Criteria;
 // formulario especial para derivar - por implementar
 // use BandejaBundle\Form\DerivarType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -16,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 // use Symfony\Component\HttpFoundation\Response;
-    
+
 class BandejaController extends Controller
 {
     public function indexAction()
@@ -31,7 +33,7 @@ class BandejaController extends Controller
         $derivarForm = $this->getDerivarForm();
 
         return $this->render(
-            'BandejaBundle:Bandeja:index.html.twig', 
+            'BandejaBundle:Bandeja:index.html.twig',
             array(
                 'page' => $page,
                 'menu_op' => 'bandeja',
@@ -39,9 +41,9 @@ class BandejaController extends Controller
                 'derivarForm' => $derivarForm->createView(),
             )
         );
-   
+
     }
- 
+
     public function porrecibirAction($page = 0)
     {
         $searchForm = $this->getSearchForm();
@@ -106,9 +108,10 @@ class BandejaController extends Controller
         $personas = $this->getPersonas($str);
         $persArray = [];
 
+
         foreach($personas as $p) {
             $persArray[ $p->getRut() ] = array(
-                'rut' => $p->getRutV(),
+                'rut' => $p->getRut() . '-' . $p->getVRut(),
                 'nombre' => $p->getNombres().' '.$p->getApellidopaterno().' '.$p->getApellidomaterno(),
                 'tipo' => 'pers',
             );
@@ -124,10 +127,19 @@ class BandejaController extends Controller
         $deptos = $this->getDeptos($str);
         $deptosArray = [];
 
+        $exp = new Comparison('fk_depto', '=',  11000000);
+        $criteria = new Criteria();
+        $criteria->where( $exp );
+
+        $usuarioEncargado = $this->getDoctrine()
+                          ->getRepository('BandejaBundle:DepUsu')
+                          ->findBy( $criteria );
+
         foreach($deptos as $d) {
             $deptosArray[ $d->getIdDepartamento() ] = array(
                 'idDepartamento' => $d->getIdDepartamento(),
                 'descripcion' => $d->getDescripcion(),
+                //'responsable' => $d->getFkUsuario()->first(),
                 'tipo' => 'depto',
             );
         }
