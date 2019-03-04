@@ -3,6 +3,7 @@ namespace BandejaBundle\Controller;
 
 
 use BandejaBundle\Entity\Departamentos;
+use BandejaBundle\Entity\DepUsu;
 use BandejaBundle\Entity\Documentos;
 use BandejaBundle\Entity\TiposDocumentos;
 use Doctrine\Common\Collections\Expr\Comparison;
@@ -111,8 +112,9 @@ class BandejaController extends Controller
 
         foreach($personas as $p) {
             $persArray[ $p->getRut() ] = array(
-                'rut' => $p->getRut() . '-' . $p->getVRut(),
-                'nombre' => $p->getNombres().' '.$p->getApellidopaterno().' '.$p->getApellidomaterno(),
+                'rut' => number_format($p->getRut(), 0, ',', '.') . '-' . $p->getVRut(),
+                'id' => $p->getRut(),
+                'nombre' => $p->getNombreCompleto(),
                 'tipo' => 'pers',
             );
         }
@@ -127,19 +129,19 @@ class BandejaController extends Controller
         $deptos = $this->getDeptos($str);
         $deptosArray = [];
 
-        $exp = new Comparison('fk_depto', '=',  11000000);
-        $criteria = new Criteria();
-        $criteria->where( $exp );
-
-        $usuarioEncargado = $this->getDoctrine()
-                          ->getRepository('BandejaBundle:DepUsu')
-                          ->findBy( $criteria );
-
         foreach($deptos as $d) {
+            $expr = new Comparison('encargado', '=', 1);
+
+            $criteria = new Criteria();
+            $criteria->where( $expr );
+
+            $encargados = $d->getDepUsus()->matching( $criteria );
+
             $deptosArray[ $d->getIdDepartamento() ] = array(
                 'idDepartamento' => $d->getIdDepartamento(),
                 'descripcion' => $d->getDescripcion(),
-                //'responsable' => $d->getFkUsuario()->first(),
+                'encargado' => $encargados->isEmpty() ? null : $encargados->first()->getFkUsuario()->getFkPersona()->getNombreCompleto(),
+                'idEncargado' => $encargados->isEmpty() ? null : $encargados->first()->getFkUsuario()->getIdUsuario(),
                 'tipo' => 'depto',
             );
         }
@@ -204,6 +206,7 @@ class BandejaController extends Controller
     private function getDerivarForm()
     {
         $deptos = $this->getDeptos();
+        $depUsu = new DepUsu();
 
         return $this->createFormBuilder()
             ->add('originales', ChoiceType::class, [
@@ -290,17 +293,17 @@ class BandejaController extends Controller
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Antecedentes',
-                'required' => true,
+                'required' => false,
             ])->add('mat', TextareaType::class, [
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Materia',
-                'required' => true,
+                'required' => false,
             ])->add('ext', TextareaType::class, [
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Extracto',
-                'required' => true,
+                'required' => false,
             ])
             ->getForm();
     }

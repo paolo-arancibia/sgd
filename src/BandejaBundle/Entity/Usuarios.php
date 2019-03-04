@@ -66,6 +66,12 @@ class Usuarios
      */
     private $fkPersona;
 
+    /**
+     * @var \Collection
+     *
+     * @ORM\OneToMay(targetEntity="BandejaBundle\Entity\DepUsu", mappedBy="fkUsuario", fetch="LAZY")
+     */
+    private $depUsus;
 
 
     /**

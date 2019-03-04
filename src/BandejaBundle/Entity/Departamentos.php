@@ -67,7 +67,7 @@ class Departamentos
     /**
      * @var \Collection
      *
-     * @ORM\OneToMay(targetEntity="BandejaBundle:DepUsu", mappedBy="fkDepto", fetch="LAZY")
+     * @ORM\OneToMay(targetEntity="BandejaBundle\Entity\DepUsu", mappedBy="fkDepto")
      */
     private $depUsus;
 
@@ -234,5 +234,53 @@ class Departamentos
     public function getFechaE()
     {
         return $this->fechaE;
+    }
+
+    /**
+     * Get depUsus
+     *
+     * @return \Collection
+     */
+    public function getDepUsus()
+    {
+        return $this->depUsus;
+    }
+
+    /**
+     * Add a DepUsu to depUsus
+     *
+     * @param \DepUsu $depUsu
+     *
+     * @return Departamentos
+     */
+    public function addDepUsus($depUsu)
+    {
+        if( $this->depUsus->contains($depUsu) )
+        {
+            return;
+        }
+
+        $this->depUsus->add($depUsu);
+
+        return $this;
+    }
+
+    /**
+     * Remove a DepUsu to depUsus
+     *
+     * @param \DepUsu $depUsu
+     *
+     * @return Departamentos
+     */
+    public function removeDepUsus($depUsu)
+    {
+        if( ! $this->depUsus->contains($depUsu) )
+        {
+            return;
+        }
+
+        $this->depUsus->removeElement($depUsu);
+
+        return $this;
     }
 }

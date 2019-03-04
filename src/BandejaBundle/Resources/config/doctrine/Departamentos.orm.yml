@@ -45,4 +45,9 @@ BandejaBundle\Entity\Departamentos:
             type: datetime
             nullable: true
             column: FECHA_E
+    oneToMany:
+        depUsus:
+            targetEntity: DepUsu
+            mappedBy: fkDepto
+            fetch: LAZY
     lifecycleCallbacks: {  }

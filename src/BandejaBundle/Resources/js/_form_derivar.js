@@ -1,7 +1,7 @@
 $(".chosen-select").chosen({width: "100%"});
 
 $(".adjuntos").fileinput({
-    maxFileSize: 100,
+    maxFileSize: 2048,
     overwriteInitial: false,
     uploadAsync: false,
     uploadUrl: '/editar/guardar',
@@ -21,8 +21,8 @@ $(".adjuntos").fileinput({
         'application/vnd.ms-powerpoint',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'application/pdf',
-        'image/jpeg', 'image/x-citrix-jpeg', 
-        'image/png', 
+        'image/jpeg', 'image/x-citrix-jpeg',
+        'image/png',
         'image/tiff',
         'text/plain'
     ],

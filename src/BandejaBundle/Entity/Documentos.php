@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Documentos
  *
- * @ORM\Table(name="DOCUMENTOS", indexes={@ORM\Index(name="FK_ID_USUARIO", columns={"FK_ID_USUARIO"}), @ORM\Index(name="FK_ID_TIPO_DOC", columns={"FK_ID_TIPO_DOC"})})
+ * @ORM\Table(name="DOCUMENTOS", indexes={@ORM\Index(name="FK_ID_USUARIO", columns={"FK_ID_USUARIO"}), @ORM\Index(name="FK_ID_TIPO_DOC", columns={"FK_ID_TIPO_DOC"}), @ORM\Index(name="FK_RUT_PERSONA", columns={"FK_RUT_PERSONA"})})
  * @ORM\Entity
  */
 class Documentos
@@ -104,6 +104,15 @@ class Documentos
      */
     private $fkUsuario;
 
+    /**
+     * @var \BandejaBundle\Entity\Persona
+     *
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Persona")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="FK_RUT_PERSONA", referencedColumnName="rut")
+     * })
+     */
+    private $fkRutPersona;
 
 
     /**
@@ -378,5 +387,29 @@ class Documentos
     public function getFkUsuario()
     {
         return $this->fkUsuario;
+    }
+
+    /**
+     * Set fkRutPersona
+     *
+     * @param \BandejaBundle\Entity\Personas $fkRutPersona
+     *
+     * @return Documentos
+     */
+    public function setFkRutPersona(\BandejaBundle\Entity\Personas $fkRutPersona = null)
+    {
+        $this->fkRutPersona = $fkRutPersona;
+
+        return $this;
+    }
+
+    /**
+     * Get fkRutPersona
+     *
+     * @return \BandejaBundle\Entity\Persona
+     */
+    public function getFkRutPersona()
+    {
+        return $this->fkRutPersona;
     }
 }

@@ -156,4 +156,14 @@ class Personas
     {
         return $this->apellidomaterno;
     }
+
+    /**
+     * Get Nombre Completo
+     *
+     * @return string
+     */
+    public function getNombreCompleto()
+    {
+        return $this->nombres . ' ' . $this->apellidopaterno . ' ' . $this->apellidomaterno;
+    }
 }

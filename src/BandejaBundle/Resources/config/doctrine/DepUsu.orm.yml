@@ -1,6 +1,7 @@
 BandejaBundle\Entity\DepUsu:
     type: entity
     table: dep_usu
+    repositoryClass: BandejaBundle\Repository\DepUsuRepository
     indexes:
         IDX_A657D367B0349E59:
             columns:
@@ -51,7 +52,7 @@ BandejaBundle\Entity\DepUsu:
             cascade: {  }
             fetch: LAZY
             mappedBy: null
-            inversedBy: null
+            inversedBy: depUsus
             joinColumns:
                 FK_ID_USUARIO:
                     referencedColumnName: ID_USUARIO
@@ -61,7 +62,7 @@ BandejaBundle\Entity\DepUsu:
             cascade: {  }
             fetch: LAZY
             mappedBy: null
-            inversedBy: null
+            inversedBy: depUsus
             joinColumns:
                 FK_ID_DEPTO:
                     referencedColumnName: ID_DEPARTAMENTO

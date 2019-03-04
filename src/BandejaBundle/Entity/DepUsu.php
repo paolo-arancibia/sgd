@@ -59,7 +59,7 @@ class DepUsu
     /**
      * @var \BandejaBundle\Entity\Usuarios
      *
-     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios", inversedBy="depUsus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_USUARIO", referencedColumnName="ID_USUARIO")
      * })
@@ -69,14 +69,12 @@ class DepUsu
     /**
      * @var \BandejaBundle\Entity\Departamentos
      *
-     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Departamentos")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Departamentos", inversedBy="depUsus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_DEPTO", referencedColumnName="ID_DEPARTAMENTO")
      * })
      */
     private $fkDepto;
-
-
 
     /**
      * Get idDepUsu

@@ -5,19 +5,19 @@
 {% endblock %}
 
 {% block filters %}
-<div class=""> 
-  <button type="button" class="btn btn-primary">Guardar y Derivar</button>
-  <button type="button" class="btn btn-secondary">Guardar</button>
+<div class="">
+  <button type="submit" class="btn btn-primary" form="docForm" name="guardar" value="derivar">Guardar y Derivar</button>
+  <button type="submit" class="btn btn-secondary" form="docForm" name="guardar" value="guardar">Solo Guardar</button>
 </div>
 {% endblock %}
 
 {% block content %}
-{{ form_start(nuevoForm, {'attr': {'class': 'col'}}) }}
+{{ form_start(nuevoForm, {'attr': {'class': 'col', 'id': 'docForm'}}) }}
   <div id="data">
     <div class="row">
       <div class="col-4"><h5>Buscar Remitemte</h5></div>
       <div class="col">
-        <input id="buscadorRemitentes" class="form-control" type="text"/>
+        <input id="buscadorRemitentes" class="form-control" type="text" autocomplete="off"/>
       </div>
     </div>
     {# plantillas_remitentes #}
@@ -26,9 +26,10 @@
         Departamento
       </div>
       <div class="card-body">
-        <h5 class="card-title">Administración Municipal</h5>
-        <h6 class="card-subtitle mb-3 text-muted">Juan Andrés Perez Gonzales</h6>
-        <a href="#" class="card-link">Eliminar</a>
+        <h5 class="card-title"></h5>
+        <h6 class="card-subtitle mb-3 text-muted"></h6>
+        <input id="id-depto" type="hidden" name="id_depto" value="" />
+        <a href="#" class="card-link delete-depto">Eliminar</a>
       </div>
     </div>
 
@@ -37,9 +38,10 @@
         Persona Natural
       </div>
       <div class="card-body">
-        <h5 class="card-title">Juan Andrés Perez Gonzales</h5>
-        <h6 class="card-subtitle mb-3 text-muted">Rut 12.345.678-9</h6>
-        <a href="#" class="card-link">Eliminar</a>
+        <h5 class="card-title"></h5>
+        <h6 class="card-subtitle mb-3 text-muted"></h6>
+        <input id="id-persona" type="hidden" name="id-persona" value="" />
+        <a href="#" class="card-link delete-persona">Eliminar</a>
       </div>
     </div>
 
@@ -153,8 +155,14 @@
     #data > div.row {
       margin-bottom: .5rem !important;
     }
+
     .twitter-typeahead {
       width: 100%;
+    }
+
+    .tt-suggestion:hover {
+        background-color: #007bff;
+        cursor: pointer;
     }
   </style>
 {% endblock %}
