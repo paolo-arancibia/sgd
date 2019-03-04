@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\JsonResponse;
-// use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class BandejaController extends Controller
 {
@@ -87,11 +87,25 @@ class BandejaController extends Controller
         );
     }
 
-    public function editarAction($id)
+    public function editarAction(Request $request, $id)
     {
         $tipos = $this->getTiposDocs();
         $derivarForm = $this->getDerivarForm();
         $nuevoForm = $this->getNuevoForm();
+
+        $derivarForm->handleRequest($request);
+        $nuevoForm->handleRequest($request);
+
+        if( $nuevoForm->isSubmitted() || $derivarForm->isSubmitted() )
+        {
+            $docNuevo = $nuevoForm->getData();
+            $derivarA = $derivarForm->getData();
+
+            print_r($docNuevo); exit();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($docNuevo);
+            //$em->flush();
+        }
 
         return $this->render(
             'BandejaBundle:Bandeja:editar.html.twig',
@@ -288,6 +302,7 @@ class BandejaController extends Controller
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Fecha Recepción',
                 'widget' => 'single_text',
+                'data' => new \DateTime(),
                 'required' => true,
             ])->add('ant', TextareaType::class, [
                 'attr' => ['class' => 'form-control', 'rows' => 4],
