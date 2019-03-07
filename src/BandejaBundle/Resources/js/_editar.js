@@ -48,35 +48,66 @@ $('#buscadorRemitentes').typeahead({
     }
 }).on('typeahead:select', function(ev, obj) {
     if( obj.tipo == 'pers' ) {
-	$('#template_personanueva').hide();
+	$('#template_personanueva')
+            .hide()
+            .find(':input[name^="persona"]').each( function() {
+                $(this).removeAttr('required');
+            });
+
         $('#template_depto').hide();
 
         $('#template_persona')
             .show()
             .find('h5.card-title').html(obj.nombre)
             .parent().find('h6.card-subtitle').html(obj.rut);
-        $('#id-persona').val(obj.id);
+
+        $('#remitente_id_persona').val(obj.id);
+        $('#remitente_id_depto').val('');
     } else if( obj.tipo == 'depto' ) {
-	$('#template_personanueva').hide();
+	$('#template_personanueva')
+	    .hide()
+            .find(':input[name^="persona"]').each( function() {
+                $(this).removeAttr('required');
+            });
+
         $('#template_persona').hide()
+
         $('#template_depto')
             .show()
             .find('h5.card-title').html(obj.descripcion)
-            .parent().find('h6.card-subtitle').html( obj.encargado);
-        $('#id-depto').val(obj.idDepartamento);
+            .parent().find('h6.card-subtitle').html(obj.encargado);
+
+        $('#remitente_id_persona').val('');
+        $('#remitente_id_depto').val(obj.idDepartamento);
     }
 }).focus();
 
 $('.delete-persona').click( function() {
     $('#template_persona').hide();
-    $('#template_personanueva').show();
+
+    $('#template_personanueva')
+        .show()
+        .find(':input[name^="persona"]').each( function() {
+            $(this).attr('required', 'required');
+        });
+
     $('#buscadorRemitentes').typeahead('val', '');
-    $('#id-persona').val('');
+
+    $('#remitente_id_depto').val('');
+    $('#remitente_id_persona').val('');
 });
 
 $('.delete-depto').click( function() {
     $('#template_depto').hide();
-    $('#template_personanueva').show();
+
+    $('#template_personanueva')
+        .show()
+        .find(':input[name^="persona"]').each( function() {
+            $(this).attr('required', 'required');
+        });
+
     $('#buscadorRemitentes').typeahead('val', '');
-    $('#id-depto').val('');
+
+    $('#remitente_id_depto').val('');
+    $('#remitente_id_persona').val('');
 });

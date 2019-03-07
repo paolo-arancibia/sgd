@@ -3,31 +3,26 @@ namespace BandejaBundle\Form;
 
 
 use BandejaBundle\Entity\Departamentos;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SearchType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class DerivarType extends AbstractType
 {
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
-        
-        $repository = $this->getDoctrine()->getRepository('BandejaBundle:Departamentos');
-
-        $query =  $repository->createQueryBuilder('depto')
-               ->orderBy('depto.descripcion', 'ASC')
-               ->getQuery();
-
-        $deptos = $query->getResults();
-
         $builder
-            ->add('originales', ChoiceType::class, [
-                'choices'=> $deptos,
-                'choices_as_values' => true,
+            ->add('originales', EntityType::class, [
+                'class' => 'BandejaBundle:Departamentos',
+                'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('depto')
+                        ->orderBy('depto.descripcion', 'ASC');
+                },
+                'choice_label' => 'descripcion',
                 'expanded' => false,
                 'multiple' => true,
                 'label_attr' => ['class' => 'form-label mt-1'],
@@ -35,18 +30,20 @@ class DerivarType extends AbstractType
                 'label' => 'Enviar Originales a',
                 'choice_value' => function (Departamentos $depto = null) {
                     return $depto ? $depto->getIdDepartamento() : '';
-                },
-                'choice_label' => function (Departamentos $depto = null) {
-                    return $depto ? $depto->getDescripcion() : '';
                 }
             ])->add('nota-original', TextareaType::class, [
                 'label' => 'Nota para originales',
                 'label_attr' => ['class' => 'form-label mt-2'],
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
             ])
-            ->add('copias', ChoiceType::class, [
-                'choices'=> $deptos,
-                'choices_as_values' => true,
+            ->add('copias', EntityType::class, [
+                'class' => 'BandejaBundle:Departamentos',
+                'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('depto')
+                        ->orderBy('depto.descripcion', 'ASC');
+                },
+                'choice_label' => 'descripcion',
                 'expanded' => false,
                 'multiple' => true,
                 'label_attr' => ['class' => 'form-label mt-1'],
@@ -55,13 +52,12 @@ class DerivarType extends AbstractType
                 'choice_value' => function (Departamentos $depto = null) {
                     return $depto ? $depto->getIdDepartamento() : '';
                 },
-                'choice_label' => function (Departamentos $depto = null) {
-                    return $depto ? $depto->getDescripcion() : '';
-                }
+                'required' => false,
             ])->add('nota-copias', TextareaType::class, [
                 'label' => 'Nota para copias',
                 'label_attr' => ['class' => 'form-label mt-2'],
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
             ])->add('adjuntos', FileType::class, [
                 'required' => false,
                 'multiple' => true,
@@ -69,14 +65,7 @@ class DerivarType extends AbstractType
                 'label_attr' => ['class' => 'form-label mt-2'],
                 'label' => 'Adjuntos',
             ])
-        ;
-    }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        // TODO: crear clase para BUSQUEDA
-        $resolver->setDefaults(array(
-            'data_class' => Departamentos::class,
-        ));
+        ;
     }
 }

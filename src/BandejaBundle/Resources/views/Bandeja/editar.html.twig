@@ -13,6 +13,9 @@
 
 {% block content %}
 {{ form_start(nuevoForm, {'attr': {'class': 'col', 'id': 'docForm'}}) }}
+   {{ form_widget(remitenteForm.id_depto) }}
+   {{ form_widget(remitenteForm.id_persona) }}
+
   <div id="data">
     <div class="row">
       <div class="col-4"><h5>Buscar Remitemte</h5></div>
@@ -28,7 +31,6 @@
       <div class="card-body">
         <h5 class="card-title"></h5>
         <h6 class="card-subtitle mb-3 text-muted"></h6>
-        <input id="id-depto" type="hidden" name="id_depto" value="" />
         <a href="#" class="card-link delete-depto">Eliminar</a>
       </div>
     </div>
@@ -40,7 +42,6 @@
       <div class="card-body">
         <h5 class="card-title"></h5>
         <h6 class="card-subtitle mb-3 text-muted"></h6>
-        <input id="id-persona" type="hidden" name="id-persona" value="" />
         <a href="#" class="card-link delete-persona">Eliminar</a>
       </div>
     </div>
@@ -51,32 +52,25 @@
       </div>
       <div class="card-body">
         <div class="form-group">
-          <label class="form-label" for="rut">Rut</label>
-          <input id="rut" class="form-control" type="text"/>
+	    {{ form_row(personaForm.rut) }}
         </div>
         <div class="form-group">
-          <label class="form-label" for="nombres">Nombres</label>
-          <input id="nombre" class="form-control" type="text"/>
+	    {{ form_row(personaForm.nombres) }}
         </div>
         <div class="form-group">
-          <label class="form-label" for="apellidopaterno">Apellido Paterno</label>
-          <input id="apellidopaterno" class="form-control" type="text"/>
+	    {{ form_row(personaForm.apellidopaterno) }}
         </div>
         <div class="form-group">
-          <label class="form-label" for="apellidomaterno">Apellido Materno</label>
-          <input id="apellidomaterno" class="form-control" type="text"/>
+	    {{ form_row(personaForm.apellidomaterno) }}
         </div>
         <div class="form-group">
-          <label class="form-label" for="direccion">Dirección Particular</label>
-          <input id="direccion" class="form-control" type="text"/>
+	    {{ form_row(personaForm.direccion) }}
         </div>
         <div class="form-group">
-          <label class="form-label" for="tel">Teléfono de contacto</label>
-          <input id="ter" class="form-control" type="tel"/>
+	    {{ form_row(personaForm.fono) }}
         </div>
         <div class="form-group">
-          <label class="form-label" for="rut">Email</label>
-          <input id="emal" class="form-control" type="email"/>
+	    {{ form_row(personaForm.email) }}
         </div>
       </div>
     </div>
