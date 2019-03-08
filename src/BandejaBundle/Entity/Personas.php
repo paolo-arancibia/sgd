@@ -52,6 +52,20 @@ class Personas
 
 
     /**
+     * Set rrut
+     *
+     * @param integer $rut
+     *
+     * @return Personas
+     */
+    public function setRut($rut)
+    {
+        $this->rut = $rut;
+
+        return $this;
+    }
+
+    /**
      * Get rut
      *
      * @return integer

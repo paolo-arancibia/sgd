@@ -31,7 +31,7 @@ class DerivarType extends AbstractType
                 'choice_value' => function (Departamentos $depto = null) {
                     return $depto ? $depto->getIdDepartamento() : '';
                 }
-            ])->add('nota-original', TextareaType::class, [
+            ])->add('nota_original', TextareaType::class, [
                 'label' => 'Nota para originales',
                 'label_attr' => ['class' => 'form-label mt-2'],
                 'attr' => ['class' => 'form-control'],
@@ -53,7 +53,7 @@ class DerivarType extends AbstractType
                     return $depto ? $depto->getIdDepartamento() : '';
                 },
                 'required' => false,
-            ])->add('nota-copias', TextareaType::class, [
+            ])->add('nota_copias', TextareaType::class, [
                 'label' => 'Nota para copias',
                 'label_attr' => ['class' => 'form-label mt-2'],
                 'attr' => ['class' => 'form-control'],

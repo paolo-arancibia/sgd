@@ -42,4 +42,70 @@ BandejaBundle\Entity\Personas:
             length: 255
             options:
                 fixed: false
+        nombre_calle:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        numdirec:
+            type: integer
+            nullable: false
+            length: 11
+            options:
+                fixed: false
+        referenciadir:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        nombre_comuna:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        fono:
+            type: int
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        fono_2:
+            type: int
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        email:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        fecha_nacimiento:
+            type: date
+            nullable: false
+            options:
+                fixed: false
+        sexo:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        unidad_v:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        fecha_reg:
+            type: datetime
+            nullable: false
+            options:
+                fixed: false
+
+
     lifecycleCallbacks: {  }

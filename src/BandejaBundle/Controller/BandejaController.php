@@ -5,6 +5,7 @@ namespace BandejaBundle\Controller;
 use BandejaBundle\Entity\Departamentos;
 use BandejaBundle\Entity\DepUsu;
 use BandejaBundle\Entity\Documentos;
+use BandejaBundle\Entity\Personas;
 use BandejaBundle\Entity\TiposDocumentos;
 use BandejaBundle\Form\BuscarType;
 use BandejaBundle\Form\DerivarType;
@@ -90,6 +91,8 @@ class BandejaController extends Controller
 
     public function editarAction(Request $request, $id)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $tipos = $this->getTiposDocs();
 
         $derivarForm = $this->createForm(DerivarType::class);
@@ -97,19 +100,62 @@ class BandejaController extends Controller
         $personaForm = $this->createForm(PersonaType::class);
         $remitenteForm = $this->createForm(RemitenteType::class);
 
+        // $nuevoForm es el principal
         $derivarForm->handleRequest($request);
         $nuevoForm->handleRequest($request);
         $personaForm->handleRequest($request);
         $remitenteForm->handleRequest($request);
 
-        if( $nuevoForm->isSubmitted() || $derivarForm->isSubmitted() )
+        if( $nuevoForm->isSubmitted() &&
+            $nuevoForm->isValid() )
         {
-            $docNuevoData = $nuevoForm->getData();
-            $derivarData = $derivarForm->getData();
+            $nuevoData = $nuevoForm->getData();
+            $derivarData = $derivarForm->getData(); //originales:ArrayCollection, notas_original:String, copias:ArrayCollection, notas_copias:String
+            $remitenteData = $remitenteForm->getData();
+            $personaData = $personaForm->getData();
 
-            //$em = $this->getDoctrine()->getManager();
-            //$em->persist($docNuevo);
-            //$em->flush();
+            if( $remitenteData['id_persona'] )
+            {
+                $persona = $this->getDoctrine()
+                         ->getRepository('BandejaBundle:Personas')
+                         ->find( $remitenteData['id_persona'] );
+            } elseif( $remitenteData['id_depto'] )
+            {
+                $departamento = $this->getDoctrine()
+                              ->getRepository('BandejaBundle:Departamentos')
+                              ->find( $remitenteData['id_depto'] );
+
+                $expr = new Comparison('encargado', '=', 1);
+
+                $criteria = new Criteria();
+                $criteria->where( $expr );
+
+                $encargados = $departamento->getDepUsus()->matching( $criteria );
+
+                $persona = $encargados->first()->getFkUsuario()->getFkPersona();
+
+            } else {
+                $persona = new Personas();
+
+                list($rut, $vrut) = explode('-', $personaData['rut']);
+
+                $persona->setRut( $rut );
+                $persona->setVrut( $vrut );
+                $persona->setNombres( $personaData['nombres'] );
+                $persona->setApellidoPaterno( $personaData['apellidopaterno'] );
+                $persona->setApellidoMaterno( $personaData['apellidomaterno'] );
+
+                $em->persist($persona);
+                $em->flush();
+
+            }
+
+            //$this->saveDocumento( $docNuevoData );
+
+            dump($persona);//die;
+
+            exit();
+            $em = $this->getDoctrine()->getManager();
         }
 
         return $this->render(

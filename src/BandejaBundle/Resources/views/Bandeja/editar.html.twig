@@ -12,17 +12,18 @@
 {% endblock %}
 
 {% block content %}
-{{ form_start(nuevoForm, {'attr': {'class': 'col', 'id': 'docForm'}}) }}
+{{ form_start(nuevoForm, {'attr': {'class': 'row', 'id': 'docForm'}}) }}
    {{ form_widget(remitenteForm.id_depto) }}
    {{ form_widget(remitenteForm.id_persona) }}
 
-  <div id="data">
+  <div id="data" class="col">
     <div class="row">
       <div class="col-4"><h5>Buscar Remitemte</h5></div>
       <div class="col">
         <input id="buscadorRemitentes" class="form-control" type="text" autocomplete="off"/>
       </div>
     </div>
+
     {# plantillas_remitentes #}
     <div id="template_depto" class="card mb-3" style="display:none;">
       <div class="card-header">
@@ -75,6 +76,7 @@
       </div>
     </div>
     {# fin plantillas_remitentes #}
+
     <div class="row">
       <div class="col-4"><h5>{{ form_label(nuevoForm.fkTipoDoc) }}</h5></div>
       <div class="col">
@@ -116,16 +118,20 @@
       </div>
     </div>
   </div>
-{{ form_end(nuevoForm) }}
+
   <div class="col">
     <div class="row">
       <div class="col">
         <h5>Derivar a</h5>
-        {{ form_start(derivarForm) }}
-        {{ form_end(derivarForm) }}
+        {{ form_row(derivarForm.originales) }}
+        {{ form_row(derivarForm.nota_original) }}
+        {{ form_row(derivarForm.copias) }}
+        {{ form_row(derivarForm.nota_copias) }}
+        {{ form_row(derivarForm.adjuntos) }}
       </div>
     </div>
   </div>
+{{ form_end(nuevoForm) }}
 {% endblock %}
 
 {% block stylesheets %}
