@@ -81,10 +81,10 @@ class Derivaciones
      *
      * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Departamentos")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="FK_ID_DEPTO", referencedColumnName="ID_DEPARTAMENTO")
+     *   @ORM\JoinColumn(name="FK_ID_DEPTOREM", referencedColumnName="ID_DEPARTAMENTO")
      * })
      */
-    private $fkDepto;
+    private $fkDeptorem;
 
     /**
      * @var \BandejaBundle\Entity\Usuarios
@@ -95,6 +95,16 @@ class Derivaciones
      * })
      */
     private $fkDestinatario;
+
+    /**
+     * @var \BandejaBundle\Entity\Departamentos
+     *
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Departamentos")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="FK_ID_DEPTODES", referencedColumnName="ID_DEPARTAMENTO")
+     * })
+     */
+    private $fkDeptodes;
 
 
 
@@ -277,27 +287,27 @@ class Derivaciones
     }
 
     /**
-     * Set fkDepto
+     * Set fkDeptorem
      *
      * @param \BandejaBundle\Entity\Departamentos $fkDepto
      *
      * @return Derivaciones
      */
-    public function setFkDepto(\BandejaBundle\Entity\Departamentos $fkDepto = null)
+    public function setFkDeptorem(\BandejaBundle\Entity\Departamentos $fkDepto = null)
     {
-        $this->fkDepto = $fkDepto;
+        $this->fkDeptorem = $fkDepto;
 
         return $this;
     }
 
     /**
-     * Get fkDepto
+     * Get fkDeptorem
      *
      * @return \BandejaBundle\Entity\Departamentos
      */
-    public function getFkDepto()
+    public function getFkDeptorem()
     {
-        return $this->fkDepto;
+        return $this->fkDeptorem;
     }
 
     /**
@@ -322,5 +332,29 @@ class Derivaciones
     public function getFkDestinatario()
     {
         return $this->fkDestinatario;
+    }
+
+    /**
+     * Set fkDeptodes
+     *
+     * @param \BandejaBundle\Entity\Departamentos $fkDepto
+     *
+     * @return Derivaciones
+     */
+    public function setFkDeptorem(\BandejaBundle\Entity\Departamentos $fkDepto = null)
+    {
+        $this->fkDeptodes = $fkDepto;
+
+        return $this;
+    }
+
+    /**
+     * Get fkDeptodes
+     *
+     * @return \BandejaBundle\Entity\Departamentos
+     */
+    public function getFkDeptodes()
+    {
+        return $this->fkDeptodes;
     }
 }

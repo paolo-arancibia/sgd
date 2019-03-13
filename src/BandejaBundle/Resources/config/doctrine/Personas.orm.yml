@@ -15,8 +15,6 @@ BandejaBundle\Entity\Personas:
             options:
                 unsigned: false
             id: true
-            generator:
-                strategy: IDENTITY
     fields:
         vrut:
             type: string
@@ -67,15 +65,15 @@ BandejaBundle\Entity\Personas:
             options:
                 fixed: false
         fono:
-            type: int
+            type: integer
             nullable: false
-            length: 255
+            length: 11
             options:
                 fixed: false
         fono_2:
-            type: int
+            type: integer
             nullable: false
-            length: 255
+            length: 11
             options:
                 fixed: false
         email:
@@ -106,6 +104,4 @@ BandejaBundle\Entity\Personas:
             nullable: false
             options:
                 fixed: false
-
-
     lifecycleCallbacks: {  }

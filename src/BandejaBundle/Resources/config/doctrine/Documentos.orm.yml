@@ -93,7 +93,7 @@ BandejaBundle\Entity\Documentos:
                     referencedColumnName: ID_USUARIO
             orphanRemoval: false
         fkRutPersona:
-            targetEntity: Persona
+            targetEntity: Personas
             cascade: {  }
             fetch: LAZY
             mappedBy: null

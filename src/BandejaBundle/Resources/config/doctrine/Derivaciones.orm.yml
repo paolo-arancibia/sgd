@@ -5,9 +5,12 @@ BandejaBundle\Entity\Derivaciones:
         FK_ID_DOC:
             columns:
                 - FK_ID_DOC
-        FK_ID_DEPTO:
+        FK_ID_DEPTOREM:
             columns:
-                - FK_ID_DEPTO
+                - FK_ID_DEPTOREM
+        FK_ID_DEPTODES:
+            columns:
+                - FK_ID_DEPTODES
         FK_ID_REMITENTE:
             columns:
                 - FK_ID_REMITENTE
@@ -71,14 +74,14 @@ BandejaBundle\Entity\Derivaciones:
                 FK_ID_REMITENTE:
                     referencedColumnName: ID_USUARIO
             orphanRemoval: false
-        fkDepto:
+        fkDeptorem:
             targetEntity: Departamentos
             cascade: {  }
             fetch: LAZY
             mappedBy: null
             inversedBy: null
             joinColumns:
-                FK_ID_DEPTO:
+                FK_ID_DEPTOREM:
                     referencedColumnName: ID_DEPARTAMENTO
             orphanRemoval: false
         fkDestinatario:
@@ -90,5 +93,15 @@ BandejaBundle\Entity\Derivaciones:
             joinColumns:
                 FK_ID_DESTINATARIO:
                     referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+        fkDeptodes:
+            targetEntity: Departamentos
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_DEPTODES:
+                    referencedColumnName: ID_DEPARTAMENTO
             orphanRemoval: false
     lifecycleCallbacks: {  }
