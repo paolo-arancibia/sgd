@@ -1,0 +1,56 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}SGD - @usuario{% endblock %}</title>
+    {% block stylesheets %}
+      {% stylesheets
+        '../vendor/twbs/bootstrap/dist/css/bootstrap.min.css'
+        filter='cssrewrite'
+        output='css/bootstrap.min.css'
+        combine=true %}
+          <link rel="stylesheet" href="{{ asset_url }}" />
+      {% endstylesheets %}
+
+      {% stylesheets
+        '../vendor/components/font-awesome/css/fontawesome-all.min.css'
+        filter='cssrewrite'
+        output='css/font-awesome.css'
+        combine=true %}
+          <link rel="stylesheet" href="{{ asset_url }}" />
+      {% endstylesheets %}
+    {% endblock %}
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('ico.ico') }}" />
+  </head>
+  <body>
+     <!-- Header navbar -->
+     <nav id="" class="navbar">
+       <a class="navbar-brand" href="{{ url('bandeja_homepage') }}">SGD</a>
+     </nav>
+
+      <!-- Content  -->
+    <div id="content" class="container">
+      {% block page_title %}{% endblock %}
+
+      {% block body %}{% endblock %}
+    </div>
+
+
+    {% block javascripts %}
+      {% javascripts
+        '../vendor/components/jquery/jquery.min.js'
+        output='js/jquery.min.js'
+        combine=true %}
+        <script src="{{ asset_url }}"></script>
+      {% endjavascripts %}
+
+      {% javascripts
+        '../vendor/twbs/bootstrap/dist/js/bootstrap.min.js'
+        output='js/bootstrap.min.js'
+        combine=true %}
+          <script src="{{ asset_url }}"></script>
+      {% endjavascripts %}
+    {% endblock %}
+
+  </body>
+</html>

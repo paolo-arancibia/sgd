@@ -1,0 +1,29 @@
+{% extends 'restricted.html.twig' %}
+
+{% block page_title %}
+<h2 class="w-50 mx-auto mb-3">Acceso</h2>
+{% endblock %}
+
+{% block body %}
+
+<div class="w-50 mx-auto">
+  {{ form_start(loginForm) }}
+    <div class="form-group row">
+      {{ form_label(loginForm.username, 'Usuario', {'label_attr': {'class': 'col-sm-2 col-form-label'}}) }}
+      <div class="col">
+        {{ form_widget(loginForm.username, {'attr': {'class': 'form-control'}}) }}
+      </div>
+    </div>
+    <div class="form-group row">
+      {{ form_label(loginForm.password, 'Contraseña', {'label_attr': {'class': 'col-sm-2 col-form-label'}}) }}
+      <div class="col">
+        {{ form_widget(loginForm.password, {'attr': {'class': 'form-control'}}) }}
+      </div>
+    </div>
+    <div class="form-group row">
+        <button type="submit" class="btn btn-success col">Ingresar</button>
+    </div>
+  {{ form_end(loginForm) }}
+</div>
+
+{% endblock %}

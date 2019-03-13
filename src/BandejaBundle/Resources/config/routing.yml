@@ -3,6 +3,9 @@ bandeja_homepage:
     defaults: { _controller: BandejaBundle:Bandeja:index, page: 1 }
     requirements:
         page: '\d+'
+login_access:
+    path:     /login
+    defaults: { _controller:BandejaBundle:Access:login }
 
 porrecibir_bandeja:
     path:     /porrecibir/{page}
