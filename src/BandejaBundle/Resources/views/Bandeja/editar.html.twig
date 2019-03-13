@@ -65,10 +65,41 @@
 	    {{ form_row(personaForm.apellidomaterno) }}
         </div>
         <div class="form-group">
-	    {{ form_row(personaForm.direccion) }}
+	    {{ form_row(personaForm.fecha_nacimiento) }}
+        </div>
+        <div class="form-group">
+	    {{ form_row(personaForm.sexo) }}
+        </div>
+        <div class="form-row">
+          {{ form_label(personaForm.nombre_calle) }}
+        </div>
+
+        <div class="form-group form-row">
+          <div class="col">
+            {{ form_widget(personaForm.nombre_calle) }}
+          </div>
+
+          <div class="col-4">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">#</div>
+              </div>
+
+              {{ form_widget(personaForm.numdirec) }}
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+	    {{ form_row(personaForm.nombre_comuna) }}
+        </div>
+        <div class="form-group">
+	    {{ form_row(personaForm.referenciadir) }}
         </div>
         <div class="form-group">
 	    {{ form_row(personaForm.fono) }}
+        </div>
+        <div class="form-group">
+	    {{ form_row(personaForm.fono_2) }}
         </div>
         <div class="form-group">
 	    {{ form_row(personaForm.email) }}

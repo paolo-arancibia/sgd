@@ -145,17 +145,50 @@ class BandejaController extends Controller
                 $persona->setApellidoPaterno( $personaData['apellidopaterno'] );
                 $persona->setApellidoMaterno( $personaData['apellidomaterno'] );
 
+                $persona->setNombreCalle( $personaData['nombre_calle'] );
+                $persona->setNumdirec( $personaData['numdirec'] );
+                $persona->setReferenciadir( $personaData['referenciadir'] );
+                $persona->setNombreComuna( $personaData['nombre_comuna'] );
+
+                $persona->setFono( $personaData['fono'] );
+                $persona->setFono2( $personaData['fono_2'] );
+                $persona->setEmail( $personaData['email'] );
+
+                $persona->setFechaNacimiento( $personaData['fecha_nacimiento'] );
+                $persona->setSexo( $personaData['sexo'] );
+
+                $persona->setUnidadV('');
+                $persona->setFechaReg( new \DateTime() );
+
                 $em->persist($persona);
                 $em->flush();
-
             }
 
-            //$this->saveDocumento( $docNuevoData );
+            $documento = new Documentos();
 
-            dump($persona);//die;
+            $documento->setFkTipoDoc( $nuevoData['fkTipoDoc'] );
+            $documento->setNroExpediente( $nuevoData['nroExpediente'] );
+            $documento->setFechaDoc( $nuevoData['fechaDoc'] );
+            $documento->setAnt( $nuevoData['ant'] );
+            $documento->setMat( $nuevoData['mat'] );
+            $documento->setExt( $nuevoData['ext'] );
+            $documento->setEstado(1); //1=NORMAL,2=ARCHIVADO
+            $documento->setFkRutPersona( $persona );
+            //$documento->setFkUsuario( $SESSION[''] )
 
-            exit();
-            $em = $this->getDoctrine()->getManager();
+            $em->persist($documento);
+            $em->flush();
+
+            if( $request->get('guardar') === 'derivar' )
+            {
+                // id_usuario SESION
+                // id_usuario DEP_USU
+                //
+                dump('derivar de SESION a DEP_USU');
+            } else
+            {
+                dump('derivar de SESION a SESSION');
+            }
         }
 
         return $this->render(
