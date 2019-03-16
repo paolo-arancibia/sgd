@@ -1,11 +1,10 @@
 bandeja_homepage:
-    path:     //{page}
-    defaults: { _controller: BandejaBundle:Bandeja:index, page: 1 }
-    requirements:
-        page: '\d+'
+    path:     //
+    defaults: { _controller: BandejaBundle:Bandeja:index }
+
 login_access:
     path:     /login
-    defaults: { _controller:BandejaBundle:Access:login }
+    defaults: { _controller: BandejaBundle:Access:login }
 
 porrecibir_bandeja:
     path:     /porrecibir/{page}

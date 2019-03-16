@@ -1,11 +1,18 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
 security:
+    encoders:
+        BandejaBundle\Entity\Usuarios:
+            algorithm: bcrypt
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        in_memory:
-            memory: ~
+        #in_memory:
+        #    memory: ~
+        our_db_provider:
+            entity:
+                class: BandejaBundle:Usuarios
+                property: nombre
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -17,10 +24,24 @@ security:
             anonymous: ~
             # activate different ways to authenticate
 
+            pattern: ^/
+
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+            http_basic: ~
+
+            provider: our_db_provider
 
             # https://symfony.com/doc/current/security/form_login_setup.html
             form_login:
+                default_target_path: recibidos_bandeja
                 login_path: login_access
                 check_path: login_access
+
+    access_control:
+        - { path: ^/recibidos, roles: ROLE_ACCESS }
+        - { path: ^/porrecibir, roles: ROLE_ACCESS }
+        - { path: ^/despachados, roles: ROLE_ACCESS }
+        - { path: ^/ver, roles: ROLE_ACCESS }
+        - { path: ^/editar, roles: ROLE_ACCESS }
+        - { path: ^/personas, roles: ROLE_ACCESS }
+        - { path: ^/departamentos, roles: ROLE_ACCESS }

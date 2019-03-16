@@ -28,7 +28,7 @@ class BandejaController extends Controller
 {
     public function indexAction()
     {
-        return $this->forward('BandejaBundle:Bandeja:recibidos');
+        return $this->redirectToRoute('recibidos_bandeja');
     }
 
     public function recibidosAction($page = 0)

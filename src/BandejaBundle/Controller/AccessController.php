@@ -12,16 +12,13 @@ class AccessController extends Controller
     public function loginAction()
     {
         $authenticationUtils = $this->get('security.authentication_utils');
-
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $loginForm = $this->createForm(LoginType::class);
-
+        //dump($authenticationUtils); die;
         return $this->render(
             'BandejaBundle:Access:login.twig.html',
             array(
-                'loginForm' => $loginForm->createView(),
                 'last_username' => $lastUsername,
                 'error' => $error,
             )
