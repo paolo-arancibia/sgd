@@ -2,7 +2,9 @@
 
 namespace BandejaBundle\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Adjuntos
@@ -12,6 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Adjuntos
 {
+    const UPLOADED_FILE_DIRECTORY = '../src/BandejaBundle/Resources/uploads';
+    const ABSOLUTE_FILE_DIRECTORY = '/var/www/html/sgd/src/BandejaBundle/Resources/uploads';
+
     /**
      * @var integer
      *
@@ -36,21 +41,21 @@ class Adjuntos
     private $tipo;
 
     /**
-     * @var integer
+     * @var \DateTime
      *
      * @ORM\Column(name="FECHA_C", type="integer", nullable=true)
      */
     private $fechaC;
 
     /**
-     * @var integer
+     * @var \DateTime
      *
      * @ORM\Column(name="FECHA_M", type="integer", nullable=true)
      */
     private $fechaM;
 
     /**
-     * @var integer
+     * @var \DateTime
      *
      * @ORM\Column(name="FECHA_E", type="integer", nullable=true)
      */
@@ -77,6 +82,7 @@ class Adjuntos
     private $fkUsuario;
 
 
+    private $file;
 
     /**
      * Get idAdjunto
@@ -139,7 +145,7 @@ class Adjuntos
     /**
      * Set fechaC
      *
-     * @param integer $fechaC
+     * @param \DateTime $fechaC
      *
      * @return Adjuntos
      */
@@ -153,7 +159,7 @@ class Adjuntos
     /**
      * Get fechaC
      *
-     * @return integer
+     * @return \DateTime
      */
     public function getFechaC()
     {
@@ -163,7 +169,7 @@ class Adjuntos
     /**
      * Set fechaM
      *
-     * @param integer $fechaM
+     * @param \DateTime $fechaM
      *
      * @return Adjuntos
      */
@@ -177,7 +183,7 @@ class Adjuntos
     /**
      * Get fechaM
      *
-     * @return integer
+     * @return \DateTime
      */
     public function getFechaM()
     {
@@ -187,7 +193,7 @@ class Adjuntos
     /**
      * Set fechaE
      *
-     * @param integer $fechaE
+     * @param \DateTime $fechaE
      *
      * @return Adjuntos
      */
@@ -201,7 +207,7 @@ class Adjuntos
     /**
      * Get fechaE
      *
-     * @return integer
+     * @return \DateTime
      */
     public function getFechaE()
     {
@@ -211,11 +217,11 @@ class Adjuntos
     /**
      * Set fkDoc
      *
-     * @param \BandejaBundle\Entity\Departamentos $fkDoc
+     * @param \BandejaBundle\Entity\Documentos $fkDoc
      *
      * @return Adjuntos
      */
-    public function setFkDoc(\BandejaBundle\Entity\Departamentos $fkDoc = null)
+    public function setFkDoc(\BandejaBundle\Entity\Documentos $fkDoc = null)
     {
         $this->fkDoc = $fkDoc;
 
@@ -225,7 +231,7 @@ class Adjuntos
     /**
      * Get fkDoc
      *
-     * @return \BandejaBundle\Entity\Departamentos
+     * @return \BandejaBundle\Entity\Documentos
      */
     public function getFkDoc()
     {
@@ -254,5 +260,79 @@ class Adjuntos
     public function getFkUsuario()
     {
         return $this->fkUsuario;
+    }
+
+    public function getAbsolutePath()
+    {
+        return null === $this->url
+                    ? null
+                    : $this->getUploadRootDir() . DIRECTORY_SEPARATOR . $this->url;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->url
+                    ? null
+                    : $this->getUploadDir() . DIRECTORY_SEPARATOR . $this->url;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return self::ABSOLUTE_FILE_DIRECTORY;
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return self::UPLOADED_FILE_DIRECTORY;
+    }
+
+    /**
+     * Set file
+     *
+     * @param UploadedFile $file
+     *
+     * @return Adjuntos
+     */
+    public function setFile( UploadedFile $file )
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * Get file
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function upload()
+    {
+        // the file property can be empty if the field is not required
+        if (null === $this->getFile()) {
+            return;
+        }
+
+        // use the original file name here but you should
+        // sanitize it at least to avoid any security issues
+
+        // move takes the target directory and then the
+        // target filename to move to
+        $this->getFile()->move(
+            $this->getUploadRootDir(),
+            $this->getFile()->getClientOriginalName()
+        );
+
+        // set the path property to the filename where you've saved the file
+        $this->url = $this->getFile()->getClientOriginalName();
+
+        // clean up the file property as you won't need it anymore
+        $this->file = null;
     }
 }

@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>{% block title %}SGD - @usuario{% endblock %}</title>
+    <title>{% block title %}SGD {% if app.user %}- @{{ app.user.username }}{% endif %} {% endblock %}</title>
     {% block stylesheets %}
       {% stylesheets
         '../vendor/twbs/bootstrap/dist/css/bootstrap.min.css'
@@ -10,7 +10,7 @@
         output='css/bootstrap.min.css'
         combine=true %}
           <link rel="stylesheet" href="{{ asset_url }}" />
-      {% endstylesheets %} 
+      {% endstylesheets %}
 
       {% stylesheets
         '../vendor/components/font-awesome/css/fontawesome-all.min.css'
@@ -62,7 +62,7 @@
 
             <div class="ml-5">{% block page_title %}{% endblock %}</div>
 
-            <span class="ml-auto">@username</span>
+            <span class="ml-auto">{% if app.user %}@{{ app.user.username }}{% endif %}</span>
           </div>
         </nav>
 
@@ -70,6 +70,18 @@
       </div>
 
     </div>
+
+    {# read and display several types of flash messages #}
+    {% for label, messages in app.session.flashBag.all %}
+      {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show fixed-top">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endfor %}
 
     {% block javascripts %}
       {% javascripts
@@ -105,13 +117,17 @@
               if(booRadio == this) {
                 this.checked = false;
                 booRadio = null;
-                
+
               } else {
                 booRadio = this;
               }
             }
           });
-        })
+        });
+
+        setTimeout( function(){
+          $('.alert').alert('close');
+        }, 5000);
       });
     </script>
   </body>

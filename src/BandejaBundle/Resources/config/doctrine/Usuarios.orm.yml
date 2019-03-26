@@ -53,4 +53,9 @@ BandejaBundle\Entity\Usuarios:
                 FK_ID_PERSONA:
                     referencedColumnName: rut
             orphanRemoval: false
+    oneToMany:
+        depUsus:
+            targetEntity: DepUsu
+            mappedBy: fkUsuario
+            fetch: LAZY
     lifecycleCallbacks: {  }

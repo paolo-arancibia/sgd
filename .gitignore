@@ -2,3 +2,4 @@ app/cache/
 app/logs/
 *.*~
 *.*#
+src/BandejaBundle/Resources/uploads/

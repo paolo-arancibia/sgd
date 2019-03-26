@@ -15,7 +15,6 @@ class AccessController extends Controller
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        //dump($authenticationUtils); die;
         return $this->render(
             'BandejaBundle:Access:login.twig.html',
             array(

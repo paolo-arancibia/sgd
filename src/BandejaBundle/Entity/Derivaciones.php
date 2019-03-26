@@ -341,7 +341,7 @@ class Derivaciones
      *
      * @return Derivaciones
      */
-    public function setFkDeptorem(\BandejaBundle\Entity\Departamentos $fkDepto = null)
+    public function setFkDeptodes(\BandejaBundle\Entity\Departamentos $fkDepto = null)
     {
         $this->fkDeptodes = $fkDepto;
 

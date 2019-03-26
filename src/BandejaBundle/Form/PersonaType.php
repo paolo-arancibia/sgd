@@ -66,8 +66,8 @@ class PersonaType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Email',
             ])->add('sexo', ChoiceType::class, [
-                'choices' => ['masculino' => 'Masculino', 'femenino' => 'Femenino'],
-                //'choices_as_values' => true,
+                'choices' => ['Masculino' => 'masculino', 'Femenino' => 'femenino'],
+                'choices_as_values' => true,
                 'expanded' => false,
                 'multiple' => false,
                 'attr' => ['class' => 'form-control'],

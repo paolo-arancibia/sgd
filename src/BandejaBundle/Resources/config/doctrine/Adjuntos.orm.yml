@@ -33,33 +33,27 @@ BandejaBundle\Entity\Adjuntos:
                 comment: '1=PNG, 2=JPEG, 3=DOCX,4=XLSX, 5=PDF'
             column: TIPO
         fechaC:
-            type: integer
+            type: datetime
             nullable: true
-            options:
-                unsigned: false
             column: FECHA_C
         fechaM:
-            type: integer
+            type: datetime
             nullable: true
-            options:
-                unsigned: false
             column: FECHA_M
         fechaE:
-            type: integer
+            type: datetime
             nullable: true
-            options:
-                unsigned: false
             column: FECHA_E
     manyToOne:
         fkDoc:
-            targetEntity: Departamentos
+            targetEntity: Documentos
             cascade: {  }
             fetch: LAZY
             mappedBy: null
             inversedBy: null
             joinColumns:
                 FK_ID_DOC:
-                    referencedColumnName: ID_DEPARTAMENTO
+                    referencedColumnName: ID_DOC
             orphanRemoval: false
         fkUsuario:
             targetEntity: Usuarios

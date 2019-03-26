@@ -79,7 +79,7 @@ class Departamentos
      */
     public function __contruct()
     {
-        $this->$depUsus = new Collection();
+        $this->depUsus = new Collection();
     }
 
     /**

@@ -36,8 +36,7 @@ class DerivarType extends AbstractType
                 'label_attr' => ['class' => 'form-label mt-2'],
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
-            ])
-            ->add('copias', EntityType::class, [
+            ])->add('copias', EntityType::class, [
                 'class' => 'BandejaBundle:Departamentos',
                 'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('depto')
@@ -61,8 +60,8 @@ class DerivarType extends AbstractType
             ])->add('adjuntos', FileType::class, [
                 'required' => false,
                 'multiple' => true,
-                'attr' => ['class' => 'adjuntos'],
-                'label_attr' => ['class' => 'form-label mt-2'],
+                'attr' => [ 'class' => 'adjuntos' ],
+                'label_attr' => [ 'class' => 'form-label mt-2', 'multiple' => 'multiple' ],
                 'label' => 'Adjuntos',
             ])
 

@@ -34,6 +34,8 @@ class Usuarios implements UserInterface, \Serializable
      * @var string
      *
      * @ORM\Column(name="CONTRASENA", type="string", length=255, nullable=true)
+     * para crear contraseñas utilice el comando:
+     *  $ php -r ' echo password_hash("<su_contraseña>", PASSWORD_DEFAULT)."\n";'
      */
     private $contrasena;
 
@@ -80,6 +82,7 @@ class Usuarios implements UserInterface, \Serializable
     public function __construct()
     {
         $this->idActive = true;
+        $this->depUsus = new Collection();
     }
 
     /**
@@ -261,6 +264,54 @@ class Usuarios implements UserInterface, \Serializable
     public function getPassword()
     {
         return $this->contrasena;
+    }
+
+    /**
+     * Get depUsus
+     *
+     * @return \Collection
+     */
+    public function getDepUsus()
+    {
+        return $this->depUsus;
+    }
+
+    /**
+     * Add a DepUsu to depUsus
+     *
+     * @param \DepUsu $depUsu
+     *
+     * @return Usuarios
+     */
+    public function addDepUsus($depUsu)
+    {
+        if( $this->depUsus->contains($depUsu) )
+        {
+            return;
+        }
+
+        $this->depUsus->add($depUsu);
+
+        return $this;
+    }
+
+    /**
+     * Remove a DepUsu to depUsus
+     *
+     * @param \DepUsu $depUsu
+     *
+     * @return Usuarios
+     */
+    public function removeDepUsus($depUsu)
+    {
+        if( ! $this->depUsus->contains($depUsu) )
+        {
+            return;
+        }
+
+        $this->depUsus->removeElement($depUsu);
+
+        return $this;
     }
 
     /**

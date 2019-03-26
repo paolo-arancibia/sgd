@@ -12,9 +12,14 @@
 {% endblock %}
 
 {% block content %}
-{{ form_start(nuevoForm, {'attr': {'class': 'row', 'id': 'docForm'}}) }}
-   {{ form_widget(remitenteForm.id_depto) }}
-   {{ form_widget(remitenteForm.id_persona) }}
+{{ form_start(nuevoForm, {'attr': {'class': 'row', 'id': 'docForm', 'enctype': 'multipart/form-data'}}) }}
+  {{ form_widget(remitenteForm.id_depto) }}
+  {{ form_widget(remitenteForm.id_persona) }}
+
+  {{ form_row(nuevoForm._token) }}
+  {{ form_row(derivarForm._token) }}
+  {{ form_row(personaForm._token) }}
+  {{ form_row(remitenteForm._token) }}
 
   <div id="data" class="col">
     <div class="row">
