@@ -1,15 +1,38 @@
+{% if not documentos %}
+<div class="card">
+  <div class="card-body text-center">
+    <h5>No hay Documentos que leer. :(</h5>
+  </div>
+</div>
+{% else %}
 <table id="doc-table" class="table">
   <thead>
     <tr>
       <th scope="col"><input id="selectAll" class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
-      <th scope="col">IDDOC</th>
+      <th scope="col">Id Documento</th>
       <th scope="col">Fecha Recepción</th>
       <th scope="col">Origen</th>
-      <th scope="col">DOC</th>
-      <th scope="col">Tipo</th>
+      <th scope="col">Tipo de Documento</th>
+      <th scope="col">Tipo de Envío</th>
     </tr>
   </thead>
   <tbody>
+{% for key, doc in documentos %}
+    <tr class="{% if doc.estado == 1 or doc.estado == 0 %}doc-pendiente{% endif %}" data-docid="{{ doc.idDoc }}">
+      <th scope="row"><input class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
+      <td>
+        {%if derivaciones[key+1].fechaC %}
+        <i class="fas fa-circle text-danger" >&nbsp;</i>
+        {% endif %}
+        {{ doc.idDoc }}
+      </td>
+      <td>{{ derivaciones[key+1].fechaC | date('d/m/Y') }}</td>
+      <td>{{ derivaciones[key+1].fkDeptorem.descripcion }}  </td>
+      <td>{{ doc.fkTipoDoc.descripcion }} ({{ doc.fkTipoDoc.abrev }})</td>
+      <td>{% if derivaciones[key+1].tipo == 1 %}Original{% else %}Copia{% endif %}</td>
+    </tr>
+{% endfor %}
+{#
     <tr class="doc-pendiente" data-docid="1">
       <th scope="row"><input class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
       <td><i class="fas fa-circle text-danger" >&nbsp;</i>1</td>
@@ -98,6 +121,8 @@
       <td>CAR</td>
       <td>Copia</td>
     </tr>
-  </tbody>
+#}
   </tbody>
 </table>
+
+{% endif %}

@@ -2,41 +2,49 @@
 
 {% block page_title %}
 <h2 class="">
-  DOCID N° 1234567
+  ID-DOC N° {{ documento.idDoc }}
   <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
 </h2>
 {% include 'BandejaBundle:Bandeja:nota.html.twig' %}
 {% endblock %}
 
 {% block filters %}
-<div class=""> 
-  <button type="button" class="btn btn-success">Guardar y Derivar</button>
-  <button type="button" class="btn btn-primary">Guardar</button>
+{# 0=ARCHIVADO, 1=NORMAL, 2=PORRECIBIR #}
+<div class="">
+  {% if documento.estado != 0 %}
+  <button type="button" class="btn btn-primary">Guardar y Derivar</button>
+  <button type="button" class="btn btn-secondary">Solo Guardar</button>
+  {% endif %}
+
+  {% if documento.estado == 1 %}
   <button type="button" class="btn btn-danger">Archivar</button>
+  {% elseif documento.estado == 0 %}
   <button type="button" class="btn btn-warning">Desarchivar</button>
+  {% elseif documento.estado == 2 %}
   <button type="button" class="btn btn-success">Recibido</button>
+  {% endif %}
 </div>
 {% endblock %}
 
 
 {% block content %}
-  <div id="data" class="col">
-    
+<div id="data" class="row">
+  <div class="col">
     <div class="row">
       <div class="col-5"><h5>Remitente</h5></div>
-      <div class="col"><b>Administración Municipal</b></div>
+      <div class="col"><b>{{ documento.fkRutPersona.rut }}-{{ documento.fkRutPersona.vrut }} {{ documento.fkRutPersona.nombres }} {{ documento.fkRutPersona.apellidopaterno }} {{ documento.fkRutPersona.apellidomaterno }}</b></div>
     </div>
     <div class="row">
       <div class="col-5"><h5>Fecha de Envío</h5></div>
-      <div class="col">01/01/1970</div>
+      <div class="col">{{ documento.fechaDoc | date('d/m/Y') }}</div>
     </div>
     <div class="row">
       <div class="col-5"><h5>Tipo Documento</h5></div>
-      <div class="col">CAR - Carta</div>
+      <div class="col">{{ documento.fkTipoDoc.descripcion }}</div>
     </div>
     <div class="row">
       <div class="col-5"><h5>Número Expediente</h5></div>
-      <div class="col"><b>1234</b></div>
+      <div class="col">{% if not documento.nroExpediente %}Sin n° de expediente{% else %}<b>{{ documento.nroExpediente }}</b>{% endif %}</div>
     </div>
     <div class="row">
       <div class="col-5"><h5>Fecha Recepción</h5></div>
@@ -45,23 +53,23 @@
     <div class="row">
       <div class="col">
         <h5>Antecedentes</h5>
-        <p class="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas mattis nulla eu ipsum iaculis hendrerit. Maecenas eget dolor dictum, ornare ex eu, eleifend purus. Ut pellentesque est nec dui tincidunt, nec sagittis libero pharetra. Suspendisse leo turpis, dignissim nec vestibulum a, ullamcorper sit amet dolor. Etiam egestas, orci at interdum blandit, dui ex aliquet ipsum, quis pellentesque nunc orci ac nunc. Phasellus sed suscipit lectus, ac tincidunt purus. In ultricies dolor pulvinar magna volutpat, nec hendrerit nulla tristique. Suspendisse sit amet leo arcu. Ut nec mi ipsum. Cras quis risus ut mauris lacinia tristique a quis ligula. Phasellus interdum nunc nec enim rhoncus ultrices. Sed imperdiet venenatis volutpat. Phasellus ipsum nisi, posuere quis sodales blandit, rhoncus eget turpis. </p>
+        <p class="text-justify">{% if not documento.ant %}Sin antecedentes{% else %}{{ documento.ant }}{% endif %}</p>
       </div>
     </div>
     <div class="row">
       <div class="col">
         <h5>Materia</h5>
-        <p class="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas mattis nulla eu ipsum iaculis hendrerit. Maecenas eget dolor dictum, ornare ex eu, eleifend purus. Ut pellentesque est nec dui tincidunt, nec sagittis libero pharetra. Suspendisse leo turpis, dignissim nec vestibulum a, ullamcorper sit amet dolor. Etiam egestas, orci at interdum blandit, dui ex aliquet ipsum, quis pellentesque nunc orci ac nunc. Phasellus sed suscipit lectus, ac tincidunt purus. In ultricies dolor pulvinar magna volutpat, nec hendrerit nulla tristique. Suspendisse sit amet leo arcu. Ut nec mi ipsum. Cras quis risus ut mauris lacinia tristique a quis ligula. Phasellus interdum nunc nec enim rhoncus ultrices. Sed imperdiet venenatis volutpat. Phasellus ipsum nisi, posuere quis sodales blandit, rhoncus eget turpis. </p>
+        <p class="text-justify">{% if not documento.mat %}Sin materia{% else %}{{ documento.mat }}{% endif %}</p>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <h5>Expediente</h5>
-        <p class="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas mattis nulla eu ipsum iaculis hendrerit. Maecenas eget dolor dictum, ornare ex eu, eleifend purus. Ut pellentesque est nec dui tincidunt, nec sagittis libero pharetra. Suspendisse leo turpis, dignissim nec vestibulum a, ullamcorper sit amet dolor. Etiam egestas, orci at interdum blandit, dui ex aliquet ipsum, quis pellentesque nunc orci ac nunc. Phasellus sed suscipit lectus, ac tincidunt purus. In ultricies dolor pulvinar magna volutpat, nec hendrerit nulla tristique. Suspendisse sit amet leo arcu. Ut nec mi ipsum. Cras quis risus ut mauris lacinia tristique a quis ligula. Phasellus interdum nunc nec enim rhoncus ultrices. Sed imperdiet venenatis volutpat. Phasellus ipsum nisi, posuere quis sodales blandit, rhoncus eget turpis. </p>
+        <h5>Extracto</h5>
+        <p class="text-justify">{% if not documento.ext %}Sin extracto{% else %}{{ documento.ext }}{% endif %}</p>
       </div>
     </div>
-
   </div>
+
   <div class="col">
     <div class="row">
       <div class="col">
@@ -71,6 +79,7 @@
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
 
 {% block stylesheets %}
