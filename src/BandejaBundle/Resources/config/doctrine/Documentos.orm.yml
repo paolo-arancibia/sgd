@@ -1,5 +1,6 @@
 BandejaBundle\Entity\Documentos:
     type: entity
+    repositoryClass: BandejaBundle\Repository\DocumentosRepository
     table: DOCUMENTOS
     indexes:
         FK_ID_USUARIO:
@@ -102,4 +103,9 @@ BandejaBundle\Entity\Documentos:
                 FK_RUT_PERSONA:
                     referencedColumnName: rut
             orphanRemoval: false
+    oneToMany:
+        derivaciones:
+            targetEntity: Derivaciones
+            mappedBy: fkDoc
+            fetch: LAZY
     lifecycleCallbacks: {  }

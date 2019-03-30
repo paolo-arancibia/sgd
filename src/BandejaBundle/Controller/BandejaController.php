@@ -37,20 +37,28 @@ class BandejaController extends Controller
     {
         $loginUser = $this->getUser();
 
+        $expr = new Comparison('encargado', '=', 1);
+        $criteria = new Criteria();
+        $criteria->where( $expr );
+
+        $dpto = $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto();
+
         $searchForm = $this->createForm(BuscarType::class);
         $derivarForm = $this->createForm(DerivarType::class);
 
-        $repository = $this->getDoctrine()->getRepository('BandejaBundle:Documentos');
 
-        $query = $repository->createQueryBuilder('docs')
-               //->where('docs. like :STR')
-               ->orderBy('docs.idDoc', 'ASC')
-               ->setFirstResult( 0 )
-               ->setMaxResults( 25 )
-               //->setParameter(':STR', '%'.$str.'%')
-               ->getQuery();
+        $results =  $this->getDoctrine()
+                    ->getManager()
+                    ->getRepository('BandejaBundle:Documentos')
+                    ->findAllRecibidosByDepto( $dpto );
 
-        $documentos =  $query->getResult();
+        $documentos = array_filter($results, function($var) {
+            return $var instanceof Documentos;
+        });
+
+        $derivaciones = array_filter($results, function($var) {
+            return $var instanceof Derivaciones;
+        });
 
         return $this->render(
             'BandejaBundle:Bandeja:index.html.twig',
@@ -59,6 +67,8 @@ class BandejaController extends Controller
                 'menu_op' => 'bandeja',
                 'searchForm' => $searchForm->createView(),
                 'derivarForm' => $derivarForm->createView(),
+                'documentos' => $documentos,
+                'derivaciones' => $derivaciones,
             )
         );
     }
@@ -93,13 +103,22 @@ class BandejaController extends Controller
 
     public function verAction($id)
     {
+        $loginUser = $this->getUser();
         $derivarForm = $this->createForm(DerivarType::class);
+
+        $repo = $this->getDoctrine()->getRepository('BandejaBundle:Documentos');
+        $query = $repo->createQueryBuilder('doc')
+               ->where('doc.idDoc = :ID')
+               ->setParameter('ID', $id)
+               ->getQuery();
+        $documento = $query->getResult()[0];
 
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
             array(
                 'id' => $id,
-                'derivarForm' => $derivarForm->createView()
+                'documento' => $documento,
+                'derivarForm' => $derivarForm->createView(),
             )
         );
     }
@@ -206,10 +225,10 @@ class BandejaController extends Controller
                     $adjunto->setFile( $file );
                     $adjunto->setUrl( $file->getClientOriginalName() );
                     $adjunto->setTipo(1);
-                    $adjunto->setFechaC( new \DateTime() );
-                    $adjunto->setFechaM( new \DateTime() );
-                    $adjunto->setFkDoc( $documento );
-                    $adjunto->setFkUsuario( $loginUser );
+                    $adjunto->setFkDoc($documento);
+                    $adjunto->setFechaC(new \DateTime());
+                    $adjunto->setFechaM(new \DateTime());
+                    $adjunto->setFkUsuario($loginUser);
 
                     $adjunto->upload();
 
@@ -218,32 +237,38 @@ class BandejaController extends Controller
                 }
             }
 
-            if ( $request->get('guardar') === 'derivar' ) {
-                foreach ( $derivarData['originales'] as $depto ) {
+            if ($request->get('guardar') === 'derivar') {
+                foreach ($derivarData['originales'] as $depto) {
                     $derivacion = new Derivaciones();
-                    $derivacion->setTipo( 1 );
-                    $derivacion->setNota( $derivarData['nota_original'] );
+                    $derivacion->setTipo(1);
+                    $derivacion->setNota($derivarData['nota_original']);
+                    $derivacion->setFkDoc($documento);
+                    $derivacion->setFechaC(new \DateTime());
+                    $derivacion->setFechaM(new \DateTime());
 
-                    $derivacion->setFkRemitente( $loginUser );
-                    $derivacion->setFkDeptorem( $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto() );
+                    $derivacion->setFkRemitente($loginUser);
+                    $derivacion->setFkDeptorem($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
 
-                    $derivacion->setFkDestinatario( $depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario() );
-                    $derivacion->setFkDeptodes( $depto );
+                    $derivacion->setFkDestinatario($depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario());
+                    $derivacion->setFkDeptodes($depto);
 
                     $em->persist($derivacion);
                     $em->flush();
                 }
 
-                foreach ( $derivarData['copias'] as $depto ) {
+                foreach ($derivarData['copias'] as $depto) {
                     $derivacion = new Derivaciones();
-                    $derivacion->setTipo( 2 );
-                    $derivacion->setNota( $derivarData['nota_copias'] );
+                    $derivacion->setTipo(2);
+                    $derivacion->setNota($derivarData['nota_copias']);
+                    $derivacion->setFkDoc($documento);
+                    $derivacion->setFechaC(new \DateTime());
+                    $derivacion->setFechaM(new \DateTime());
 
-                    $derivacion->setFkRemitente( $loginUser );
-                    $derivacion->setFkDeptorem( $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto() );
+                    $derivacion->setFkRemitente($loginUser);
+                    $derivacion->setFkDeptorem($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
 
-                    $derivacion->setFkDestinatario( $depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario() );
-                    $derivacion->setFkDeptodes( $depto );
+                    $derivacion->setFkDestinatario($depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario());
+                    $derivacion->setFkDeptodes($depto);
 
                     $em->persist($derivacion);
                     $em->flush();
@@ -252,17 +277,20 @@ class BandejaController extends Controller
                 $this->addFlash('success', 'Documento derivado correctamente');
                 return $this->redirectToRoute('recibidos_bandeja');
 
-            } elseif ( $request->get('guardar') === 'guardar' ) {
-                foreach ( $derivarData['originales'] as $depto ) {
+            } elseif ($request->get('guardar') === 'guardar') {
+                foreach ($derivarData['originales'] as $depto) {
                     $derivacion = new Derivaciones();
-                    $derivacion->setTipo( 1 );
-                    $derivacion->setNota( $derivarData['nota_original'] );
+                    $derivacion->setTipo(1);
+                    $derivacion->setNota($derivarData['nota_original']);
+                    $derivacion->setFkDoc($documento);
+                    $derivacion->setFechaC(new \DateTime());
+                    $derivacion->setFechaM(new \DateTime());
 
-                    $derivacion->setFkRemitente( $loginUser );
-                    $derivacion->setFkDeptorem( $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto() );
+                    $derivacion->setFkRemitente($loginUser);
+                    $derivacion->setFkDeptorem($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
 
-                    $derivacion->setFkDestinatario( $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkUsuario() );
-                    $derivacion->setFkDeptodes( $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto() );
+                    $derivacion->setFkDestinatario($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkUsuario());
+                    $derivacion->setFkDeptodes($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
 
                     $em->persist($derivacion);
                     $em->flush();

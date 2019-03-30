@@ -114,6 +114,13 @@ class Documentos
      */
     private $fkRutPersona;
 
+    /**
+     * @var \Collection
+     *
+     * @ORM\OneToMany(targetEntity="BandejaBundle\Entity\Derivaciones", mappedBy="fkDoc", fetch="LAZY")
+     */
+    private $derivaciones;
+
 
     /**
      * Get idDoc
@@ -411,5 +418,51 @@ class Documentos
     public function getFkRutPersona()
     {
         return $this->fkRutPersona;
+    }
+
+    /**
+     * Get derivaciones
+     *
+     * @return \Collection
+     */
+    public function getDerivaciones()
+    {
+        return $this->derivaciones;
+    }
+
+    /**
+     * Add a Derivaciones to derivaciones
+     *
+     * @param \Derivaciones $derivacion
+     *
+     * @return Documentos
+     */
+    public function addDerivaciones($derivacion)
+    {
+        if ($this->derivaciones->contains($derivacion)) {
+            return;
+        }
+
+        $this->derivaciones->add($derivacion);
+
+        return $this;
+    }
+
+    /**
+     * Remove a Derivaciones to derivacion
+     *
+     * @param \Derivaciones $derivacion
+     *
+     * @return Documentos
+     */
+    public function removeDerivaciones($derivacion)
+    {
+        if (!$this->derivaciones->contains($derivacion)) {
+            return;
+        }
+
+        $this->derivaciones->removeElement($derivacion);
+
+        return $this;
     }
 }
