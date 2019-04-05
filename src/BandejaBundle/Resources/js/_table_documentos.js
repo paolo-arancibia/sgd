@@ -30,6 +30,6 @@ $('input[type=checkbox]').click( function() {
 
 /** ver documento */
 $('tr > td:not(:first-child)').click( function() {
-    window.location.href = "ver/1";
+    window.location.href = "ver/" + $(this).parent().data('iddoc');
     return false;
 }).css('cursor','pointer');

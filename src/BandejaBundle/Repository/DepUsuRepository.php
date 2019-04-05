@@ -1,6 +1,6 @@
 <?php
 
-namespace BandejaBundle\Repositpory;
+namespace BandejaBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

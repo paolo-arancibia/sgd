@@ -29,9 +29,9 @@ class Documentos
     private $nroExpediente;
 
     /**
-     * @var boolean
+     * @var integer
      *
-     * @ORM\Column(name="ESTADO", type="boolean", nullable=true)
+     * @ORM\Column(name="ESTADO", type="integer", nullable=true)
      */
     private $estado;
 
@@ -159,7 +159,7 @@ class Documentos
     /**
      * Set estado
      *
-     * @param boolean $estado
+     * @param integer $estado
      *
      * @return Documentos
      */
@@ -173,7 +173,7 @@ class Documentos
     /**
      * Get estado
      *
-     * @return boolean
+     * @return integer
      */
     public function getEstado()
     {

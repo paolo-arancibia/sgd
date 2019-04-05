@@ -59,7 +59,7 @@ BandejaBundle\Entity\Derivaciones:
             cascade: {  }
             fetch: LAZY
             mappedBy: null
-            inversedBy: null
+            inversedBy: derivaciones
             joinColumns:
                 FK_ID_DOC:
                     referencedColumnName: ID_DOC

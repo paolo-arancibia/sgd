@@ -6,6 +6,10 @@ login_access:
     path:     /login
     defaults: { _controller: BandejaBundle:Access:login }
 
+logout:
+    path:     /logout
+    defaults: { _controller: BandejaBundle:Access:logout }
+
 porrecibir_bandeja:
     path:     /porrecibir/{page}
     defaults: { _controller: BandejaBundle:Bandeja:porrecibir, page: 1  }
@@ -30,11 +34,9 @@ ver_bandeja:
     requirements:
         id: '\d+'
 
-editar_bandeja:
-    path: /editar/{id}
-    defaults: { _controller: BandejaBundle:Bandeja:editar, id: 1 }
-    requirements:
-        id: '\d+'
+nuevo_bandeja:
+    path: /nuevo
+    defaults: { _controller: BandejaBundle:Bandeja:nuevo }
 
 personas_typeahead:
     path: /personas/{str}

@@ -69,7 +69,7 @@ class Derivaciones
     /**
      * @var \BandejaBundle\Entity\Usuarios
      *
-     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios")
+     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Usuarios", inversedBy="derivaciones")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="FK_ID_REMITENTE", referencedColumnName="ID_USUARIO")
      * })

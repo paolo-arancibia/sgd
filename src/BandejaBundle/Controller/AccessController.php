@@ -23,4 +23,9 @@ class AccessController extends Controller
             )
         );
     }
+
+    public function logoutAction()
+    {
+        return;
+    }
 }

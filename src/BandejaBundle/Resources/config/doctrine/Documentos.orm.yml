@@ -30,10 +30,10 @@ BandejaBundle\Entity\Documentos:
                 unsigned: false
             column: NRO_EXPEDIENTE
         estado:
-            type: boolean
+            type: integer
             nullable: true
             options:
-                comment: '1=NORMAL,2=ARCHIVADO'
+                comment: '0=ARCHIVADO,1=NORMAL,2=PORRECIBIR'
             column: ESTADO
         fechaDoc:
             type: date

@@ -1,9 +1,9 @@
 {% if not documentos %}
-<div class="card">
-  <div class="card-body text-center">
-    <h5>No hay Documentos que leer. :(</h5>
+  <div class="card">
+    <div class="card-body text-center">
+      <h5>No hay Documentos que leer. :(</h5>
+    </div>
   </div>
-</div>
 {% else %}
 <table id="doc-table" class="table">
   <thead>
@@ -18,7 +18,7 @@
   </thead>
   <tbody>
 {% for key, doc in documentos %}
-    <tr class="{% if doc.estado == 1 or doc.estado == 0 %}doc-pendiente{% endif %}" data-docid="{{ doc.idDoc }}">
+    <tr class="{% if doc.estado == 1 or doc.estado == 0 %}doc-pendiente{% endif %}" data-iddoc="{{ doc.idDoc }}">
       <th scope="row"><input class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
       <td>
         {%if derivaciones[key+1].fechaC %}

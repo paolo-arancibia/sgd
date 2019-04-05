@@ -1,5 +1,6 @@
 BandejaBundle\Entity\Departamentos:
     type: entity
+    repositoryClass: BandejaBundle\Repository\DepartamentosRepository
     table: DEPARTAMENTOS
     id:
         idDepartamento:

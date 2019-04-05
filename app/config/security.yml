@@ -36,7 +36,9 @@ security:
                 default_target_path: recibidos_bandeja
                 login_path: login_access
                 check_path: login_access
-
+            logout:
+                path: /logout
+                target: /login
     access_control:
         - { path: ^/recibidos, roles: ROLE_ACCESS }
         - { path: ^/porrecibir, roles: ROLE_ACCESS }

@@ -6,16 +6,13 @@ use Doctrine\ORM\EntityRepository;
 
 class DocumentosRepository extends EntityRepository
 {
-
-    public function findAllRecibidosByDepto($depto)
+    public function findAllByDepto($depto, $estado, $offset, $limit)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
                ->select('MAX(der.idDerivacion) as idDerivacion')
                ->addSelect('IDENTITY(der.fkDoc) as idDoc')
                ->from('BandejaBundle:Derivaciones', 'der')
                ->groupBy('der.fkDoc')
-               //->setFirstResult( 0 ) // $offset
-               //->setMaxResults( 25 ) // $limit
                ->getQuery();
 
         $derivaciones = $query->getResult();
@@ -36,9 +33,11 @@ class DocumentosRepository extends EntityRepository
                           $query->expr()->in('der.idDerivacion', $arr)
                       ))
                ->where('der.fkDeptodes = :DEPTO')
+               ->andWhere('docs.estado = :ESTADO')
                ->setParameter('DEPTO', $depto)
-               ->setFirstResult( 0 ) // $offset
-               ->setMaxResults( 25 ) // $limit
+               ->setParameter('ESTADO', $estado)
+               ->setFirstResult( $offset ) // $offset
+               ->setMaxResults( $limit ) // $limit
                ->getQuery();
 
         return $query->getResult();

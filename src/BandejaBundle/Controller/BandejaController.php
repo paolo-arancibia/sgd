@@ -25,6 +25,7 @@ use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class BandejaController extends Controller
 {
@@ -33,24 +34,19 @@ class BandejaController extends Controller
         return $this->redirectToRoute('recibidos_bandeja');
     }
 
-    public function recibidosAction($page = 0)
+    public function recibidosAction($page = 1)
     {
-        $loginUser = $this->getUser();
-
-        $expr = new Comparison('encargado', '=', 1);
-        $criteria = new Criteria();
-        $criteria->where( $expr );
-
-        $dpto = $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto();
+        $this->setOnSession();
 
         $searchForm = $this->createForm(BuscarType::class);
         $derivarForm = $this->createForm(DerivarType::class);
 
+        $docsByPage = 25; // documentos por página
 
-        $results =  $this->getDoctrine()
-                    ->getManager()
-                    ->getRepository('BandejaBundle:Documentos')
-                    ->findAllRecibidosByDepto( $dpto );
+        $results = $this->getDoctrine()
+                 ->getManager()
+                 ->getRepository('BandejaBundle:Documentos')
+                 ->findAllByDepto($this->get('session')->get('departamento'), 1, ($page - 1), $docsByPage);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -64,7 +60,7 @@ class BandejaController extends Controller
             'BandejaBundle:Bandeja:index.html.twig',
             array(
                 'page' => $page,
-                'menu_op' => 'bandeja',
+                'menu_op' => 'recibidos',
                 'searchForm' => $searchForm->createView(),
                 'derivarForm' => $derivarForm->createView(),
                 'documentos' => $documentos,
@@ -75,11 +71,27 @@ class BandejaController extends Controller
 
     public function porrecibirAction($page = 0)
     {
+        $this->setOnSession();
+
         $searchForm = $this->createForm(BuscarType::class);
+        $results = $this->getDoctrine()
+                 ->getManager()
+                 ->getRepository('BandejaBundle:Documentos')
+                 ->findAllByDepto($this->get('session')->get('departamento'), 2, ($page - 1), 25);
+
+        $documentos = array_filter($results, function($var) {
+            return $var instanceof Documentos;
+        });
+
+        $derivaciones = array_filter($results, function($var) {
+            return $var instanceof Derivaciones;
+        });
 
         return $this->render(
             'BandejaBundle:Bandeja:porrecibir.html.twig',
             array(
+                'documentos' => $documentos,
+                'derivaciones' => $derivaciones,
                 'page' => $page,
                 'menu_op' => 'porrecibir',
                 'searchForm' => $searchForm->createView(),
@@ -89,11 +101,27 @@ class BandejaController extends Controller
 
     public function despachadosAction($page = 0)
     {
+        $this->setOnSession();
+
         $searchForm = $this->createForm(BuscarType::class);
+        $results = $this->getDoctrine()
+                 ->getManager()
+                 ->getRepository('BandejaBundle:Documentos')
+                 ->findAllByDepto($this->get('session')->get('departamento'), 2, ($page - 1), 25);
+
+        $documentos = array_filter($results, function($var) {
+            return $var instanceof Documentos;
+        });
+
+        $derivaciones = array_filter($results, function($var) {
+            return $var instanceof Derivaciones;
+        });
 
         return $this->render(
             'BandejaBundle:Bandeja:despachados.html.twig',
             array(
+                'documentos' => $documentos,
+                'derivaciones' => $derivaciones,
                 'page' => $page,
                 'menu_op' => 'despachados',
                 'searchForm' => $searchForm->createView(),
@@ -103,27 +131,36 @@ class BandejaController extends Controller
 
     public function verAction($id)
     {
-        $loginUser = $this->getUser();
         $derivarForm = $this->createForm(DerivarType::class);
 
         $repo = $this->getDoctrine()->getRepository('BandejaBundle:Documentos');
         $query = $repo->createQueryBuilder('doc')
                ->where('doc.idDoc = :ID')
+               ->andWhere('doc.fechaE is NULL')
                ->setParameter('ID', $id)
                ->getQuery();
-        $documento = $query->getResult()[0];
+        $documento = $query->getResult();
+
+        if (!isset($documento) || empty($documento)) {
+            $this->addFlash('warning', 'No existe en docuemnto IDDOC ' . $id);
+
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        }
+
+        $urlArray = explode( '/', $this->getRequest()->headers->get('referer'));
 
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
             array(
                 'id' => $id,
-                'documento' => $documento,
+                'menu_op' => end($urlArray),
+                'documento' => $documento[0],
                 'derivarForm' => $derivarForm->createView(),
             )
         );
     }
 
-    public function editarAction(Request $request, $id)
+    public function nuevoAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -142,7 +179,7 @@ class BandejaController extends Controller
 
         if ($nuevoForm->isSubmitted() && $nuevoForm->isValid()) {
             $nuevoData = $nuevoForm->getData();
-            $derivarData = $derivarForm->getData(); //originales:ArrayCollection, notas_original:String, copias:ArrayCollection, notas_copias:String
+            $derivarData = $derivarForm->getData();
             $remitenteData = $remitenteForm->getData();
             $personaData = $personaForm->getData();
 
@@ -151,70 +188,21 @@ class BandejaController extends Controller
                          ->getRepository('BandejaBundle:Personas')
                          ->find( $remitenteData['id_persona'] );
             } elseif ($remitenteData['id_depto']) {
-                $departamento = $this->getDoctrine()
-                              ->getRepository('BandejaBundle:Departamentos')
-                              ->find( $remitenteData['id_depto'] );
-
-                $expr = new Comparison('encargado', '=', 1);
-
-                $criteria = new Criteria();
-                $criteria->where( $expr );
-
-                $encargados = $departamento->getDepUsus()->matching( $criteria );
-
-                $persona = $encargados->first()->getFkUsuario()->getFkPersona();
-
+                $persona = $this->getDoctrine()
+                         ->getRepository('BandejaBundle:Departamentos')
+                         ->findEncargado($remitenteData['id_depto']);
             } else {
-                $persona = new Personas();
-
-                list($rut, $vrut) = explode('-', $personaData['rut']);
-
-                $persona->setRut( $rut );
-                $persona->setVrut( $vrut );
-                $persona->setNombres( $personaData['nombres'] );
-                $persona->setApellidoPaterno( $personaData['apellidopaterno'] );
-                $persona->setApellidoMaterno( $personaData['apellidomaterno'] );
-
-                $persona->setNombreCalle( $personaData['nombre_calle'] );
-                $persona->setNumdirec( $personaData['numdirec'] );
-                $persona->setReferenciadir( $personaData['referenciadir'] );
-                $persona->setNombreComuna( $personaData['nombre_comuna'] );
-
-                $persona->setFono( $personaData['fono'] );
-                $persona->setFono2( $personaData['fono_2'] );
-                $persona->setEmail( $personaData['email'] );
-
-                $persona->setFechaNacimiento( $personaData['fecha_nacimiento'] );
-                $persona->setSexo( $personaData['sexo'] );
-
-                $persona->setUnidadV('');
-                $persona->setFechaReg( new \DateTime() );
+                $persona = $this->createNewPersona($personaData);
 
                 $em->persist($persona);
-                $em->flush();
             }
 
             $loginUser = $this->getUser();
+            $nuevoData['persona'] = $persona;
 
-            $documento = new Documentos();
-            $documento->setFkTipoDoc( $nuevoData['fkTipoDoc'] );
-            $documento->setNroExpediente( $nuevoData['nroExpediente'] );
-            $documento->setFechaDoc( $nuevoData['fechaDoc'] );
-            $documento->setAnt( $nuevoData['ant'] );
-            $documento->setMat( $nuevoData['mat'] );
-            $documento->setExt( $nuevoData['ext'] );
-            $documento->setEstado(1); // 1=NORMAL,2=ARCHIVADO
-            $documento->setFkRutPersona( $persona );
-            $documento->setFkUsuario( $loginUser );
-            $documento->setFechaC( new \DateTime() );
-            $documento->setFechaM( new \DateTime() );
-
-            $expr = new Comparison('encargado', '=', 1);
-            $criteria = new Criteria();
-            $criteria->where( $expr );
+            $documento = $this->createNewDocumento($nuevoData, 2);
 
             $em->persist($documento);
-            $em->flush();
 
             // guardar archivos adjuntos
             $files = $derivarData['adjuntos'];
@@ -233,70 +221,49 @@ class BandejaController extends Controller
                     $adjunto->upload();
 
                     $em->persist($adjunto);
-                    $em->flush();
                 }
             }
 
+            $expr = new Comparison('encargado', '=', 1);
+            $encargadoCriteria = new Criteria();
+            $encargadoCriteria->where( $expr );
+
             if ($request->get('guardar') === 'derivar') {
                 foreach ($derivarData['originales'] as $depto) {
-                    $derivacion = new Derivaciones();
-                    $derivacion->setTipo(1);
-                    $derivacion->setNota($derivarData['nota_original']);
-                    $derivacion->setFkDoc($documento);
-                    $derivacion->setFechaC(new \DateTime());
-                    $derivacion->setFechaM(new \DateTime());
-
-                    $derivacion->setFkRemitente($loginUser);
-                    $derivacion->setFkDeptorem($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
-
-                    $derivacion->setFkDestinatario($depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario());
-                    $derivacion->setFkDeptodes($depto);
+                    $derivacion = $this->createNewDerivacion(
+                        array('tipo' => 1, 'nota' => $derivarData['nota_original']),
+                        $documento,
+                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
                     $em->persist($derivacion);
-                    $em->flush();
                 }
 
                 foreach ($derivarData['copias'] as $depto) {
-                    $derivacion = new Derivaciones();
-                    $derivacion->setTipo(2);
-                    $derivacion->setNota($derivarData['nota_copias']);
-                    $derivacion->setFkDoc($documento);
-                    $derivacion->setFechaC(new \DateTime());
-                    $derivacion->setFechaM(new \DateTime());
-
-                    $derivacion->setFkRemitente($loginUser);
-                    $derivacion->setFkDeptorem($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
-
-                    $derivacion->setFkDestinatario($depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario());
-                    $derivacion->setFkDeptodes($depto);
+                    $derivacion = $this->createNewDerivacion(
+                        array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
+                        $documento,
+                        $loginUser, $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto(),
+                        $depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario(), $depto);
 
                     $em->persist($derivacion);
-                    $em->flush();
                 }
 
-                $this->addFlash('success', 'Documento derivado correctamente');
+                $em->flush();
+                $this->addFlash('success', 'Documento derivado');
                 return $this->redirectToRoute('recibidos_bandeja');
 
             } elseif ($request->get('guardar') === 'guardar') {
-                foreach ($derivarData['originales'] as $depto) {
-                    $derivacion = new Derivaciones();
-                    $derivacion->setTipo(1);
-                    $derivacion->setNota($derivarData['nota_original']);
-                    $derivacion->setFkDoc($documento);
-                    $derivacion->setFechaC(new \DateTime());
-                    $derivacion->setFechaM(new \DateTime());
+                $derivacion = $this->createNewDerivacion(
+                    array('tipo' => 1, 'nota' => $derivarData['nota_original']),
+                    $documento,
+                    $loginUser, $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto(),
+                    $loginUser, $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
 
-                    $derivacion->setFkRemitente($loginUser);
-                    $derivacion->setFkDeptorem($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
+                $em->persist($derivacion);
+                $em->flush();
 
-                    $derivacion->setFkDestinatario($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkUsuario());
-                    $derivacion->setFkDeptodes($loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
-
-                    $em->persist($derivacion);
-                    $em->flush();
-                }
-
-                $this->addFlash('success', 'Documento guardado correctamente');
+                $this->addFlash('success', 'Documento guardado');
                 return $this->redirectToRoute('porrecibir_bandeja');
             }
         }
@@ -304,7 +271,7 @@ class BandejaController extends Controller
         return $this->render(
             'BandejaBundle:Bandeja:editar.html.twig',
             array(
-                'id' => $id,
+                'menu_op' => '',
                 'tipos' => $tipos,
                 'derivarForm' => $derivarForm->createView(),
                 'nuevoForm' => $nuevoForm->createView(),
@@ -360,6 +327,11 @@ class BandejaController extends Controller
         return $response;
     }
 
+    public function derivarAction(Request $request)
+    {
+        return $this->redirect($this->getRequest()->headers->get('referer'));
+    }
+
     private function getDeptos($str = "")
     {
         $repository = $this->getDoctrine()->getRepository('BandejaBundle:Departamentos');
@@ -399,6 +371,88 @@ class BandejaController extends Controller
 
         return $query->getResult();
     }
+
+    private function createNewPersona($personaData)
+    {
+        $persona = new Personas();
+
+        list($rut, $vrut) = explode('-', $personaData['rut']);
+
+        $persona->setRut( $rut );
+        $persona->setVrut( $vrut );
+        $persona->setNombres( $personaData['nombres'] );
+        $persona->setApellidoPaterno( $personaData['apellidopaterno'] );
+        $persona->setApellidoMaterno( $personaData['apellidomaterno'] );
+
+        $persona->setNombreCalle( $personaData['nombre_calle'] );
+        $persona->setNumdirec( $personaData['numdirec'] );
+        $persona->setReferenciadir( $personaData['referenciadir'] );
+        $persona->setNombreComuna( $personaData['nombre_comuna'] );
+
+        $persona->setFono( $personaData['fono'] );
+        $persona->setFono2( $personaData['fono_2'] );
+        $persona->setEmail( $personaData['email'] );
+
+        $persona->setFechaNacimiento( $personaData['fecha_nacimiento'] );
+        $persona->setSexo( $personaData['sexo'] );
+
+        $persona->setUnidadV('');
+        $persona->setFechaReg( new \DateTime() );
+
+        return $persona;
+    }
+
+    private function createNewDocumento($nuevoData, $tipo = 2)
+    {
+        $documento = new Documentos();
+        $documento->setFkTipoDoc($nuevoData['fkTipoDoc']);
+        $documento->setNroExpediente($nuevoData['nroExpediente']);
+        $documento->setFechaDoc( $nuevoData['fechaDoc'] );
+        $documento->setAnt($nuevoData['ant']);
+        $documento->setMat($nuevoData['mat']);
+        $documento->setExt($nuevoData['ext']);
+        $documento->setEstado($tipo); // 0=ARCHIVADO,1=NORMAL,2=PORRECIBIR
+        $documento->setFkRutPersona($nuevoData['persona']);
+        $documento->setFkUsuario($this->getUser());
+        $documento->setFechaC( new \DateTime() );
+        $documento->setFechaM( new \DateTime() );
+
+        return $documento;
+    }
+
+    private function createNewDerivacion($derivarData, $documento, $remitente, $deptorem, $destinatario, $deptodes)
+    {
+        $derivacion = new Derivaciones();
+
+        $derivacion->setTipo($derivarData['tipo']);
+        $derivacion->setNota($derivarData['nota']);
+        $derivacion->setFkDoc($documento);
+        $derivacion->setFechaC(new \DateTime());
+        $derivacion->setFechaM(new \DateTime());
+
+        $derivacion->setFkRemitente($remitente);
+        $derivacion->setFkDeptorem($deptorem);
+
+        $derivacion->setFkDestinatario($destinatario);
+        $derivacion->setFkDeptodes($deptodes);
+
+        return $derivacion;
+    }
+
+    private function setOnSession()
+    {
+        $session = $this->get('session');
+
+        $loginUser = $this->getUser();
+
+        $expr = new Comparison('encargado', '=', 1);
+        $encargado = new Criteria();
+        $encargado->where( $expr );
+
+        if ($session->get('departamento') === null)
+            $session->set('departamento', $loginUser->getDepUsus()->matching($encargado)->get(0)->getFkDepto());
+    }
+
 
     /*
       $filtersForm = $this->createFormBuilder()
