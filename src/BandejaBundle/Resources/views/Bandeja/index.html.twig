@@ -92,7 +92,7 @@
 {% endblock %}
 
 {% block pager %}
-  {% include 'Bandeja/pager.html.twig' %}
+  {% include 'Bandeja/pager.html.twig' with {'menu_op': menu_op, 'page': page, 'max_page': max_page} %}
 {% endblock %}
 
 {% block content %}

@@ -18,110 +18,27 @@
   </thead>
   <tbody>
 {% for key, doc in documentos %}
-    <tr class="{% if doc.estado == 1 or doc.estado == 0 %}doc-pendiente{% endif %}" data-iddoc="{{ doc.idDoc }}">
-      <th scope="row"><input class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
+    <tr class="{% if doc.estado == 1 %}doc-pendiente{% elseif doc.estado == 0 %}doc-archivado{% endif %}" data-iddoc="{{ doc.idDoc }}">
+      <th scope="row"><input type="checkbox" id="doc{{ doc.idDoc }}" name="docs[]" value="{{ doc.idDoc }}" /></th>
       <td>
-        {%if derivaciones[key+1].fechaC %}
-        <i class="fas fa-circle text-danger" >&nbsp;</i>
+        {% if doc.fechaDoc|date('Ymd') > 'now'|date_modify("+5 days")|date('Ymd') %}
+          <i class="fas fa-circle text-success">&nbsp;</i>
+        {% elseif 'now'|date_modify("+5 days")|date('Ymd') >= doc.fechaDoc|date('Ymd') and
+           doc.fechaDoc|date('Ymd') >= 'now'|date('Ymd') %}
+          <i class="fas fa-circle text-warning">&nbsp;</i>
+        {% elseif 'now'|date('Ymd') > doc.fechaDoc|date('Ymd')  %}
+          <i class="fas fa-circle text-danger">&nbsp;</i>
+        {% else %}
+          <i class="fas fa-circle text-info">&nbsp;</i>
         {% endif %}
         {{ doc.idDoc }}
       </td>
-      <td>{{ derivaciones[key+1].fechaC | date('d/m/Y') }}</td>
-      <td>{{ derivaciones[key+1].fkDeptorem.descripcion }}  </td>
+      <td>{{ doc.fechaDoc|date('d/m/Y') }}</td>
+      <td>{{ derivaciones[key+1].fkDeptorem.descripcion }}</td>
       <td>{{ doc.fkTipoDoc.descripcion }} ({{ doc.fkTipoDoc.abrev }})</td>
       <td>{% if derivaciones[key+1].tipo == 1 %}Original{% else %}Copia{% endif %}</td>
     </tr>
 {% endfor %}
-{#
-    <tr class="doc-pendiente" data-docid="1">
-      <th scope="row"><input class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
-      <td><i class="fas fa-circle text-danger" >&nbsp;</i>1</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr class="doc-archivado">
-      <th scope="row"><input class="" type="checkbox" id="doc2" name="doc2" value="2" /></th>
-      <td><i class="fas fa-circle text-success" >&nbsp;</i>2</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc3" name="doc3" value="3" /></th>
-      <td><i class="fas fa-circle text-warning" >&nbsp;</i>3</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-warning" >&nbsp;</i>4</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-warning" >&nbsp;</i>5</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-success" >&nbsp;</i>6</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-light" >&nbsp;</i>7</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-light" >&nbsp;</i>7</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-light" >&nbsp;</i>8</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-light" >&nbsp;</i>9</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-    <tr>
-      <th scope="row"><input class="" type="checkbox" id="doc4" name="doc4" value="4" /></th>
-      <td><i class="fas fa-circle text-light" >&nbsp;</i>10</td>
-      <td>20/11/2018</td>
-      <td>Administracion Municipal</td>
-      <td>CAR</td>
-      <td>Copia</td>
-    </tr>
-#}
   </tbody>
 </table>
 

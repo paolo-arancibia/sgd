@@ -43,10 +43,16 @@ class BandejaController extends Controller
 
         $docsByPage = 25; // documentos por página
 
+        $max_docs = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('BandejaBundle:Documentos')
+                  ->countFindAllByDepto($this->get('session')->get('departamento'), 1) / 2;
+        $max_page  = (int)ceil($max_docs / $docsByPage);
+
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findAllByDepto($this->get('session')->get('departamento'), 1, ($page - 1), $docsByPage);
+                 ->findAllByDepto($this->get('session')->get('departamento'), 1, ($page - 1) * 25, $docsByPage);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -60,6 +66,7 @@ class BandejaController extends Controller
             'BandejaBundle:Bandeja:index.html.twig',
             array(
                 'page' => $page,
+                'max_page' => $max_page,
                 'menu_op' => 'recibidos',
                 'searchForm' => $searchForm->createView(),
                 'derivarForm' => $derivarForm->createView(),
@@ -74,10 +81,19 @@ class BandejaController extends Controller
         $this->setOnSession();
 
         $searchForm = $this->createForm(BuscarType::class);
+
+        $docsByPage = 25; // documentos por página
+
+        $max_docs = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('BandejaBundle:Documentos')
+                  ->countFindAllByDepto($this->get('session')->get('departamento'), 1) / 2;
+        $max_page  = (int)ceil($max_docs / $docsByPage);
+
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findAllByDepto($this->get('session')->get('departamento'), 2, ($page - 1), 25);
+                 ->findAllByDepto($this->get('session')->get('departamento'), 1, ($page - 1) * 25, 25);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -93,6 +109,7 @@ class BandejaController extends Controller
                 'documentos' => $documentos,
                 'derivaciones' => $derivaciones,
                 'page' => $page,
+                'max_page' => $max_page,
                 'menu_op' => 'porrecibir',
                 'searchForm' => $searchForm->createView(),
             )
@@ -104,10 +121,19 @@ class BandejaController extends Controller
         $this->setOnSession();
 
         $searchForm = $this->createForm(BuscarType::class);
+
+        $docsByPage = 25; // documentos por página
+
+        $max_docs = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('BandejaBundle:Documentos')
+                  ->countFindAllByDepto($this->get('session')->get('departamento'), 2) / 2;
+        $max_page  = (int)ceil($max_docs / $docsByPage);
+
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findAllByDepto($this->get('session')->get('departamento'), 2, ($page - 1), 25);
+                 ->findAllByDepto($this->get('session')->get('departamento'), 2, ($page - 1) * 25, 25);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -123,13 +149,14 @@ class BandejaController extends Controller
                 'documentos' => $documentos,
                 'derivaciones' => $derivaciones,
                 'page' => $page,
+                'max_page' => $max_page,
                 'menu_op' => 'despachados',
                 'searchForm' => $searchForm->createView(),
             )
         );
     }
 
-    public function verAction($id)
+    public function verAction(Request $request, $id)
     {
         $derivarForm = $this->createForm(DerivarType::class);
 
@@ -139,15 +166,15 @@ class BandejaController extends Controller
                ->andWhere('doc.fechaE is NULL')
                ->setParameter('ID', $id)
                ->getQuery();
-        $documento = $query->getResult();
+        $documento = $query->getResult(); // getResult() retorna siempre un array
 
         if (!isset($documento) || empty($documento)) {
             $this->addFlash('warning', 'No existe en docuemnto IDDOC ' . $id);
 
-            return $this->redirect($this->getRequest()->headers->get('referer'));
+            return $this->redirect($request->headers->get('referer'));
         }
 
-        $urlArray = explode( '/', $this->getRequest()->headers->get('referer'));
+        $urlArray = explode( '/', $request->headers->get('referer'));
 
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
@@ -243,8 +270,8 @@ class BandejaController extends Controller
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                         $documento,
-                        $loginUser, $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto(),
-                        $depto->getDepUsus()->matching($criteria)->get(0)->getFkUsuario(), $depto);
+                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
                     $em->persist($derivacion);
                 }
