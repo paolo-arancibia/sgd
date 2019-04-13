@@ -16,7 +16,7 @@ class BuscarType extends AbstractType
             ->setMethod('GET')
             ->add('searchText', SearchType::class, [
                 'required' => false,
-                'attr' => ['placeholdel' => 'Buscar...'],
+                'attr' => ['placeholder' => 'Buscar...'],
             ]);
 
     }

@@ -36,8 +36,25 @@
   {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
 {% endblock %}
 
+{% form_theme filtersForm _self %}
+
+{%- block choice_widget_expanded -%}
+  <div data-no="" {{ block('widget_container_attributes') }}>
+    {%- for child in form %}
+        {{- form_widget(child) -}}
+        {{- form_label(child, null, {translation_domain: choice_translation_domain}) -}}
+    {% endfor -%}
+  </div>
+{%- endblock choice_widget_expanded -%}
+
+{% block radio_widget %}
+    <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endblock %}
+
 {% block filters %}
-  <form id="filters" class="collapse show">
+  {{ form_start(filtersForm) }}
+  {{ form_end(filtersForm) }}
+  <form id="filters" name="filter" class="collapse show" method="post">
     <div class="form-row">
       <div class="col-md-auto px-2">
         <div class="form-check">
@@ -143,4 +160,12 @@
     combine=true %}
   <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
+
+<script type="text/javascript">
+$(document).ready( function() {
+   $('#pendientes, #archivados, input[name="limite"]').click( function() {
+       $('form[name="filter"]').submit();
+   });
+});
+</script>
 {% endblock %}

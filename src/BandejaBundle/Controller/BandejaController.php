@@ -11,6 +11,7 @@ use BandejaBundle\Entity\Personas;
 use BandejaBundle\Entity\TiposDocumentos;
 use BandejaBundle\Form\BuscarType;
 use BandejaBundle\Form\DerivarType;
+use BandejaBundle\Form\FiltersType;
 use BandejaBundle\Form\NuevoDocumentoType;
 use BandejaBundle\Form\PersonaType;
 use BandejaBundle\Form\RemitenteType;
@@ -23,8 +24,10 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class BandejaController extends Controller
@@ -40,19 +43,21 @@ class BandejaController extends Controller
 
         $searchForm = $this->createForm(BuscarType::class);
         $derivarForm = $this->createForm(DerivarType::class);
+        $filtersForm = $this->createForm(FiltersType::class);
 
         $docsByPage = 25; // documentos por página
 
         $max_docs = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
-                  ->countFindAllByDepto($this->get('session')->get('departamento'), 1) / 2;
-        $max_page  = (int)ceil($max_docs / $docsByPage);
+                  ->countRecibidosByDepto($this->get('session')->get('departamento'));
+
+        $max_page  = (int) ceil($max_docs / $docsByPage);
 
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findAllByDepto($this->get('session')->get('departamento'), 1, ($page - 1) * 25, $docsByPage);
+                 ->findRecibidosByDepto($this->get('session')->get('departamento'), ($page - 1) * $docsByPage, $docsByPage);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -70,6 +75,7 @@ class BandejaController extends Controller
                 'menu_op' => 'recibidos',
                 'searchForm' => $searchForm->createView(),
                 'derivarForm' => $derivarForm->createView(),
+                'filtersForm' => $filtersForm->createView(),
                 'documentos' => $documentos,
                 'derivaciones' => $derivaciones,
             )
@@ -87,13 +93,13 @@ class BandejaController extends Controller
         $max_docs = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
-                  ->countFindAllByDepto($this->get('session')->get('departamento'), 1) / 2;
-        $max_page  = (int)ceil($max_docs / $docsByPage);
+                  ->countPorrecibirByDepto($this->get('session')->get('departamento'));
+        $max_page  = (int) ceil($max_docs / $docsByPage);
 
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findAllByDepto($this->get('session')->get('departamento'), 1, ($page - 1) * 25, 25);
+                 ->findPorrecibirByDepto($this->get('session')->get('departamento'), ($page - 1) * $docsByPage, $docsByPage);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -127,13 +133,13 @@ class BandejaController extends Controller
         $max_docs = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
-                  ->countFindAllByDepto($this->get('session')->get('departamento'), 2) / 2;
+                  ->countDespachadosByUsuario($this->getUser()) / 2;
         $max_page  = (int)ceil($max_docs / $docsByPage);
 
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findAllByDepto($this->get('session')->get('departamento'), 2, ($page - 1) * 25, 25);
+                 ->findDespachadosByUsuario($this->getUser(), ($page - 1) * $docsByPage, $docsByPage);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -158,7 +164,10 @@ class BandejaController extends Controller
 
     public function verAction(Request $request, $id)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $derivarForm = $this->createForm(DerivarType::class);
+        $derivarForm->handleRequest($request);
 
         $repo = $this->getDoctrine()->getRepository('BandejaBundle:Documentos');
         $query = $repo->createQueryBuilder('doc')
@@ -166,25 +175,132 @@ class BandejaController extends Controller
                ->andWhere('doc.fechaE is NULL')
                ->setParameter('ID', $id)
                ->getQuery();
+
         $documento = $query->getResult(); // getResult() retorna siempre un array
 
         if (!isset($documento) || empty($documento)) {
             $this->addFlash('warning', 'No existe en docuemnto IDDOC ' . $id);
+            return $this->redirectToRoute(end($urlArray) . '_bandeja');
+        } else
+            $documento = $documento[0];
 
-            return $this->redirect($request->headers->get('referer'));
+        $adjuntos = $this->getDoctrine()->getRepository('BandejaBundle:Adjuntos')
+                  ->findBy(array('fkDoc' => $documento));
+
+        if ($derivarForm->isSubmitted() && $derivarForm->isValid()) {
+            $derivarData = $derivarForm->getData();
+
+            $loginUser = $this->getUser();
+
+            // guardar archivos adjuntos
+            $files = $derivarData['adjuntos'];
+
+            if (count($files)) {
+                foreach ($files as $file) {
+                    $adjunto = $this->createNewAdjunto($file, $loginUser, $documento);
+
+                    $adjunto->upload();
+
+                    $em->persist($adjunto);
+                }
+            }
+
+            $expr = new Comparison('encargado', '=', 1);
+            $encargadoCriteria = new Criteria();
+            $encargadoCriteria->where( $expr );
+
+            if ($request->get('guardar') === 'derivar') {
+                $derivaciones = $documento->getDerivaciones();
+
+                foreach ($derivaciones as $derivacion) {
+                    $derivacion->setFechaE(new \DateTime);
+                    $em->persist($derivacion);
+                }
+
+                foreach ($derivarData['originales'] as $depto) {
+                    $derivacion = $this->createNewDerivacion(
+                        array('tipo' => 1, 'nota' => $derivarData['nota_original']),
+                        $documento,
+                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
+
+                    $em->persist($derivacion);
+                }
+
+                foreach ($derivarData['copias'] as $depto) {
+                    $derivacion = $this->createNewDerivacion(
+                        array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
+                        $documento,
+
+                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
+
+                    $em->persist($derivacion);
+                }
+
+                $em->flush();
+
+                $this->addFlash('success', sprintf(
+                    'IDDOC %d derivado a %s',
+                    $documento->getIdDoc(),
+                    $derivacion->getFkDeptodes()->getDescripcion())
+                );
+
+            } elseif ($request->get('guardar') === 'guardar') {
+                $this->addFlash('success', sprintf('<b>IDDOC %d</b> guardado', $documento->getIdDoc()));
+                $em->flush();
+
+            } elseif ($request->get('guardar') === 'archivar') {
+                $documento->setEstado(0);
+
+                $em->persist($documento);
+                $em->flush();
+
+                $this->addFlash('success', sprintf('IDDOC %d archivado', $documento->getIdDoc()));
+
+            } elseif($request->get('guardar') === 'desarchivar'
+                     || $request->get('guardar') === 'recibir') {
+                $documento->setEstado(1);
+
+                $em->persist($documento);
+                $em->flush();
+
+                $text = $request->get('guardar') === 'desarchivar' ? 'restaurado' : 'recibido';
+                $this->addFlash('success', sprintf('IDDOC %d %s', $documento->getIdDoc(), $text));
+            }
+
+            return $this->redirectToRoute('recibidos_bandeja');
         }
 
-        $urlArray = explode( '/', $request->headers->get('referer'));
+        $urlArray = explode('/', $request->headers->get('referer'));
 
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
             array(
                 'id' => $id,
                 'menu_op' => end($urlArray),
-                'documento' => $documento[0],
+                'documento' => $documento,
+                'adjuntos' => $adjuntos,
+                'files_dir' => Adjuntos::UPLOADED_FILE_DIRECTORY,
                 'derivarForm' => $derivarForm->createView(),
             )
         );
+    }
+
+    public function descargarAdjuntoAction(Request $request, $id)
+    {
+        $adjunto = $this->getDoctrine()->getRepository('BandejaBundle:Adjuntos')
+               ->findBy(array('idAdjunto' => $id))[0];
+        $response = new BinaryFileResponse(
+            Adjuntos::ABSOLUTE_FILE_DIRECTORY
+            . DIRECTORY_SEPARATOR
+            . $adjunto->getUrl());
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $adjunto->getUrl()
+        );
+
+        return $response;
     }
 
     public function nuevoAction(Request $request)
@@ -236,14 +352,7 @@ class BandejaController extends Controller
 
             if (count($files)) {
                 foreach( $files as $file ) {
-                    $adjunto = new Adjuntos();
-                    $adjunto->setFile( $file );
-                    $adjunto->setUrl( $file->getClientOriginalName() );
-                    $adjunto->setTipo(1);
-                    $adjunto->setFkDoc($documento);
-                    $adjunto->setFechaC(new \DateTime());
-                    $adjunto->setFechaM(new \DateTime());
-                    $adjunto->setFkUsuario($loginUser);
+                    $adjunto = $this->createNewAdjunto($file, $loginUser, $documento);
 
                     $adjunto->upload();
 
@@ -354,11 +463,6 @@ class BandejaController extends Controller
         return $response;
     }
 
-    public function derivarAction(Request $request)
-    {
-        return $this->redirect($this->getRequest()->headers->get('referer'));
-    }
-
     private function getDeptos($str = "")
     {
         $repository = $this->getDoctrine()->getRepository('BandejaBundle:Departamentos');
@@ -466,6 +570,20 @@ class BandejaController extends Controller
         return $derivacion;
     }
 
+    private function createNewAdjunto($file, $usuario, $documento)
+    {
+        $adjunto = new Adjuntos();
+        $adjunto->setFile( $file );
+        $adjunto->setUrl( $file->getClientOriginalName() );
+        $adjunto->setTipo(1);
+        $adjunto->setFkDoc($documento);
+        $adjunto->setFechaC(new \DateTime());
+        $adjunto->setFechaM(new \DateTime());
+        $adjunto->setFkUsuario($usuario);
+
+        return $adjunto;
+    }
+
     private function setOnSession()
     {
         $session = $this->get('session');
@@ -479,7 +597,6 @@ class BandejaController extends Controller
         if ($session->get('departamento') === null)
             $session->set('departamento', $loginUser->getDepUsus()->matching($encargado)->get(0)->getFkDepto());
     }
-
 
     /*
       $filtersForm = $this->createFormBuilder()

@@ -34,6 +34,12 @@ ver_bandeja:
     requirements:
         id: '\d+'
 
+descargar_bandeja:
+    path:     /descargar/{id}
+    defaults: { _controller: BandejaBundle:Bandeja:descargarAdjunto  }
+    requirements:
+        id: '\d+'
+
 nuevo_bandeja:
     path: /nuevo
     defaults: { _controller: BandejaBundle:Bandeja:nuevo }

@@ -22,9 +22,9 @@ class Derivaciones
     private $idDerivacion;
 
     /**
-     * @var boolean
+     * @var integer
      *
-     * @ORM\Column(name="TIPO", type="boolean", nullable=true)
+     * @ORM\Column(name="TIPO", type="integer", nullable=true)
      */
     private $tipo;
 
@@ -121,7 +121,7 @@ class Derivaciones
     /**
      * Set tipo
      *
-     * @param boolean $tipo
+     * @param integer $tipo
      *
      * @return Derivaciones
      */
@@ -135,7 +135,7 @@ class Derivaciones
     /**
      * Get tipo
      *
-     * @return boolean
+     * @return integer
      */
     public function getTipo()
     {

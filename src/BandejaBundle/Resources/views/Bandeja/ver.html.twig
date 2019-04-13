@@ -1,5 +1,7 @@
 {% extends '::/Bandeja/layout2col.html.twig' %}
 
+{% set lastKeyDer = documento.derivaciones|length - 1 %}
+
 {% block page_title %}
 <h2 class="">
   ID-DOC N° {{ documento.idDoc }}
@@ -9,19 +11,22 @@
 {% endblock %}
 
 {% block filters %}
+{#  for der in  documento.derivaciones #}
+  {# dump(der) #}
+{# endfor #}
 {# 0=ARCHIVADO, 1=NORMAL, 2=PORRECIBIR #}
 <div class="">
-  {% if documento.estado != 0 %}
-  <button type="button" class="btn btn-primary">Guardar y Derivar</button>
-  <button type="button" class="btn btn-secondary">Solo Guardar</button>
+  {% if documento.estado == 1 %}
+  <button type="submit" class="btn btn-primary" form="derivar" name="guardar" value="derivar">Guardar y Derivar</button>
+  <button type="submit" class="btn btn-secondary" form="derivar" name="guardar" value="guardar">Solo Guardar</button>
   {% endif %}
 
   {% if documento.estado == 1 %}
-  <button type="button" class="btn btn-danger">Archivar</button>
+  <button type="submit" class="btn btn-danger" form="derivar" name="guardar" value="archivar">Archivar</button>
   {% elseif documento.estado == 0 %}
-  <button type="button" class="btn btn-warning">Desarchivar</button>
+  <button type="submit" class="btn btn-warning" form="derivar" name="guardar" value="desarchivar">Desarchivar</button>
   {% elseif documento.estado == 2 %}
-  <button type="button" class="btn btn-success">Recibido</button>
+  <button type="submit" class="btn btn-success" form="derivar" name="guardar" value="recibir">Recibido</button>
   {% endif %}
 </div>
 {% endblock %}
@@ -36,7 +41,7 @@
     </div>
     <div class="row">
       <div class="col-5"><h5>Fecha de Envío</h5></div>
-      <div class="col">{{ documento.fechaDoc | date('d/m/Y') }}</div>
+      <div class="col">{{ documento.fechaDoc|date('d/m/Y') }}</div>
     </div>
     <div class="row">
       <div class="col-5"><h5>Tipo Documento</h5></div>
@@ -44,37 +49,50 @@
     </div>
     <div class="row">
       <div class="col-5"><h5>Número Expediente</h5></div>
-      <div class="col">{% if not documento.nroExpediente %}Sin n° de expediente{% else %}<b>{{ documento.nroExpediente }}</b>{% endif %}</div>
+      <div class="col">{% if not documento.nroExpediente %}<span class="text-muted">Sin n° de expediente</span>{% else %}<b>{{ documento.nroExpediente }}</b>{% endif %}</div>
     </div>
     <div class="row">
       <div class="col-5"><h5>Fecha Recepción</h5></div>
-      <div class="col">01/01/1970</div>
+      <div class="col">{{ documento.derivaciones[lastKeyDer].fechaC|date('d/m/Y') }}</div>
     </div>
     <div class="row">
       <div class="col">
         <h5>Antecedentes</h5>
-        <p class="text-justify">{% if not documento.ant %}Sin antecedentes{% else %}{{ documento.ant }}{% endif %}</p>
+        <p class="text-justify" style="text-indent: 1em;">{% if not documento.ant %}<span class="text-muted">Sin antecedentes</span>{% else %}{{ documento.ant }}{% endif %}</p>
       </div>
     </div>
     <div class="row">
       <div class="col">
         <h5>Materia</h5>
-        <p class="text-justify">{% if not documento.mat %}Sin materia{% else %}{{ documento.mat }}{% endif %}</p>
+        <p class="text-justify" style="text-indent: 1em;">{% if not documento.mat %}<span class="text-muted">Sin materia</span>{% else %}{{ documento.mat }}{% endif %}</p>
       </div>
     </div>
     <div class="row">
       <div class="col">
         <h5>Extracto</h5>
-        <p class="text-justify">{% if not documento.ext %}Sin extracto{% else %}{{ documento.ext }}{% endif %}</p>
+        <p class="text-justify" style="text-indent: 1em;">{% if not documento.ext %}<span class="text-muted">Sin extracto</span>{% else %}{{ documento.ext }}{% endif %}</p>
       </div>
     </div>
+{% if adjuntos is not empty %}
+    <div class="row">
+      <div class="col">
+        <h5>Archivos Adjuntos</h5>
+	<ul class="list-unstyled components">
+	  {% for file in adjuntos %}
+            <li><a href="{{ url('descargar_bandeja', {'id': file.idAdjunto}) }}">{{ file.url }}</a></li>
+          {% endfor %}
+
+        </ul>
+      </div>
+    </div>
+{% endif %}
   </div>
 
   <div class="col">
-    <div class="row">
+    <div class="row"{% if documento.estado != 1 %} style="display: none;"{% endif %}>
       <div class="col">
         <h5>Derivar a</h5>
-        {{ form_start(derivarForm) }}
+        {{ form_start(derivarForm, {'attr': {'id': 'derivar', 'enctype': 'multipart/form-data'}}) }}
         {{ form_end(derivarForm) }}
       </div>
     </div>
@@ -142,4 +160,15 @@
     combine=true %}
   <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
+
+<script type="text/javascript">
+  $(document).ready( function() {
+    $('button[name="guardar"]').click( function() {
+      if ($(this).val() != 'derivar')
+        $('#derivar_originales').removeAttr('required');
+
+      return true;
+    });
+  });
+</script>
 {% endblock %}

@@ -29,7 +29,7 @@ BandejaBundle\Entity\Derivaciones:
                 strategy: IDENTITY
     fields:
         tipo:
-            type: boolean
+            type: integer
             nullable: true
             options:
                 comment: '1=ORIGINAL, 2=COPIA'
