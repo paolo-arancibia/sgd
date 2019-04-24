@@ -22,76 +22,81 @@
   {% endstylesheets %}
 
   <style type="text/css">
-    .doc-pendiente {
-      background-color: rgb(0, 123, 255, 0.1);
-    }
+   .doc-pendiente {
+       background-color: rgb(0, 123, 255, 0.1);
+   }
 
-    .doc-archivado {
-      background-color: rgb(255, 193, 7, 0.1);
-    }
+   .doc-archivado {
+       background-color: rgb(255, 193, 7, 0.1);
+   }
   </style>
 {% endblock %}
 
 {% block searcher %}
-  {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
+    {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
 {% endblock %}
 
 {% form_theme filtersForm _self %}
 
 {%- block choice_widget_expanded -%}
-  <div data-no="" {{ block('widget_container_attributes') }}>
     {%- for child in form %}
-        {{- form_widget(child) -}}
-        {{- form_label(child, null, {translation_domain: choice_translation_domain}) -}}
+	<div class="form-check" {{ block('widget_container_attributes') }}>
+	    {{- form_widget(child, {'attr': {'class': 'form-check-input'}}) -}}
+	    {{- form_label(child, null, {translation_domain: choice_translation_domain}) | raw -}}
+	</div>
     {% endfor -%}
-  </div>
 {%- endblock choice_widget_expanded -%}
 
 {% block radio_widget %}
     <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
 {% endblock %}
 
+{%- block form_label -%}
+    {% if label is not same as(false) -%}
+	{%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' form-check-label')|trim}) -%}
+	{%- if label == 'Pendientes' -%}
+	    {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' doc-pendiente px-2 py-1')|trim}) -%}
+	{%- endif -%}
+	{%- if label == 'Archivados' -%}
+	    {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' doc-archivado px-2 py-1')|trim}) -%}
+	{%- endif -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+        {%- if translation_domain is same as(false) -%}
+            {{- label -}}
+        {%- else -%}
+            {{- label|raw -}}
+        {%- endif -%}
+        </{{ element|default('label') }}>
+    {%- endif -%}
+{%- endblock form_label -%}
+
 {% block filters %}
-  {{ form_start(filtersForm) }}
-  {{ form_end(filtersForm) }}
-  <form id="filters" name="filter" class="collapse show" method="post">
-    <div class="form-row">
-      <div class="col-md-auto px-2">
-        <div class="form-check">
-	  <input class="form-check-input" type="radio" name="mostrar" id="pendientes" value="pendientes" />
-	  <label class="form-check-label doc-pendiente px-2 py-1" for="pendientes">Pendientes</label>
-        </div>
-
-        <div class="form-check">
-	  <input class="form-check-input" type="radio" name="mostrar" id="archivados" value="archivados"/>
-	  <label class="form-check-label doc-archivado px-2 py-1" for="archivados">Archivados</label>
-        </div>
-      </div>
-
-      <div class="col-md-auto px-3">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="limite" id="limite4" value="vencida" />
-          <label class="form-check-label" for="limite4">
-            <i class="fas fa-circle text-danger" >&nbsp;</i>Vencidos
-          </label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="limite" id="limite3" value="mas5" />
-          <label class="form-check-label" for="limite3">
-            <i class="fas fa-circle text-warning" >&nbsp;</i>&le; 5 días
-          </label>
-        </div>
-
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="limite" id="limite2" value="menos" />
-          <label class="form-check-label" for="limite2">
-            <i class="fas fa-circle text-success" >&nbsp;</i>&gt; 5 días
-          </label>
-        </div>
-      </div>
-    </div>
-  </form>
+    {{ form_start(filtersForm, {'attr': { 'id': 'filters', 'class': 'collapse show'}}) }}
+	<div class="form-row">
+	    <div class="col-md-auto px-2">
+		{{ form_widget(filtersForm.mostrar) }}
+	    </div>
+	    <div class="col-md-auto px-3">
+		{{ form_widget(filtersForm.limite) }}
+	    </div>
+	</div>
+    {{ form_end(filtersForm) }}
 
   <div class="col">
     <div class="row">

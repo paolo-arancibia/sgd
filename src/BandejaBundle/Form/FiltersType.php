@@ -13,7 +13,7 @@ class FiltersType extends AbstractType
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->setMethod('POST')
+            ->setMethod('post')
             ->add('mostrar', ChoiceType::class, [
                 'choices' => array(
                     'Pendientes' => 'pendientes',
@@ -24,12 +24,13 @@ class FiltersType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'placeholder' => false,
+                'attr' => ['class' => 'form-check-input']
             ])
             ->add('limite', ChoiceType::class, [
                 'choices' => [
-                    'Vencidos' => 'vencidos',
-                    '&le;5 días' => 'menos_5',
-                    '>5 días' => 'mas_5',
+                    '<i class="fas fa-circle text-danger">&nbsp;</i>Vencidos' => 'vencidos',
+                    '<i class="fas fa-circle text-warning">&nbsp;</i>&le; 5 días' => 'menos_5',
+                    '<i class="fas fa-circle text-success">&nbsp;</i>&gt; 5 días' => 'mas_5',
                 ],
                 'choices_as_values' => true,
                 'required' => false,
