@@ -37,7 +37,7 @@ class BandejaController extends Controller
         return $this->redirectToRoute('recibidos_bandeja');
     }
 
-    public function recibidosAction($page = 1)
+    public function recibidosAction(Request $request, $page = 1)
     {
         $this->setOnSession();
 
@@ -45,19 +45,33 @@ class BandejaController extends Controller
         $derivarForm = $this->createForm(DerivarType::class);
         $filtersForm = $this->createForm(FiltersType::class);
 
-        $docsByPage = 25; // documentos por página
+        $searchForm->handleRequest($request);
+        $derivarForm->handleRequest($request);
+        $filtersForm->handleRequest($request);
+
+        $docsByPage = 25; // documentos mostrados por pagina
+
+        if ($filtersForm->isSubmitted() && $filtersForm->isValid()) {
+            $filtersData = $filtersForm->getData();
+
+            extract($filtersData); // $mostrar y $limite
+        }
+
+        $mostrar = isset($mostrar) ? $mostrar : null;
+        $limite = isset($limite) ? $limite : null;
 
         $max_docs = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
-                  ->countRecibidosByDepto($this->get('session')->get('departamento'));
-
-        $max_page  = (int) ceil($max_docs / $docsByPage);
+                  ->countRecibidosByDepto($this->get('session')->get('departamento'), $mostrar, $limite);
 
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findRecibidosByDepto($this->get('session')->get('departamento'), ($page - 1) * $docsByPage, $docsByPage);
+                 ->findRecibidosByDepto($this->get('session')->get('departamento'), $mostrar, $limite, ($page - 1) * $docsByPage, $docsByPage);
+
+        $max_page = (int) ceil($max_docs / $docsByPage);
+        $max_page = ! $max_page ? 1 : $max_page; // si es 0, cambia a 1
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -231,7 +245,6 @@ class BandejaController extends Controller
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                         $documento,
-
                         $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
                         $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
@@ -258,8 +271,8 @@ class BandejaController extends Controller
 
                 $this->addFlash('success', sprintf('IDDOC %d archivado', $documento->getIdDoc()));
 
-            } elseif($request->get('guardar') === 'desarchivar'
-                     || $request->get('guardar') === 'recibir') {
+            } elseif ($request->get('guardar') === 'desarchivar'
+                      || $request->get('guardar') === 'recibir') {
                 $documento->setEstado(1);
 
                 $em->persist($documento);

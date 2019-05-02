@@ -114,25 +114,7 @@
           $('#sidebar').toggleClass('active');
         });
 
-        // activate deselect radio button
-        $( function() {
-          var allRadios = $(':radio')
-          var booRadio;
-
-          $.each( allRadios, function(){
-            this.onclick = function() {
-              if(booRadio == this) {
-                this.checked = false;
-                booRadio = null;
-
-              } else {
-                booRadio = this;
-              }
-            }
-          });
-        });
-
-        setTimeout( function(){
+        setTimeout( function() {
           $('.alert').alert('close');
         }, 5000);
       });

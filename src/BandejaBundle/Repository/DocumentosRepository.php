@@ -6,8 +6,24 @@ use Doctrine\ORM\EntityRepository;
 
 class DocumentosRepository extends EntityRepository
 {
-    public function findRecibidosByDepto($depto, $offset = 0, $limit = 0)
+    public function findRecibidosByDepto($depto, $mostrar = null, $limite = null, $offset = 0, $limit = 0)
     {
+        $query = $this->getEntityManager()->createQueryBuilder();
+
+        $derivaciones = $query->select('MAX(der.idDerivacion) as idDer')
+                      ->addSelect('IDENTITY(der.fkDoc) as fkDoc')
+                      ->addSelect('IDENTITY(der.fkDeptodes) as fkDeptodes')
+                      ->from('BandejaBundle:Derivaciones', 'der')
+                      ->groupBy('der.fkDoc')
+                      ->orderBy('der.fkDoc', 'DESC')
+                      ->setMaxResults(9999)
+                      ->getQuery()
+                      ->getResult();
+
+        $derivaciones = array_filter($derivaciones, function($var) use ($depto) {
+            return $var['fkDeptodes'] == $depto->getIdDepartamento();
+        });
+
         $query = $this->getEntityManager()->createQueryBuilder();
 
         $query = $query->select('docs')
@@ -16,12 +32,36 @@ class DocumentosRepository extends EntityRepository
                ->join('BandejaBundle:Derivaciones', 'der', 'with',
                       $query->expr()->andX(
                           $query->expr()->eq('docs.idDoc', 'der.fkDoc'),
+                          $query->expr()->in('der.idDerivacion', array_column($derivaciones, 'idDer')),
                           $query->expr()->isNull('der.fechaE')
                       ))
-               ->where('der.fkDeptodes = :DEPTO')
-               ->andWhere('docs.estado IN (0,1)')
-               ->setParameter('DEPTO', $depto)
-               ->getQuery();
+               ->where('1 = 1');
+
+        if (isset($mostrar))
+            $query->andWhere($query->expr()->eq('docs.estado', $mostrar == 'archivados' ? 0 : 1));
+        else
+            $query->andWhere('docs.estado IN (0,1)');
+
+        if (isset($limite)) {
+            switch ($limite) {
+                case 'vencidos':
+                    $query->andWhere($query->expr()->lt('docs.fechaDoc', date('\'Y-m-d\'')));
+                    break;
+                case 'menos_5':
+                    $query->andWhere($query->expr()->gt('docs.fechaDoc', date('\'Y-m-d\'')));
+                    $query->andWhere($query->expr()->lte(
+                        'docs.fechaDoc',
+                        date('\'Y-m-d\'', time() + (5 * 24 * 60 * 60)
+                        ))) ; // 5 dias
+                    break;
+                case 'mas_5':
+                    $query->andWhere($query->expr()->gt(
+                        'docs.fechaDoc',
+                        date('\'Y-m-d\'', time() + (5 * 24 * 60 * 60)
+                        ))) ; // 5 dias
+                    break;
+            }
+        }
 
         if ($offset)
             $query->setFirstResult($offset); // $offset
@@ -29,12 +69,14 @@ class DocumentosRepository extends EntityRepository
         if ($limit)
             $query->setMaxResults($limit); // $limit
 
+        $query = $query->getQuery();
+        //dump($query->getDql()); die;
         return $query->getResult();
     }
 
-    public function countRecibidosByDepto($depto)
+    public function countRecibidosByDepto($depto, $mostrar = null, $limite = null)
     {
-        $docs = $this->findRecibidosByDepto($depto);
+        $docs = $this->findRecibidosByDepto($depto, $mostrar, $limite);
         return (int) count($docs) / 2;
     }
 

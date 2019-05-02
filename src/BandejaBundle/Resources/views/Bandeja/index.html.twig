@@ -39,64 +39,64 @@
 {% form_theme filtersForm _self %}
 
 {%- block choice_widget_expanded -%}
-    {%- for child in form %}
-	<div class="form-check" {{ block('widget_container_attributes') }}>
-	    {{- form_widget(child, {'attr': {'class': 'form-check-input'}}) -}}
-	    {{- form_label(child, null, {translation_domain: choice_translation_domain}) | raw -}}
-	</div>
-    {% endfor -%}
+  {%- for child in form %}
+    <div class="form-check" {{ block('widget_container_attributes') }}>
+      {{- form_widget(child, {'attr': {'class': 'form-check-input'}}) -}}
+      {{- form_label(child, null, {translation_domain: choice_translation_domain}) | raw -}}
+    </div>
+  {% endfor -%}
 {%- endblock choice_widget_expanded -%}
 
 {% block radio_widget %}
-    <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+  <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
 {% endblock %}
 
 {%- block form_label -%}
-    {% if label is not same as(false) -%}
-	{%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' form-check-label')|trim}) -%}
-	{%- if label == 'Pendientes' -%}
-	    {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' doc-pendiente px-2 py-1')|trim}) -%}
-	{%- endif -%}
-	{%- if label == 'Archivados' -%}
-	    {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' doc-archivado px-2 py-1')|trim}) -%}
-	{%- endif -%}
-        {% if not compound -%}
-            {% set label_attr = label_attr|merge({'for': id}) %}
-        {%- endif -%}
-        {% if required -%}
-            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
-        {%- endif -%}
-        {% if label is empty -%}
-            {%- if label_format is not empty -%}
-                {% set label = label_format|replace({
-                    '%name%': name,
-                    '%id%': id,
-                }) %}
-            {%- else -%}
-                {% set label = name|humanize %}
-            {%- endif -%}
-        {%- endif -%}
-        <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
-        {%- if translation_domain is same as(false) -%}
-            {{- label -}}
-        {%- else -%}
-            {{- label|raw -}}
-        {%- endif -%}
-        </{{ element|default('label') }}>
+  {% if label is not same as(false) -%}
+    {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' form-check-label')|trim}) -%}
+    {%- if label == 'Pendientes' -%}
+      {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' doc-pendiente px-2 py-1')|trim}) -%}
     {%- endif -%}
+    {%- if label == 'Archivados' -%}
+      {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' doc-archivado px-2 py-1')|trim}) -%}
+    {%- endif -%}
+    {% if not compound -%}
+      {% set label_attr = label_attr|merge({'for': id}) %}
+    {%- endif -%}
+    {% if required -%}
+      {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+    {%- endif -%}
+    {% if label is empty -%}
+      {%- if label_format is not empty -%}
+        {% set label = label_format|replace({
+          '%name%': name,
+          '%id%': id,
+        }) %}
+      {%- else -%}
+        {% set label = name|humanize %}
+      {%- endif -%}
+    {%- endif -%}
+    <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+    {%- if translation_domain is same as(false) -%}
+      {{- label -}}
+    {%- else -%}
+      {{- label|raw -}}
+    {%- endif -%}
+    </{{ element|default('label') }}>
+  {%- endif -%}
 {%- endblock form_label -%}
 
 {% block filters %}
-    {{ form_start(filtersForm, {'attr': { 'id': 'filters', 'class': 'collapse show'}}) }}
-	<div class="form-row">
-	    <div class="col-md-auto px-2">
-		{{ form_widget(filtersForm.mostrar) }}
-	    </div>
-	    <div class="col-md-auto px-3">
-		{{ form_widget(filtersForm.limite) }}
-	    </div>
-	</div>
-    {{ form_end(filtersForm) }}
+  {{ form_start(filtersForm, {'attr': { 'id': 'filters', 'class': 'collapse show'}}) }}
+    <div class="form-row">
+      <div class="col-md-auto px-2">
+	{{ form_widget(filtersForm.mostrar) }}
+      </div>
+      <div class="col-md-auto px-3">
+	{{ form_widget(filtersForm.limite) }}
+      </div>
+    </div>
+  {{ form_end(filtersForm) }}
 
   <div class="col">
     <div class="row">
@@ -166,11 +166,32 @@
   <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
 
-<script type="text/javascript">
-$(document).ready( function() {
-   $('#pendientes, #archivados, input[name="limite"]').click( function() {
-       $('form[name="filter"]').submit();
+  <script type="text/javascript">
+   $(document).ready( function() {
+
+     // activate deselect radio button
+
+     var allRadios = $(':radio');
+     var booRadio;
+
+     $.each( allRadios, function() {
+       this.onclick = function() {
+         if(booRadio == this) {
+           this.checked = false;
+           booRadio = null;
+	   $('#filters').submit();
+         } else {
+           booRadio = this;
+         }
+       }
+     });
+
+     $.each( allRadios, function() {
+       this.onchange = function() {
+	 $('#filters').submit();
+       }
+     });
    });
-});
-</script>
+  </script>
+
 {% endblock %}
