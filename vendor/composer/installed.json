@@ -1138,24 +1138,24 @@
     },
     {
         "name": "kartik-v/bootstrap-fileinput",
-        "version": "v4.5.2",
-        "version_normalized": "4.5.2.0",
+        "version": "v5.0.2",
+        "version_normalized": "5.0.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/bootstrap-fileinput.git",
-            "reference": "80ea0aae52406911519c602978e4e51150c7bab7"
+            "reference": "1d40e3e772e4de0f0777655eaf108a41c1d4cfd3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/80ea0aae52406911519c602978e4e51150c7bab7",
-            "reference": "80ea0aae52406911519c602978e4e51150c7bab7",
+            "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/1d40e3e772e4de0f0777655eaf108a41c1d4cfd3",
+            "reference": "1d40e3e772e4de0f0777655eaf108a41c1d4cfd3",
             "shasum": ""
         },
-        "time": "2019-01-03T02:58:32+00:00",
+        "time": "2019-04-18T19:58:53+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "4.5.x-dev"
+                "dev-master": "5.0.x-dev"
             }
         },
         "installation-source": "source",
