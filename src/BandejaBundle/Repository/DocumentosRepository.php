@@ -48,8 +48,8 @@ class DocumentosRepository extends EntityRepository
                     $query->andWhere($query->expr()->lt('docs.fechaDoc', date('\'Y-m-d\'')));
                     break;
                 case 'menos_5':
-                    $query->andWhere($query->expr()->gt('docs.fechaDoc', date('\'Y-m-d\'')));
-                    $query->andWhere($query->expr()->lte(
+                    $query->andWhere($query->expr()->gte('docs.fechaDoc', date('\'Y-m-d\'')));
+                    $query->andWhere($query->expr()->lt(
                         'docs.fechaDoc',
                         date('\'Y-m-d\'', time() + (5 * 24 * 60 * 60)
                         ))) ; // 5 dias
