@@ -79,7 +79,7 @@
         <h5>Archivos Adjuntos</h5>
 	<ul class="list-unstyled components">
 	  {% for file in adjuntos %}
-            <li><a href="{{ url('descargar_bandeja', {'id': file.idAdjunto}) }}">{{ file.url }}</a></li>
+            <li><a href="{{ url('descargar_bandeja', {'id': file.idAdjunto}) }}">{{ file.nombreOriginal }}</a></li>
           {% endfor %}
 
         </ul>

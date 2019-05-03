@@ -34,6 +34,13 @@ class Adjuntos
     private $url;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="NOMBRE_ORIGINAL", type="string", length=255, nullable=false)
+     */
+    private $nombreOriginal;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="TIPO", type="boolean", nullable=true)
@@ -116,6 +123,30 @@ class Adjuntos
     public function getUrl()
     {
         return $this->url;
+    }
+
+    /**
+     * Set nombreOriginal
+     *
+     * @param string $nombreOriginal
+     *
+     * @return Adjuntos
+     */
+    public function setNombreOriginal($nombreOriginal)
+    {
+        $this->nombreOriginal = $nombreOriginal;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreOriginal
+     *
+     * @return string
+     */
+    public function getNombreOriginal()
+    {
+        return $this->nombreOriginal;
     }
 
     /**
@@ -326,11 +357,11 @@ class Adjuntos
         // target filename to move to
         $this->getFile()->move(
             $this->getUploadRootDir(),
-            $this->getFile()->getClientOriginalName()
+            $this->url
         );
 
         // set the path property to the filename where you've saved the file
-        $this->url = $this->getFile()->getClientOriginalName();
+        //$this->url = $this->getFile()->getClientOriginalName();
 
         // clean up the file property as you won't need it anymore
         $this->file = null;

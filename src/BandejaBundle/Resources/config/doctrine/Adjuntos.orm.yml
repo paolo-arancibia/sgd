@@ -26,6 +26,13 @@ BandejaBundle\Entity\Adjuntos:
             options:
                 fixed: false
             column: URL
+        nombreOriginal:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: NOMBRE_ORIGINAL
         tipo:
             type: boolean
             nullable: true

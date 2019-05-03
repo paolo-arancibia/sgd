@@ -44,6 +44,6 @@ security:
         - { path: ^/porrecibir, roles: ROLE_ACCESS }
         - { path: ^/despachados, roles: ROLE_ACCESS }
         - { path: ^/ver, roles: ROLE_ACCESS }
-        - { path: ^/editar, roles: ROLE_ACCESS }
+        - { path: ^/nuevo, roles: ROLE_ACCESS }
         - { path: ^/personas, roles: ROLE_ACCESS }
         - { path: ^/departamentos, roles: ROLE_ACCESS }

@@ -68,10 +68,16 @@ class BandejaController extends Controller
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findRecibidosByDepto($this->get('session')->get('departamento'), $mostrar, $limite, ($page - 1) * $docsByPage, $docsByPage);
+                 ->findRecibidosByDepto(
+                     $this->get('session')
+                     ->get('departamento'),
+                     $mostrar, $limite,
+                     ($page - 1) * $docsByPage,
+                     $docsByPage
+                 );
 
         $max_page = (int) ceil($max_docs / $docsByPage);
-        $max_page = ! $max_page ? 1 : $max_page; // si es 0, cambia a 1
+        $max_page = ! $max_page ? 1 : $max_page; // si es $max_page == 0, cambia a 1
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -310,7 +316,7 @@ class BandejaController extends Controller
             . $adjunto->getUrl());
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $adjunto->getUrl()
+            $adjunto->getNombreOriginal()
         );
 
         return $response;
@@ -586,8 +592,9 @@ class BandejaController extends Controller
     private function createNewAdjunto($file, $usuario, $documento)
     {
         $adjunto = new Adjuntos();
-        $adjunto->setFile( $file );
-        $adjunto->setUrl( $file->getClientOriginalName() );
+        $adjunto->setFile($file);
+        $adjunto->setNombreOriginal($file->getClientOriginalName());
+        $adjunto->setUrl(uniqid(null, true));
         $adjunto->setTipo(1);
         $adjunto->setFkDoc($documento);
         $adjunto->setFechaC(new \DateTime());
@@ -610,19 +617,4 @@ class BandejaController extends Controller
         if ($session->get('departamento') === null)
             $session->set('departamento', $loginUser->getDepUsus()->matching($encargado)->get(0)->getFkDepto());
     }
-
-    /*
-      $filtersForm = $this->createFormBuilder()
-
-      ->add('clases', ChoiceType::class, [
-      'choices' => [
-      'Pendientes' => 'pendientes',
-      'Archivados' => 'archivados',
-      ],
-      'choices_as_values' => true,
-      'expanded' => true,
-      'multiple' => false,
-      'label_attr' => ['class' => 'form-check-label px-2 py-1'],
-      ])
-      ->getForm();*/
 }
