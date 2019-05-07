@@ -14,6 +14,7 @@ use BandejaBundle\Form\DerivarType;
 use BandejaBundle\Form\FiltersType;
 use BandejaBundle\Form\NuevoDocumentoType;
 use BandejaBundle\Form\PersonaType;
+use BandejaBundle\Form\RecibirType;
 use BandejaBundle\Form\RemitenteType;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
@@ -102,11 +103,15 @@ class BandejaController extends Controller
         );
     }
 
-    public function porrecibirAction($page = 0)
+    public function porrecibirAction(Request $request, $page = 0)
     {
         $this->setOnSession();
 
         $searchForm = $this->createForm(BuscarType::class);
+        $recibirForm = $this->createForm(RecibirType::class);
+
+        $searchForm->handleRequest($request);
+        $recibirForm->handleRequest($request);
 
         $docsByPage = 25; // documentos por página
 
@@ -114,7 +119,9 @@ class BandejaController extends Controller
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
                   ->countPorrecibirByDepto($this->get('session')->get('departamento'));
+
         $max_page  = (int) ceil($max_docs / $docsByPage);
+        $max_page = ! $max_page ? 1 : $max_page; // si es $max_page == 0, cambia a 1
 
         $results = $this->getDoctrine()
                  ->getManager()
@@ -129,6 +136,12 @@ class BandejaController extends Controller
             return $var instanceof Derivaciones;
         });
 
+        if ($recibirForm->isSubmitted()) {
+            $recibirData = $recibirForm->getData();
+
+            dump($recibirData); die;
+        }
+
         return $this->render(
             'BandejaBundle:Bandeja:porrecibir.html.twig',
             array(
@@ -138,6 +151,7 @@ class BandejaController extends Controller
                 'max_page' => $max_page,
                 'menu_op' => 'porrecibir',
                 'searchForm' => $searchForm->createView(),
+                'recibirForm' => $recibirForm->createView(),
             )
         );
     }
@@ -187,8 +201,12 @@ class BandejaController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $derivarForm = $this->createForm(DerivarType::class);
-        $derivarForm->handleRequest($request);
+        $recibirForm = $this->createForm(RecibirType::class);
 
+        $derivarForm->handleRequest($request);
+        $recibirForm->handleRequest($request);
+
+        // get documento
         $repo = $this->getDoctrine()->getRepository('BandejaBundle:Documentos');
         $query = $repo->createQueryBuilder('doc')
                ->where('doc.idDoc = :ID')
@@ -197,6 +215,26 @@ class BandejaController extends Controller
                ->getQuery();
 
         $documento = $query->getResult(); // getResult() retorna siempre un array
+
+        // get last derivacion
+        $repo = $this->getDoctrine()->getRepository('BandejaBundle:Derivaciones');
+        $query = $repo->createQueryBuilder('der')
+               ->select('max(der.idDerivacion) as idDerivacion')
+               ->where('der.fkDoc = :ID')
+               ->groupBy('der.fkDoc')
+               ->setParameter('ID', $id)
+               ->getQuery();
+
+        $maxIdDer = $query->getArrayResult()[0]['idDerivacion'];
+
+        $query = $repo->createQueryBuilder('der')
+               ->where('der.idDerivacion = :ID')
+               ->setParameter('ID', $maxIdDer)
+               ->getQuery();
+
+        $derivacion = $query->getResult()[0];
+
+        $urlArray = explode('/', $request->headers->get('referer'));
 
         if (!isset($documento) || empty($documento)) {
             $this->addFlash('warning', 'No existe en docuemnto IDDOC ' . $id);
@@ -248,6 +286,7 @@ class BandejaController extends Controller
                 }
 
                 foreach ($derivarData['copias'] as $depto) {
+
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                         $documento,
@@ -266,7 +305,7 @@ class BandejaController extends Controller
                 );
 
             } elseif ($request->get('guardar') === 'guardar') {
-                $this->addFlash('success', sprintf('<b>IDDOC %d</b> guardado', $documento->getIdDoc()));
+                $this->addFlash('success', sprintf('IDDOC %d guardado', $documento->getIdDoc()));
                 $em->flush();
 
             } elseif ($request->get('guardar') === 'archivar') {
@@ -291,7 +330,19 @@ class BandejaController extends Controller
             return $this->redirectToRoute('recibidos_bandeja');
         }
 
-        $urlArray = explode('/', $request->headers->get('referer'));
+        if ($recibirForm->isSubmitted() && $recibirForm->isValid()) {
+            $recibirData = $recibirForm->getData();
+
+            $documento->setEstado(1); // estado NORMAL
+            $derivacion->setNota($recibirData['nota']);
+
+            $em->persist($documento);
+            $em->persist($derivacion);
+            $em->flush();
+
+            $this->addFlash('success', sprintf('IDDOC %d recibido', $documento->getIdDoc()));
+            return $this->redirectToRoute('recibidos_bandeja');
+        }
 
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
@@ -299,9 +350,11 @@ class BandejaController extends Controller
                 'id' => $id,
                 'menu_op' => end($urlArray),
                 'documento' => $documento,
+                'derivacion' => $derivacion,
                 'adjuntos' => $adjuntos,
                 'files_dir' => Adjuntos::UPLOADED_FILE_DIRECTORY,
                 'derivarForm' => $derivarForm->createView(),
+                'recibirForm' => $recibirForm->createView(),
             )
         );
     }

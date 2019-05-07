@@ -5,15 +5,14 @@
 {% block page_title %}
 <h2 class="">
   ID-DOC N° {{ documento.idDoc }}
-  <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
+  {% if derivacion.nota %}
+    <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
+  {% endif %}
 </h2>
-{% include 'BandejaBundle:Bandeja:nota.html.twig' %}
+{% include 'BandejaBundle:Bandeja:nota.html.twig' with {'nota': derivacion.nota} %}
 {% endblock %}
 
 {% block filters %}
-{#  for der in  documento.derivaciones #}
-  {# dump(der) #}
-{# endfor #}
 {# 0=ARCHIVADO, 1=NORMAL, 2=PORRECIBIR #}
 <div class="">
   {% if documento.estado == 1 %}
@@ -26,100 +25,106 @@
   {% elseif documento.estado == 0 %}
   <button type="submit" class="btn btn-warning" form="derivar" name="guardar" value="desarchivar">Desarchivar</button>
   {% elseif documento.estado == 2 %}
-  <button type="submit" class="btn btn-success" form="derivar" name="guardar" value="recibir">Recibido</button>
+  <button type="submit" class="btn btn-success" form="recibir" name="guardar" value="recibir">Recibir</button>
   {% endif %}
 </div>
 {% endblock %}
 
 
 {% block content %}
-<div id="data" class="row">
-  <div class="col">
-    <div class="row">
-      <div class="col-5"><h5>Remitente</h5></div>
-      <div class="col"><b>{{ documento.fkRutPersona.rut }}-{{ documento.fkRutPersona.vrut }} {{ documento.fkRutPersona.nombres }} {{ documento.fkRutPersona.apellidopaterno }} {{ documento.fkRutPersona.apellidomaterno }}</b></div>
-    </div>
-    <div class="row">
-      <div class="col-5"><h5>Fecha de Envío</h5></div>
-      <div class="col">{{ documento.fechaDoc|date('d/m/Y') }}</div>
-    </div>
-    <div class="row">
-      <div class="col-5"><h5>Tipo Documento</h5></div>
-      <div class="col">{{ documento.fkTipoDoc.descripcion }}</div>
-    </div>
-    <div class="row">
-      <div class="col-5"><h5>Número Expediente</h5></div>
-      <div class="col">{% if not documento.nroExpediente %}<span class="text-muted">Sin n° de expediente</span>{% else %}<b>{{ documento.nroExpediente }}</b>{% endif %}</div>
-    </div>
-    <div class="row">
-      <div class="col-5"><h5>Fecha Recepción</h5></div>
-      <div class="col">{{ documento.derivaciones[lastKeyDer].fechaC|date('d/m/Y') }}</div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <h5>Antecedentes</h5>
-        <p class="text-justify" style="text-indent: 1em;">{% if not documento.ant %}<span class="text-muted">Sin antecedentes</span>{% else %}{{ documento.ant }}{% endif %}</p>
+  <div id="data" class="row">
+    <div class="col">
+      <div class="row">
+	<div class="col-5"><h5>Remitente</h5></div>
+	<div class="col"><b>{{ documento.fkRutPersona.rut }}-{{ documento.fkRutPersona.vrut }} {{ documento.fkRutPersona.nombres }} {{ documento.fkRutPersona.apellidopaterno }} {{ documento.fkRutPersona.apellidomaterno }}</b></div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <h5>Materia</h5>
-        <p class="text-justify" style="text-indent: 1em;">{% if not documento.mat %}<span class="text-muted">Sin materia</span>{% else %}{{ documento.mat }}{% endif %}</p>
+      <div class="row">
+	<div class="col-5"><h5>Fecha de Envío</h5></div>
+	<div class="col">{{ documento.fechaDoc|date('d/m/Y') }}</div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <h5>Extracto</h5>
-        <p class="text-justify" style="text-indent: 1em;">{% if not documento.ext %}<span class="text-muted">Sin extracto</span>{% else %}{{ documento.ext }}{% endif %}</p>
+      <div class="row">
+	<div class="col-5"><h5>Tipo Documento</h5></div>
+	<div class="col">{{ documento.fkTipoDoc.descripcion }}</div>
       </div>
-    </div>
-{% if adjuntos is not empty %}
-    <div class="row">
-      <div class="col">
-        <h5>Archivos Adjuntos</h5>
-	<ul class="list-unstyled components">
-	  {% for file in adjuntos %}
-            <li><a href="{{ url('descargar_bandeja', {'id': file.idAdjunto}) }}">{{ file.nombreOriginal }}</a></li>
-          {% endfor %}
+      <div class="row">
+	<div class="col-5"><h5>Número Expediente</h5></div>
+	<div class="col">{% if not documento.nroExpediente %}<span class="text-muted">Sin n° de expediente</span>{% else %}<b>{{ documento.nroExpediente }}</b>{% endif %}</div>
+      </div>
+      <div class="row">
+	<div class="col-5"><h5>Fecha Recepción</h5></div>
+	<div class="col">{{ documento.derivaciones[lastKeyDer].fechaC|date('d/m/Y') }}</div>
+      </div>
+      <div class="row">
+	<div class="col">
+          <h5>Antecedentes</h5>
+          <p class="text-justify" style="text-indent: 1em;">{% if not documento.ant %}<span class="text-muted">Sin antecedentes</span>{% else %}{{ documento.ant }}{% endif %}</p>
+	</div>
+      </div>
+      <div class="row">
+	<div class="col">
+          <h5>Materia</h5>
+          <p class="text-justify" style="text-indent: 1em;">{% if not documento.mat %}<span class="text-muted">Sin materia</span>{% else %}{{ documento.mat }}{% endif %}</p>
+	</div>
+      </div>
+      <div class="row">
+	<div class="col">
+          <h5>Extracto</h5>
+          <p class="text-justify" style="text-indent: 1em;">{% if not documento.ext %}<span class="text-muted">Sin extracto</span>{% else %}{{ documento.ext }}{% endif %}</p>
+	</div>
+      </div>
+      {% if adjuntos is not empty %}
+	<div class="row">
+	  <div class="col">
+            <h5>Archivos Adjuntos</h5>
+	    <ul class="list-unstyled components">
+	      {% for file in adjuntos %}
+		<li><a href="{{ url('descargar_bandeja', {'id': file.idAdjunto}) }}">{{ file.nombreOriginal }}</a></li>
+              {% endfor %}
 
-        </ul>
-      </div>
+            </ul>
+	  </div>
+	</div>
+      {% endif %}
     </div>
-{% endif %}
-  </div>
 
-  <div class="col">
-    <div class="row"{% if documento.estado != 1 %} style="display: none;"{% endif %}>
-      <div class="col">
-        <h5>Derivar a</h5>
-        {{ form_start(derivarForm, {'attr': {'id': 'derivar', 'enctype': 'multipart/form-data'}}) }}
-        {{ form_end(derivarForm) }}
+    <div class="col">
+      <div class="row">
+	<div class="col"{% if documento.estado == 0 %} style="display: none;"{% endif %}>
+	  {% if documento.estado == 1 or documento.estado == 0 %}
+            <h5>Derivar a</h5>
+            {{ form_start(derivarForm, {'attr': {'id': 'derivar', 'enctype': 'multipart/form-data'}}) }}
+            {{ form_end(derivarForm) }}
+	  {% elseif documento.estado == 2 %}
+            <h5>Recibir</h5>
+            {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
+            {{ form_end(recibirForm) }}
+	  {% endif %}
+	</div>
       </div>
     </div>
   </div>
-</div>
 {% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
   {% stylesheets
-    '../vendor/harvesthq/chosen/chosen.css'
-    filter='cssrewrite'
-    output='css/chosen.css'
-    combine=true %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+  '../vendor/harvesthq/chosen/chosen.css'
+  filter='cssrewrite'
+  output='css/chosen.css'
+  combine=true %}
+  <link rel="stylesheet" href="{{ asset_url }}" />
   {% endstylesheets %}
 
   {% stylesheets
-    '../vendor/kartik-v/bootstrap-fileinput/css/fileinput.css'
-    output='css/fileinput.css'
-    combine=true %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+  '../vendor/kartik-v/bootstrap-fileinput/css/fileinput.css'
+  output='css/fileinput.css'
+  combine=true %}
+  <link rel="stylesheet" href="{{ asset_url }}" />
   {% endstylesheets %}
   <style ttype="text/css">
-    #data > div.row {
-      margin-bottom: .5rem !important;
-    }
+   #data > div.row {
+     margin-bottom: .5rem !important;
+   }
   </style>
 {% endblock %}
 
@@ -127,48 +132,55 @@
   {{ parent() }}
 
   {% javascripts
-    '../vendor/harvesthq/chosen/chosen.jquery.js'
-    output='js/chosen.jquery.js'
-    combine=true %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
-    output='js/fileinput.min.js'
-    combine=true %}
-    <script src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js'
-    output='js/theme.min.js'
-    combine=true %}
-    <script src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../vendor/kartik-v/bootstrap-fileinput/js/locales/es.js'
-    output='js/fileinput-es.js'
-    combine=true %}
-    <script src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../src/BandejaBundle/Resources/js/_form_derivar.js'
-    output='js/_form_derivar.js'
-    combine=true %}
+  '../vendor/harvesthq/chosen/chosen.jquery.js'
+  output='js/chosen.jquery.js'
+  combine=true %}
   <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
 
-<script type="text/javascript">
-  $(document).ready( function() {
-    $('button[name="guardar"]').click( function() {
-      if ($(this).val() != 'derivar')
-        $('#derivar_originales').removeAttr('required');
+  {% javascripts
+  '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
+  output='js/fileinput.min.js'
+  combine=true %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
 
-      return true;
-    });
-  });
-</script>
+  {% javascripts
+  '../vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js'
+  output='js/theme.min.js'
+  combine=true %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+  '../vendor/kartik-v/bootstrap-fileinput/js/locales/es.js'
+  output='js/fileinput-es.js'
+  combine=true %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+  '../src/BandejaBundle/Resources/js/_form_derivar.js'
+  output='js/_form_derivar.js'
+  combine=true %}
+  <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  <script type="text/javascript">
+   $(document).ready( function() {
+     $('button[name="guardar"]').click( function() {
+       if ($(this).val() != 'derivar')
+         $('#derivar_originales').removeAttr('required');
+
+       if ($(this).val() == 'archivar')
+         return confirm("¿Esta seguro que quere archivar este documento?");
+       else if ($(this).val() == 'derivar')
+         return confirm("¿Esta seguro que quere derivar este documento?");
+       else if ($(this).val() == 'desarchivar')
+         return confirm("¿Esta seguro que quere desarchivar este documento?");
+
+       return true;
+     });
+   });
+  </script>
 {% endblock %}
