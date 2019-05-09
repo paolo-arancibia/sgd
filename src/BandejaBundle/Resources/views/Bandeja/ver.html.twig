@@ -3,31 +3,32 @@
 {% set lastKeyDer = documento.derivaciones|length - 1 %}
 
 {% block page_title %}
-<h2 class="">
-  ID-DOC N° {{ documento.idDoc }}
-  {% if derivacion.nota %}
-    <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
-  {% endif %}
-</h2>
-{% include 'BandejaBundle:Bandeja:nota.html.twig' with {'nota': derivacion.nota} %}
+  <h2 class="">
+    ID-DOC N° {{ documento.idDoc }}
+    {% if derivacion.nota %}
+      <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
+    {% endif %}
+  </h2>
+  {% include 'BandejaBundle:Bandeja:nota.html.twig' with {'nota': derivacion.nota} %}
 {% endblock %}
 
 {% block filters %}
-{# 0=ARCHIVADO, 1=NORMAL, 2=PORRECIBIR #}
-<div class="">
-  {% if documento.estado == 1 %}
-  <button type="submit" class="btn btn-primary" form="derivar" name="guardar" value="derivar">Guardar y Derivar</button>
-  <button type="submit" class="btn btn-secondary" form="derivar" name="guardar" value="guardar">Solo Guardar</button>
-  {% endif %}
+  {# 0=ARCHIVADO, 1=NORMAL, 2=PORRECIBIR #}
+  <div class="">
+    {% if documento.estado == 1 %}
+      <button type="submit" class="btn btn-primary" form="derivar" name="guardar" value="derivar">Guardar y Derivar</button>
+      <button type="submit" class="btn btn-secondary" form="derivar" name="guardar" value="guardar">Solo Guardar</button>
+    {% endif %}
 
-  {% if documento.estado == 1 %}
-  <button type="submit" class="btn btn-danger" form="derivar" name="guardar" value="archivar">Archivar</button>
-  {% elseif documento.estado == 0 %}
-  <button type="submit" class="btn btn-warning" form="derivar" name="guardar" value="desarchivar">Desarchivar</button>
-  {% elseif documento.estado == 2 %}
-  <button type="submit" class="btn btn-success" form="recibir" name="guardar" value="recibir">Recibir</button>
-  {% endif %}
-</div>
+    {% if documento.estado == 1 %}
+      <button type="submit" class="btn btn-danger" form="derivar" name="guardar" value="archivar">Archivar</button>
+    {% elseif documento.estado == 0 %}
+      <button type="submit" class="btn btn-warning" form="derivar" name="guardar" value="desarchivar">Desarchivar</button>
+    {% elseif documento.estado == 2 %}
+      {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
+      {{ form_end(recibirForm) }}
+    {% endif %}
+  </div>
 {% endblock %}
 
 
@@ -94,10 +95,6 @@
             <h5>Derivar a</h5>
             {{ form_start(derivarForm, {'attr': {'id': 'derivar', 'enctype': 'multipart/form-data'}}) }}
             {{ form_end(derivarForm) }}
-	  {% elseif documento.estado == 2 %}
-            <h5>Recibir</h5>
-            {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
-            {{ form_end(recibirForm) }}
 	  {% endif %}
 	</div>
       </div>
@@ -180,6 +177,10 @@
          return confirm("¿Esta seguro que quere desarchivar este documento?");
 
        return true;
+     });
+
+     $('#recibir').submit( function() {
+       return confirm('¿Esta seguro que quere recibir este documento?');
      });
    });
   </script>

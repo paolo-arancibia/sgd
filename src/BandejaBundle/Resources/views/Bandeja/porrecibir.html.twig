@@ -6,10 +6,9 @@
 
 {% block filters %}
   <div id="actions" class="collapse">
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#recibidoModal">Recibido</button>
+    {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
+    {{ form_end(recibirForm) }}
   </div>
-
-  {% include 'BandejaBundle:Bandeja:recibir.html.twig' %}
 {% endblock %}
 
 {% block searcher %}
@@ -32,4 +31,16 @@
     combine=true %}
   <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
+
+  <script type="text/javascript">
+   $( function() {
+     $('#recibir').submit( function() {
+       $('input[name="docs[]"]').clone()
+				.css('display', 'none')
+				.appendTo(this);
+
+       return confirm('¿Estás seguro que quieres recibir estos documentos?');
+     });
+   });
+  </script>
 {% endblock %}

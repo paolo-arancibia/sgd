@@ -18,6 +18,7 @@ use BandejaBundle\Form\RecibirType;
 use BandejaBundle\Form\RemitenteType;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -136,10 +137,40 @@ class BandejaController extends Controller
             return $var instanceof Derivaciones;
         });
 
+        // accion de recibir
         if ($recibirForm->isSubmitted()) {
-            $recibirData = $recibirForm->getData();
+            $docs = $request->get('docs');
+            $documentos = array();
 
-            dump($recibirData); die;
+            if (isset($docs) && ! empty($docs)) {
+                $query = $this->getDoctrine()->getManager()->getRepository('BandejaBundle:Documentos')
+                       ->createQueryBuilder('docs')
+                       ->where('docs.idDoc IN (:DOCS)')
+                       ->setParameter('DOCS', $docs)
+                       ->getQuery();
+
+                $documentos = $query->getResult();
+            } else {
+                $this->addFlash('danger', 'No se encontraron documentos para recibir ');
+            }
+
+            $em = $this->getDoctrine()->getManager();
+
+            foreach ($documentos as $d) {
+                $d->setFechaM(new \DateTime);
+                $d->setEstado(1); // 1 = NORMAL
+
+                $em->persist($d);
+            }
+
+            $em->flush();
+
+            $msn = count($documentos) > 1
+                 ? 'Los IDDOC\'s ' . implode(', ', $docs) . ' fueron recibidos'
+                 : 'El IDDOC ' . implode(', ', $docs) . ' fue recibido';
+            $this->addFlash('success', $msn);
+
+            return $this->redirectToRoute('recibidos_bandeja');
         }
 
         return $this->render(
@@ -198,6 +229,8 @@ class BandejaController extends Controller
 
     public function verAction(Request $request, $id)
     {
+        $this->setOnSession();
+
         $em = $this->getDoctrine()->getManager();
 
         $derivarForm = $this->createForm(DerivarType::class);
@@ -334,10 +367,9 @@ class BandejaController extends Controller
             $recibirData = $recibirForm->getData();
 
             $documento->setEstado(1); // estado NORMAL
-            $derivacion->setNota($recibirData['nota']);
+            $documento->setFechaM(new \DateTime);
 
             $em->persist($documento);
-            $em->persist($derivacion);
             $em->flush();
 
             $this->addFlash('success', sprintf('IDDOC %d recibido', $documento->getIdDoc()));
@@ -377,6 +409,8 @@ class BandejaController extends Controller
 
     public function nuevoAction(Request $request)
     {
+        $this->setOnSession();
+
         $em = $this->getDoctrine()->getManager();
 
         $tipos = $this->getTiposDocs();
@@ -648,6 +682,7 @@ class BandejaController extends Controller
         $adjunto->setFile($file);
         $adjunto->setNombreOriginal($file->getClientOriginalName());
         $adjunto->setUrl(uniqid(null, true));
+
         $adjunto->setTipo(1);
         $adjunto->setFkDoc($documento);
         $adjunto->setFechaC(new \DateTime());
@@ -661,13 +696,14 @@ class BandejaController extends Controller
     {
         $session = $this->get('session');
 
-        $loginUser = $this->getUser();
+        if ($session->get('departamento') === null) {
+            $loginUser = $this->getUser();
 
-        $expr = new Comparison('encargado', '=', 1);
-        $encargado = new Criteria();
-        $encargado->where( $expr );
+            $expr = new Comparison('encargado', '=', 1);
+            $encargado = new Criteria();
+            $encargado->where( $expr );
 
-        if ($session->get('departamento') === null)
             $session->set('departamento', $loginUser->getDepUsus()->matching($encargado)->get(0)->getFkDepto());
+        }
     }
 }
