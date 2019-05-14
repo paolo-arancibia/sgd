@@ -64,7 +64,6 @@ class DerivarType extends AbstractType
                 'label_attr' => [ 'class' => 'form-label mt-2', 'multiple' => 'multiple' ],
                 'label' => 'Adjuntos',
             ])
-
         ;
     }
 }

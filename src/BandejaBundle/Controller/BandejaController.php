@@ -89,6 +89,92 @@ class BandejaController extends Controller
             return $var instanceof Derivaciones;
         });
 
+        if ($derivarForm->isSubmitted() && $derivarForm->isValid()) {
+            $docs = $request->get('docs');
+            $documentos = array();
+
+            if (isset($docs) && ! empty($docs)) {
+                $query = $this->getDoctrine()->getManager()->getRepository('BandejaBundle:Documentos')
+                       ->createQueryBuilder('docs')
+                       ->where('docs.idDoc IN (:DOCS)')
+                       ->setParameter('DOCS', $docs)
+                       ->getQuery();
+
+                $documentos = $query->getResult();
+            } else {
+                $this->addFlash('danger', 'No se encontraron documentos para recibir ');
+            }
+
+            $em = $this->getDoctrine()->getManager();
+
+            foreach ($documentos as $d) {
+                $d->setFechaM(new \DateTime);
+                $em->persist($d);
+
+                $derivarData = $derivarForm->getData();
+
+                $loginUser = $this->getUser();
+
+                // guardar archivos adjuntos
+                $files = $derivarData['adjuntos'];
+
+                if (count($files)) {
+                    foreach ($files as $file) {
+                        $adjunto = $this->createNewAdjunto($file, $loginUser, $d);
+                        $adjunto->upload();
+                        $em->persist($adjunto);
+                    }
+                }
+
+                $expr = new Comparison('encargado', '=', 1);
+                $encargadoCriteria = new Criteria();
+                $encargadoCriteria->where( $expr );
+
+                $derivaciones = $d->getDerivaciones();
+
+                foreach ($derivaciones as $derivacion) {
+                    $derivacion->setFechaE(new \DateTime);
+                    $em->persist($derivacion);
+                }
+
+                foreach ($derivarData['originales'] as $depto) {
+                    $derivacion = $this->createNewDerivacion(
+                        array('tipo' => 1, 'nota' => $derivarData['nota_original']),
+                        $d,
+                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
+
+                    $em->persist($derivacion);
+                }
+
+                foreach ($derivarData['copias'] as $depto) {
+                    $derivacion = $this->createNewDerivacion(
+                        array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
+                        $d,
+                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
+
+                    $em->persist($derivacion);
+                }
+            }
+
+            $em->flush();
+
+            $last = array_pop($documentos);
+
+            if (count($documentos) > 0) {
+                $key = array_search($last->getIdDoc(), $docs);
+                unset($docs[$key]);
+
+                $msn = 'Los IDDOC\'s ' . implode(', ', $docs) . ' y ' . $last->getIdDoc() . ' fueron derivados';
+            } else
+                $msn = 'El IDDOC ' . $last->getIdDoc() . ' fue derivado';;
+
+            $this->addFlash('success', $msn);
+
+            return $this->redirectToRoute('recibidos_bandeja');
+        }
+
         return $this->render(
             'BandejaBundle:Bandeja:index.html.twig',
             array(

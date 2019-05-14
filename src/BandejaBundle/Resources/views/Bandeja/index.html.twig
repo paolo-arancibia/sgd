@@ -110,7 +110,7 @@
 
   {% include 'BandejaBundle:Bandeja:archivar.html.twig' %}
 
-  {% include 'BandejaBundle:Bandeja:derivar.html.twig' %}
+  {% include 'BandejaBundle:Bandeja:derivar.html.twig' with {'derivarForm': derivarForm} %}
 {% endblock %}
 
 {% block pager %}
@@ -190,6 +190,15 @@
        this.onchange = function() {
 	 $('#filters').submit();
        }
+     });
+
+     $('button[form="derivar"]').click( function() {
+       $('#derivar').submit( function() {
+	 $('input[name="docs[]"]').clone()
+				  .css('display', 'none')
+				  .appendTo(this);
+	 return confirm('¿Está seguro que desea derivar estos documentos?');
+       });
      });
    });
   </script>
