@@ -72,6 +72,10 @@ BandejaBundle\Entity\Documentos:
             type: datetime
             nullable: true
             column: FECHA_E
+        log:
+            type: text
+            nullable: true
+            column: LOG
     manyToOne:
         fkTipoDoc:
             targetEntity: TiposDocumentos

@@ -108,7 +108,7 @@
     </div>
   </div>
 
-  {% include 'BandejaBundle:Bandeja:archivar.html.twig' %}
+  {% include 'BandejaBundle:Bandeja:archivar.html.twig' with {'archivarForm': archivarForm} %}
 
   {% include 'BandejaBundle:Bandeja:derivar.html.twig' with {'derivarForm': derivarForm} %}
 {% endblock %}
@@ -193,11 +193,22 @@
      });
 
      $('button[form="derivar"]').click( function() {
+       inputs = $('input[name="docs[]"]').clone()
+					 .css('display', 'none')
+					 .appendTo(this);
+
        $('#derivar').submit( function() {
-	 $('input[name="docs[]"]').clone()
-				  .css('display', 'none')
-				  .appendTo(this);
 	 return confirm('¿Está seguro que desea derivar estos documentos?');
+       });
+     });
+
+     $('button[form="archivar"]').click( function() {
+       inputs = $('input[name="docs[]"]').clone()
+					 .css('display', 'none')
+					 .appendTo(this);
+
+       $('#archivar').submit( function() {
+	 return confirm('¿Está seguro que desea archivar estos documentos?');
        });
      });
    });

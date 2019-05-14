@@ -9,6 +9,7 @@ use BandejaBundle\Entity\Derivaciones;
 use BandejaBundle\Entity\Documentos;
 use BandejaBundle\Entity\Personas;
 use BandejaBundle\Entity\TiposDocumentos;
+use BandejaBundle\Form\ArchivarType;
 use BandejaBundle\Form\BuscarType;
 use BandejaBundle\Form\DerivarType;
 use BandejaBundle\Form\FiltersType;
@@ -46,10 +47,12 @@ class BandejaController extends Controller
         $searchForm = $this->createForm(BuscarType::class);
         $derivarForm = $this->createForm(DerivarType::class);
         $filtersForm = $this->createForm(FiltersType::class);
+        $archivarForm = $this->createForm(ArchivarType::class);
 
         $searchForm->handleRequest($request);
         $derivarForm->handleRequest($request);
         $filtersForm->handleRequest($request);
+        $archivarForm->handleRequest($request);
 
         $docsByPage = 25; // documentos mostrados por pagina
 
@@ -65,18 +68,16 @@ class BandejaController extends Controller
         $max_docs = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
-                  ->countRecibidosByDepto($this->get('session')->get('departamento'), $mostrar, $limite);
+                  ->countRecibidosByDepto($this->get('session')->get('departamento'),
+                                          $mostrar, $limite);
 
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findRecibidosByDepto(
-                     $this->get('session')
-                     ->get('departamento'),
-                     $mostrar, $limite,
-                     ($page - 1) * $docsByPage,
-                     $docsByPage
-                 );
+                 ->findRecibidosByDepto($this->get('session')->get('departamento'),
+                                        $mostrar, $limite,
+                                        ($page - 1) * $docsByPage,
+                                        $docsByPage);
 
         $max_page = (int) ceil($max_docs / $docsByPage);
         $max_page = ! $max_page ? 1 : $max_page; // si es $max_page == 0, cambia a 1
@@ -88,6 +89,59 @@ class BandejaController extends Controller
         $derivaciones = array_filter($results, function($var) {
             return $var instanceof Derivaciones;
         });
+
+        if ($archivarForm->isSubmitted()) {
+            $docs = $request->get('docs');
+            $documentos = array();
+
+            if (isset($docs) && ! empty($docs)) {
+                $query = $this->getDoctrine()->getManager()->getRepository('BandejaBundle:Documentos')
+                       ->createQueryBuilder('docs')
+                       ->where('docs.idDoc IN (:DOCS)')
+                       ->setParameter('DOCS', $docs)
+                       ->getQuery();
+
+                $documentos = $query->getResult();
+            } else {
+                $this->addFlash('danger', 'No se encontraron documentos para recibir ');
+
+                return $this->redirectToRoute('recibidos_bandeja');
+            }
+
+            $em = $this->getDoctrine()->getManager();
+
+            $archivarData = $archivarForm->getData();
+
+            $loginUser = $this->getUser();
+
+            foreach ($documentos as $d) {
+                $d->setFechaM(new \DateTime);
+                $d->setEstado(0);
+
+                $log = $d->getLog('log');
+                $log = ! $log ? $log : $log . '\n';
+                $d->setLog($log . date('Y-m-d H:i:s') . ' ' . $loginUser->getNombre() . ' ' .$archivarData['razon']);
+
+                $em->persist($d);
+            }
+
+            $em->flush();
+
+            $last = array_pop($documentos);
+
+            if (count($documentos) > 0) {
+                $key = array_search($last->getIdDoc(), $docs);
+                unset($docs[$key]);
+
+                $msn = 'Los IDDOC\'s ' . implode(', ', $docs) . ' y ' . $last->getIdDoc() . ' fueron archivados';
+            } else
+                $msn = 'El IDDOC ' . $last->getIdDoc() . ' fue archivado';;
+
+            $this->addFlash('success', $msn);
+
+            return $this->redirectToRoute('recibidos_bandeja');
+
+        }
 
         if ($derivarForm->isSubmitted() && $derivarForm->isValid()) {
             $docs = $request->get('docs');
@@ -103,17 +157,20 @@ class BandejaController extends Controller
                 $documentos = $query->getResult();
             } else {
                 $this->addFlash('danger', 'No se encontraron documentos para recibir ');
+
+                return $this->redirectToRoute('recibidos_bandeja');
             }
 
             $em = $this->getDoctrine()->getManager();
 
+            $derivarData = $derivarForm->getData();
+
+            $loginUser = $this->getUser();
+
             foreach ($documentos as $d) {
                 $d->setFechaM(new \DateTime);
+                $d->setEstado(2);
                 $em->persist($d);
-
-                $derivarData = $derivarForm->getData();
-
-                $loginUser = $this->getUser();
 
                 // guardar archivos adjuntos
                 $files = $derivarData['adjuntos'];
@@ -133,7 +190,9 @@ class BandejaController extends Controller
                 $derivaciones = $d->getDerivaciones();
 
                 foreach ($derivaciones as $derivacion) {
-                    $derivacion->setFechaE(new \DateTime);
+                    if (! $derivacion->getFechaE())
+                        $derivacion->setFechaE(new \DateTime);
+
                     $em->persist($derivacion);
                 }
 
@@ -184,6 +243,7 @@ class BandejaController extends Controller
                 'searchForm' => $searchForm->createView(),
                 'derivarForm' => $derivarForm->createView(),
                 'filtersForm' => $filtersForm->createView(),
+                'archivarForm' => $archivarForm->createView(),
                 'documentos' => $documentos,
                 'derivaciones' => $derivaciones,
             )

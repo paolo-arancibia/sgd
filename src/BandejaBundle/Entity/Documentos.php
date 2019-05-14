@@ -85,6 +85,13 @@ class Documentos
     private $fechaE;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="LOG", type="text", nullable=true)
+     */
+    private $log;
+
+    /**
      * @var \BandejaBundle\Entity\TiposDocumentos
      *
      * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\TiposDocumentos")
@@ -346,6 +353,30 @@ class Documentos
     public function getFechaE()
     {
         return $this->fechaE;
+    }
+
+    /**
+     * Set log
+     *
+     * @param string $log
+     *
+     * @return Documentos
+     */
+    public function setLog($log)
+    {
+        $this->log = $log;
+
+        return $this;
+    }
+
+    /**
+     * Get log
+     *
+     * @return string
+     */
+    public function getLog()
+    {
+        return $this->log;
     }
 
     /**
