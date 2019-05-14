@@ -381,9 +381,11 @@ class BandejaController extends Controller
 
         $derivarForm = $this->createForm(DerivarType::class);
         $recibirForm = $this->createForm(RecibirType::class);
+        $archivarForm = $this->createForm(ArchivarType::class);
 
         $derivarForm->handleRequest($request);
         $recibirForm->handleRequest($request);
+        $archivarForm->handleRequest($request);
 
         // get documento
         $repo = $this->getDoctrine()->getRepository('BandejaBundle:Documentos');
@@ -415,6 +417,8 @@ class BandejaController extends Controller
 
         $urlArray = explode('/', $request->headers->get('referer'));
 
+        $loginUser = $this->getUser();
+
         if (!isset($documento) || empty($documento)) {
             $this->addFlash('warning', 'No existe en docuemnto IDDOC ' . $id);
             return $this->redirectToRoute(end($urlArray) . '_bandeja');
@@ -427,17 +431,13 @@ class BandejaController extends Controller
         if ($derivarForm->isSubmitted() && $derivarForm->isValid()) {
             $derivarData = $derivarForm->getData();
 
-            $loginUser = $this->getUser();
-
             // guardar archivos adjuntos
             $files = $derivarData['adjuntos'];
 
             if (count($files)) {
                 foreach ($files as $file) {
                     $adjunto = $this->createNewAdjunto($file, $loginUser, $documento);
-
                     $adjunto->upload();
-
                     $em->persist($adjunto);
                 }
             }
@@ -446,65 +446,41 @@ class BandejaController extends Controller
             $encargadoCriteria = new Criteria();
             $encargadoCriteria->where( $expr );
 
-            if ($request->get('guardar') === 'derivar') {
-                $derivaciones = $documento->getDerivaciones();
+            $derivaciones = $documento->getDerivaciones();
 
-                foreach ($derivaciones as $derivacion) {
-                    $derivacion->setFechaE(new \DateTime);
-                    $em->persist($derivacion);
-                }
-
-                foreach ($derivarData['originales'] as $depto) {
-                    $derivacion = $this->createNewDerivacion(
-                        array('tipo' => 1, 'nota' => $derivarData['nota_original']),
-                        $documento,
-                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
-                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
-
-                    $em->persist($derivacion);
-                }
-
-                foreach ($derivarData['copias'] as $depto) {
-
-                    $derivacion = $this->createNewDerivacion(
-                        array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
-                        $documento,
-                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
-                        $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
-
-                    $em->persist($derivacion);
-                }
-
-                $em->flush();
-
-                $this->addFlash('success', sprintf(
-                    'IDDOC %d derivado a %s',
-                    $documento->getIdDoc(),
-                    $derivacion->getFkDeptodes()->getDescripcion())
-                );
-
-            } elseif ($request->get('guardar') === 'guardar') {
-                $this->addFlash('success', sprintf('IDDOC %d guardado', $documento->getIdDoc()));
-                $em->flush();
-
-            } elseif ($request->get('guardar') === 'archivar') {
-                $documento->setEstado(0);
-
-                $em->persist($documento);
-                $em->flush();
-
-                $this->addFlash('success', sprintf('IDDOC %d archivado', $documento->getIdDoc()));
-
-            } elseif ($request->get('guardar') === 'desarchivar'
-                      || $request->get('guardar') === 'recibir') {
-                $documento->setEstado(1);
-
-                $em->persist($documento);
-                $em->flush();
-
-                $text = $request->get('guardar') === 'desarchivar' ? 'restaurado' : 'recibido';
-                $this->addFlash('success', sprintf('IDDOC %d %s', $documento->getIdDoc(), $text));
+            foreach ($derivaciones as $derivacion) {
+                $derivacion->setFechaE(new \DateTime);
+                $em->persist($derivacion);
             }
+
+            foreach ($derivarData['originales'] as $depto) {
+                $derivacion = $this->createNewDerivacion(
+                    array('tipo' => 1, 'nota' => $derivarData['nota_original']),
+                    $documento,
+                    $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                    $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
+
+                $em->persist($derivacion);
+            }
+
+            foreach ($derivarData['copias'] as $depto) {
+
+                $derivacion = $this->createNewDerivacion(
+                    array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
+                    $documento,
+                    $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                    $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
+
+                $em->persist($derivacion);
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', sprintf(
+                'IDDOC %d derivado a %s',
+                $documento->getIdDoc(),
+                $derivacion->getFkDeptodes()->getDescripcion())
+            );
 
             return $this->redirectToRoute('recibidos_bandeja');
         }
@@ -522,6 +498,25 @@ class BandejaController extends Controller
             return $this->redirectToRoute('recibidos_bandeja');
         }
 
+        if ($archivarForm->isSubmitted() && $archivarForm->isValid()) {
+            $archivarData = $archivarForm->getData();
+
+            $documento->setFechaM(new \DateTime);
+            $documento->setEstado(0);
+
+            $log = $documento->getLog('log');
+            $log = ! $log ? $log : $log . '\n';
+            $documento->setLog($log . date('Y-m-d H:i:s') . ' '
+                               . $loginUser->getNombre() . ' '
+                               . $archivarData['razon']);
+
+            $em->persist($documento);
+            $em->flush();
+
+            $this->addFlash('success', sprintf('IDDOC %d archivado', $documento->getIdDoc()));
+            return $this->redirectToRoute('recibidos_bandeja');
+        }
+
         return $this->render(
             'BandejaBundle:Bandeja:ver.html.twig',
             array(
@@ -533,6 +528,7 @@ class BandejaController extends Controller
                 'files_dir' => Adjuntos::UPLOADED_FILE_DIRECTORY,
                 'derivarForm' => $derivarForm->createView(),
                 'recibirForm' => $recibirForm->createView(),
+                'archivarForm' => $archivarForm->createView(),
             )
         );
     }

@@ -14,11 +14,7 @@ class ArchivarType extends AbstractType
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->setMethod('post')/*
-            ->add('archivar', SubmitType::class, [
-                'label' => false,
-                'attr' => ['class' => 'btn btn-danger'],
-                ])*/
+            ->setMethod('post')
             ->add('razon', TextareaType::class, [
                 'label' => 'Razón para archivar',
                 'label_attr' => ['class' => 'form-label mt-2'],

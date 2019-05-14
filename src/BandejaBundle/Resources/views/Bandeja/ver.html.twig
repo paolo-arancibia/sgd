@@ -21,7 +21,8 @@
     {% endif %}
 
     {% if documento.estado == 1 %}
-      <button type="submit" class="btn btn-danger" form="derivar" name="guardar" value="archivar">Archivar</button>
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archivarModal">Archivar</button>
+
     {% elseif documento.estado == 0 %}
       <button type="submit" class="btn btn-warning" form="derivar" name="guardar" value="desarchivar">Desarchivar</button>
     {% elseif documento.estado == 2 %}
@@ -29,6 +30,8 @@
       {{ form_end(recibirForm) }}
     {% endif %}
   </div>
+
+  {% include 'BandejaBundle:Bandeja:archivar.html.twig' with {'archivarForm': archivarForm} %}
 {% endblock %}
 
 
@@ -165,23 +168,18 @@
 
   <script type="text/javascript">
    $(document).ready( function() {
-     $('button[name="guardar"]').click( function() {
-       if ($(this).val() != 'derivar')
-         $('#derivar_originales').removeAttr('required');
-
-       if ($(this).val() == 'archivar')
-         return confirm("¿Esta seguro que quere archivar este documento?");
-       else if ($(this).val() == 'derivar')
-         return confirm("¿Esta seguro que quere derivar este documento?");
-       else if ($(this).val() == 'desarchivar')
-         return confirm("¿Esta seguro que quere desarchivar este documento?");
-
-       return true;
+     $('button[form="derivar"]').click( function() {
+       return confirm("¿Esta seguro que quere derivar este documento?");
      });
 
      $('#recibir').submit( function() {
        return confirm('¿Esta seguro que quere recibir este documento?');
      });
+
+     $('#archivar').submit( function() {
+       return confirm('¿Esta seguro que quere archivar este documento?');
+     });
+
    });
   </script>
 {% endblock %}
