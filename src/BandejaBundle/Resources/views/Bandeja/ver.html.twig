@@ -23,15 +23,16 @@
     {% if documento.estado == 1 %}
       <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archivarModal">Archivar</button>
 
+      {% include 'BandejaBundle:Bandeja:archivar.html.twig' with {'archivarForm': archivarForm} %}
     {% elseif documento.estado == 0 %}
-      <button type="submit" class="btn btn-warning" form="derivar" name="guardar" value="desarchivar">Desarchivar</button>
+      <button type="submit" class="btn btn-warning" data-toggle="modal" data-target="#desarchivarModal">Desarchivar</button>
+
+      {% include 'BandejaBundle:Bandeja:desarchivar.html.twig' with {'desarchivarForm': desarchivarForm} %}
     {% elseif documento.estado == 2 %}
       {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
       {{ form_end(recibirForm) }}
     {% endif %}
   </div>
-
-  {% include 'BandejaBundle:Bandeja:archivar.html.twig' with {'archivarForm': archivarForm} %}
 {% endblock %}
 
 
@@ -94,7 +95,7 @@
     <div class="col">
       <div class="row">
 	<div class="col"{% if documento.estado == 0 %} style="display: none;"{% endif %}>
-	  {% if documento.estado == 1 or documento.estado == 0 %}
+	  {% if documento.estado == 1 %}
             <h5>Derivar a</h5>
             {{ form_start(derivarForm, {'attr': {'id': 'derivar', 'enctype': 'multipart/form-data'}}) }}
             {{ form_end(derivarForm) }}
@@ -169,15 +170,19 @@
   <script type="text/javascript">
    $(document).ready( function() {
      $('button[form="derivar"]').click( function() {
-       return confirm("¿Esta seguro que quere derivar este documento?");
+       return confirm("¿Esta seguro que desea derivar este documento?");
      });
 
      $('#recibir').submit( function() {
-       return confirm('¿Esta seguro que quere recibir este documento?');
+       return confirm('¿Esta seguro que desea recibir este documento?');
      });
 
      $('#archivar').submit( function() {
-       return confirm('¿Esta seguro que quere archivar este documento?');
+       return confirm('¿Esta seguro que desea archivar este documento?');
+     });
+
+     $('#desarchivar').submit( function() {
+       return confirm('¿Esta seguro que desea desarchivar este documento?');
      });
 
    });

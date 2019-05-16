@@ -12,6 +12,7 @@ use BandejaBundle\Entity\TiposDocumentos;
 use BandejaBundle\Form\ArchivarType;
 use BandejaBundle\Form\BuscarType;
 use BandejaBundle\Form\DerivarType;
+use BandejaBundle\Form\DesarchivarType;
 use BandejaBundle\Form\FiltersType;
 use BandejaBundle\Form\NuevoDocumentoType;
 use BandejaBundle\Form\PersonaType;
@@ -48,11 +49,13 @@ class BandejaController extends Controller
         $derivarForm = $this->createForm(DerivarType::class);
         $filtersForm = $this->createForm(FiltersType::class);
         $archivarForm = $this->createForm(ArchivarType::class);
+        $desarchivarForm = $this->createForm(DesarchivarType::class);
 
         $searchForm->handleRequest($request);
         $derivarForm->handleRequest($request);
         $filtersForm->handleRequest($request);
         $archivarForm->handleRequest($request);
+        $desarchivarForm->handleRequest($request);
 
         $docsByPage = 25; // documentos mostrados por pagina
 
@@ -120,7 +123,10 @@ class BandejaController extends Controller
 
                 $log = $d->getLog('log');
                 $log = ! $log ? $log : $log . '\n';
-                $d->setLog($log . date('Y-m-d H:i:s') . ' ' . $loginUser->getNombre() . ' ' .$archivarData['razon']);
+                $d->setLog($log . date('Y-m-d H:i:s') . ' '
+                           . 'ARCHIVAR '
+                           . $loginUser->getNombre() . ' '
+                           . $archivarData['razon']);
 
                 $em->persist($d);
             }
@@ -140,7 +146,61 @@ class BandejaController extends Controller
             $this->addFlash('success', $msn);
 
             return $this->redirectToRoute('recibidos_bandeja');
+        }
 
+        if ($desarchivarForm->isSubmitted()) {
+            $docs = $request->get('docs');
+            $documentos = array();
+
+            if (isset($docs) && ! empty($docs)) {
+                $query = $this->getDoctrine()->getManager()->getRepository('BandejaBundle:Documentos')
+                       ->createQueryBuilder('docs')
+                       ->where('docs.idDoc IN (:DOCS)')
+                       ->setParameter('DOCS', $docs)
+                       ->getQuery();
+
+                $documentos = $query->getResult();
+            } else {
+                $this->addFlash('danger', 'No se encontraron documentos para recibir ');
+
+                return $this->redirectToRoute('recibidos_bandeja');
+            }
+
+            $em = $this->getDoctrine()->getManager();
+
+            $desarchivarData = $desarchivarForm->getData();
+
+            $loginUser = $this->getUser();
+
+            foreach ($documentos as $d) {
+                $d->setFechaM(new \DateTime);
+                $d->setEstado(1);
+
+                $log = $d->getLog('log');
+                $log = ! $log ? $log : $log . '\n';
+                $d->setLog($log . date('Y-m-d H:i:s') . ' '
+                           . 'DESARCHIVADO '
+                           . $loginUser->getNombre() . ' '
+                           . $desarchivarData['razon']);
+
+                $em->persist($d);
+            }
+
+            $em->flush();
+
+            $last = array_pop($documentos);
+
+            if (count($documentos) > 0) {
+                $key = array_search($last->getIdDoc(), $docs);
+                unset($docs[$key]);
+
+                $msn = 'Los IDDOC\'s ' . implode(', ', $docs) . ' y ' . $last->getIdDoc() . ' fueron desarchivados';
+            } else
+                $msn = 'El IDDOC ' . $last->getIdDoc() . ' fue desarchivado';;
+
+            $this->addFlash('success', $msn);
+
+            return $this->redirectToRoute('recibidos_bandeja');
         }
 
         if ($derivarForm->isSubmitted() && $derivarForm->isValid()) {
@@ -244,6 +304,7 @@ class BandejaController extends Controller
                 'derivarForm' => $derivarForm->createView(),
                 'filtersForm' => $filtersForm->createView(),
                 'archivarForm' => $archivarForm->createView(),
+                'desarchivarForm' => $desarchivarForm->createView(),
                 'documentos' => $documentos,
                 'derivaciones' => $derivaciones,
             )
@@ -382,10 +443,12 @@ class BandejaController extends Controller
         $derivarForm = $this->createForm(DerivarType::class);
         $recibirForm = $this->createForm(RecibirType::class);
         $archivarForm = $this->createForm(ArchivarType::class);
+        $desarchivarForm = $this->createForm(DesarchivarType::class);
 
         $derivarForm->handleRequest($request);
         $recibirForm->handleRequest($request);
         $archivarForm->handleRequest($request);
+        $desarchivarForm->handleRequest($request);
 
         // get documento
         $repo = $this->getDoctrine()->getRepository('BandejaBundle:Documentos');
@@ -507,6 +570,7 @@ class BandejaController extends Controller
             $log = $documento->getLog('log');
             $log = ! $log ? $log : $log . '\n';
             $documento->setLog($log . date('Y-m-d H:i:s') . ' '
+                               . 'ARCHIVADO '
                                . $loginUser->getNombre() . ' '
                                . $archivarData['razon']);
 
@@ -514,6 +578,26 @@ class BandejaController extends Controller
             $em->flush();
 
             $this->addFlash('success', sprintf('IDDOC %d archivado', $documento->getIdDoc()));
+            return $this->redirectToRoute('recibidos_bandeja');
+        }
+
+        if ($desarchivarForm->isSubmitted() && $desarchivarForm->isValid()) {
+            $desarchivarData = $desarchivarForm->getData();
+
+            $documento->setFechaM(new \DateTime);
+            $documento->setEstado(1);
+
+            $log = $documento->getLog('log');
+            $log = ! $log ? $log : $log . '\n';
+            $documento->setLog($log . date('Y-m-d H:i:s') . ' '
+                               . 'DESARCHIVADO '
+                               . $loginUser->getNombre() . ' '
+                               . $desarchivarData['razon']);
+
+            $em->persist($documento);
+            $em->flush();
+
+            $this->addFlash('success', sprintf('IDDOC %d desarchivado', $documento->getIdDoc()));
             return $this->redirectToRoute('recibidos_bandeja');
         }
 
@@ -529,6 +613,7 @@ class BandejaController extends Controller
                 'derivarForm' => $derivarForm->createView(),
                 'recibirForm' => $recibirForm->createView(),
                 'archivarForm' => $archivarForm->createView(),
+                'desarchivarForm' => $desarchivarForm->createView(),
             )
         );
     }

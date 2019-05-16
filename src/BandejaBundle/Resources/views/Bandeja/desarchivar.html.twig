@@ -1,0 +1,21 @@
+<div class="modal fade" id="desarchivarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      {{ form_start(desarchivarForm, {'attr': {'id': 'desarchivar'}}) }}
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Desarchivar</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{ form_row(desarchivarForm.razon) }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" form="desarchivar" class="btn btn-warning">Desarchivar</button>
+        </div>
+      {{ form_end(desarchivarForm) }}
+    </div>
+  </div>
+</div>

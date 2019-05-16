@@ -103,7 +103,7 @@
       <div id="actions" class="collapse">
         <button class="btn btn-primary" data-toggle="modal" data-target="#derivarModal">Derivar</button>
         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archivarModal">Archivar</button>
-        <button class="btn btn-warning">Desarchivar</button>
+        <button class="btn btn-warning" data-toggle="modal" data-target="#desarchivarModal">Desarchivar</button>
       </div>
     </div>
   </div>
@@ -111,6 +111,8 @@
   {% include 'BandejaBundle:Bandeja:archivar.html.twig' with {'archivarForm': archivarForm} %}
 
   {% include 'BandejaBundle:Bandeja:derivar.html.twig' with {'derivarForm': derivarForm} %}
+
+  {% include 'BandejaBundle:Bandeja:desarchivar.html.twig' with {'desarchivarForm': desarchivarForm} %}
 {% endblock %}
 
 {% block pager %}
@@ -125,44 +127,44 @@
   {{ parent() }}
 
   {% javascripts
-    '../vendor/harvesthq/chosen/chosen.jquery.js'
-    output='js/chosen.jquery.js'
-    combine=true %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
-    output='js/fileinput.min.js'
-    combine=true %}
-    <script src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js'
-    output='js/theme.min.js'
-    combine=true %}
-    <script src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../vendor/kartik-v/bootstrap-fileinput/js/locales/es.js'
-    output='js/fileinput-es.js'
-    combine=true %}
-    <script src="{{ asset_url }}"></script>
-  {% endjavascripts %}
-
-  {% javascripts
-    '../src/BandejaBundle/Resources/js/_table_documentos.js'
-    output='js/_table_documentos.js'
-    combine=true %}
+  '../vendor/harvesthq/chosen/chosen.jquery.js'
+  output='js/chosen.jquery.js'
+  combine=true %}
   <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
 
   {% javascripts
-    '../src/BandejaBundle/Resources/js/_form_derivar.js'
-    output='js/_form_derivar.js'
-    combine=true %}
+  '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
+  output='js/fileinput.min.js'
+  combine=true %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+  '../vendor/kartik-v/bootstrap-fileinput/themes/fas/theme.min.js'
+  output='js/theme.min.js'
+  combine=true %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+  '../vendor/kartik-v/bootstrap-fileinput/js/locales/es.js'
+  output='js/fileinput-es.js'
+  combine=true %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+  '../src/BandejaBundle/Resources/js/_table_documentos.js'
+  output='js/_table_documentos.js'
+  combine=true %}
+  <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  {% javascripts
+  '../src/BandejaBundle/Resources/js/_form_derivar.js'
+  output='js/_form_derivar.js'
+  combine=true %}
   <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
 
@@ -193,22 +195,32 @@
      });
 
      $('button[form="derivar"]').click( function() {
-       inputs = $('input[name="docs[]"]').clone()
-					 .css('display', 'none')
-					 .appendTo(this);
-
        $('#derivar').submit( function() {
+	 inputs = $('input[name="docs[]"]').clone()
+					   .css('display', 'none')
+					   .appendTo(this);
+
 	 return confirm('¿Está seguro que desea derivar estos documentos?');
        });
      });
 
      $('button[form="archivar"]').click( function() {
-       inputs = $('input[name="docs[]"]').clone()
-					 .css('display', 'none')
-					 .appendTo(this);
-
        $('#archivar').submit( function() {
+	 inputs = $('input[name="docs[]"]').clone()
+					   .css('display', 'none')
+					   .appendTo(this);
+
 	 return confirm('¿Está seguro que desea archivar estos documentos?');
+       });
+     });
+
+     $('button[form="desarchivar"]').click( function() {
+       $('#desarchivar').submit( function() {
+	 inputs = $('input[name="docs[]"]').clone()
+					   .css('display', 'none')
+					   .appendTo(this);
+
+	 return confirm('¿Está seguro que desea desarchivar estos documentos?');
        });
      });
    });
