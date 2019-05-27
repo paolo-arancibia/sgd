@@ -13,9 +13,9 @@ class BuscarType extends AbstractType
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->setMethod('GET')
-            ->add('searchText', SearchType::class, [
-                'required' => false,
+            ->setMethod('post')
+            ->add('query', SearchType::class, [
+                'required' => true,
                 'attr' => ['placeholder' => 'Buscar...'],
             ]);
 

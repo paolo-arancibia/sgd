@@ -1,0 +1,27 @@
+{% extends '::/Bandeja/layout.html.twig' %}
+
+{% block page_title %}
+  <h2 class="">BUSCADOR</h2>
+{% endblock %}
+
+{% block searcher %}
+  {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
+{% endblock %}
+
+{% block pager %}
+  {% include 'Bandeja/pager.html.twig' %}
+{% endblock %}
+
+{% block content %}
+  {% include 'BandejaBundle:Bandeja:_table_documentos.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {% javascripts
+    '../src/BandejaBundle/Resources/js/_table_documentos.js'
+    output='js/_table_documentos.js'
+    combine=true %}
+  <script type="text/javascript" src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+{% endblock %}

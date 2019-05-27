@@ -17,6 +17,9 @@
   <div class="">
     {% if documento.estado == 1 %}
       <button type="submit" class="btn btn-primary" form="derivar" name="guardar" value="derivar">Guardar y Derivar</button>
+    {% endif %}
+
+    {% if not documento %}
       <button type="submit" class="btn btn-secondary" form="derivar" name="guardar" value="guardar">Solo Guardar</button>
     {% endif %}
 

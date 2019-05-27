@@ -45,7 +45,7 @@ class BandejaController extends Controller
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm(BuscarType::class);
+        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
         $derivarForm = $this->createForm(DerivarType::class);
         $filtersForm = $this->createForm(FiltersType::class);
         $archivarForm = $this->createForm(ArchivarType::class);
@@ -294,6 +294,12 @@ class BandejaController extends Controller
             return $this->redirectToRoute('recibidos_bandeja');
         }
 
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $searchData = $searchForm->getData();
+
+            return $this->redirectToRoute('buscar_bandeja', $searchData);
+        }
+
         return $this->render(
             'BandejaBundle:Bandeja:index.html.twig',
             array(
@@ -315,7 +321,7 @@ class BandejaController extends Controller
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm(BuscarType::class);
+        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
         $recibirForm = $this->createForm(RecibirType::class);
 
         $searchForm->handleRequest($request);
@@ -394,11 +400,13 @@ class BandejaController extends Controller
         );
     }
 
-    public function despachadosAction($page = 0)
+    public function despachadosAction(Request $request, $page = 0)
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm(BuscarType::class);
+        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
+
+        $searchForm->handleRequest($request);
 
         $docsByPage = 25; // documentos por página
 
@@ -406,7 +414,9 @@ class BandejaController extends Controller
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
                   ->countDespachadosByUsuario($this->getUser()) / 2;
-        $max_page  = (int)ceil($max_docs / $docsByPage);
+
+        $max_page  = (int) ceil($max_docs / $docsByPage);
+        $max_page = ! $max_page ? 1 : $max_page; // si es $max_page == 0, cambia a 1
 
         $results = $this->getDoctrine()
                  ->getManager()
@@ -430,6 +440,39 @@ class BandejaController extends Controller
                 'max_page' => $max_page,
                 'menu_op' => 'despachados',
                 'searchForm' => $searchForm->createView(),
+            )
+        );
+    }
+
+    public function buscarAction(Request $request, $page = 0)
+    {
+        $this->setOnSession();
+
+        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
+
+        $searchForm->handleRequest($request);
+
+        $searchData = $searchForm->getData();
+
+        $docsByPage = 25; // documentos por página
+
+        $max_docs = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('BandejaBundle:Documentos')
+                  ->countDespachadosByUsuario($this->getUser()) / 2;
+
+        $max_page  = (int) ceil($max_docs / $docsByPage);
+        $max_page = ! $max_page ? 1 : $max_page; // si es $max_page == 0, cambia a 1
+
+        return $this->render(
+            'BandejaBundle:Bandeja:buscar.html.twig',
+            array(
+                'documentos' => array(),
+                'searchForm' => $searchForm->createView(),
+                'menu_op' => 'buscar',
+                'max_page' => $max_page,
+                'page' => $page,
+                'searchData' => $searchData,
             )
         );
     }

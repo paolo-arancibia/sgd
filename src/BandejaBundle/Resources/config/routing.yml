@@ -28,6 +28,12 @@ despachados_bandeja:
     requirements:
         page: '\d+'
 
+buscar_bandeja:
+    path: /buscar
+    defaults: { _controller: BandejaBundle:Bandeja:buscar, page: 1 }
+    requirements:
+        page: '\d+'
+
 ver_bandeja:
     path:     /ver/{id}
     defaults: { _controller: BandejaBundle:Bandeja:ver, id: 1  }

@@ -1,3 +1,9 @@
+{% if searchData is defined  %}
+  {% set query = searchData.query %}
+{% else %}
+  {% set query = null %}
+{% endif %}
+
 {{ form_start(searchForm, {'attr': {'class': 'col'}}) }}
-{{ form_widget(searchForm.searchText, {'attr': {'class': 'form-control'}}) }}
+  {{ form_widget(searchForm.query, {'attr': {'class': 'form-control', 'value': query}}) }}
 {{ form_end(searchForm) }}
