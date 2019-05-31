@@ -50,13 +50,13 @@ class DocumentosRepository extends EntityRepository
         }
 
         if ($offset)
-            $query->setFirstResult($offset); // $offset
+            $query->setFirstResult($offset);
 
         if ($limit)
-            $query->setMaxResults($limit); // $limit
+            $query->setMaxResults($limit);
 
         $query = $query->getQuery();
-        //dump($query->getDql()); die;
+
         return $query->getResult();
     }
 
@@ -92,29 +92,6 @@ class DocumentosRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getResult();
-
-        /*$query = $this->getEntityManager()->createQueryBuilder();
-
-        $query = $query->select('docs')
-               ->addSelect('der')
-               ->from('BandejaBundle:Documentos', 'docs')
-               ->join('BandejaBundle:Derivaciones', 'der', 'with',
-                      $query->expr()->andX(
-                          $query->expr()->eq('docs.idDoc', 'der.fkDoc'),
-                          $query->expr()->isNull('der.fechaE')
-                      ))
-               ->where('der.fkDeptodes = :DEPTO')
-               ->andWhere('docs.estado = 2')
-               ->setParameter('DEPTO', $depto)
-               ->getQuery();
-
-        if ($offset)
-            $query->setFirstResult($offset); // $offset
-
-        if ($limit)
-            $query->setMaxResults($limit); // $limit
-
-            return $query->getResult();*/
     }
 
     public function countPorrecibirByDepto($depto)
@@ -174,5 +151,65 @@ class DocumentosRepository extends EntityRepository
         });
 
         return $derivaciones;
+    }
+
+    public function findBuscarByQuery($usuario, $needle, $offset = 0, $limit = 0)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder();
+
+        $depUsus = $usuario->getDepUsus();
+
+        if ($depUsus->count()) {
+            foreach($depUsus as $d)
+                $deptos[] = $d->getFkDepto()->getIdDepartamento();
+        }
+
+        $query = $query->select('docs')
+               ->addSelect('der')
+               ->from('BandejaBundle:Documentos', 'docs')
+               ->join('BandejaBundle:Derivaciones', 'der', 'with',
+                      $query->expr()->andX(
+                          $query->expr()->eq('docs.idDoc', 'der.fkDoc'),
+                          $query->expr()->in('der.fkDeptodes', $deptos),
+                          $query->expr()->isNull('der.fechaE')
+                      ));
+
+        switch ($needle) {
+        case is_numeric($needle):
+            $query->where('docs.idDoc = :NEEDLE')
+                ->orWhere('docs.nroExpediente = :NEEDLE')
+                ->setParameter('NEEDLE', $needle);
+
+            break;
+        default:
+            $query->where(
+                $query->expr()->orX(
+                    $query->expr()->like('docs.ant', ':NEEDLE'),
+                    $query->expr()->like('docs.mat', ':NEEDLE'),
+                    $query->expr()->like('docs.ext', ':NEEDLE'),
+                    $query->expr()->like('der.nota', ':NEEDLE')
+                )
+            )->setParameter('NEEDLE', '%' . $needle . '%');
+
+            break;
+        }
+
+        $query = $query->getQuery();
+
+        if ($offset)
+            $query->setFirstResult($offset);
+
+        if ($limit)
+            $query->setMaxResults($limit);
+
+        //dump($deptos, , $query->getDql());die;
+
+        return $query->getResult();
+    }
+
+    public function countBuscarByQuery($usuario, $needle)
+    {
+        $docs = $this->findBuscarByQuery($usuario, $needle);
+        return (int) count($docs) / 2;
     }
 }

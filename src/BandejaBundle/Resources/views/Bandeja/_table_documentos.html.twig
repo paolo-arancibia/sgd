@@ -10,6 +10,7 @@
     <tr>
       <th scope="col"><input id="selectAll" class="" type="checkbox" id="doc1" name="doc1" value="1" /></th>
       <th scope="col">Id Documento</th>
+      <th scope="col">Nro Expediente</th>
       <th scope="col">Fecha Recepción</th>
       <th scope="col">Origen</th>
       <th scope="col">Tipo de Documento</th>
@@ -31,8 +32,9 @@
         {% else %}
           <i class="fas fa-circle text-info">&nbsp;</i>
         {% endif %}
-        {{ doc.idDoc }}
+        <span class="font-weight-bold">{{ doc.idDoc }}</span>
       </td>
+      <td>{{ doc.nroExpediente }}</td>
       <td>{{ doc.fechaDoc|date('d/m/Y') }}</td>
       <td>{{ derivaciones[key+1].fkDeptorem.descripcion }}</td>
       <td>{{ doc.fkTipoDoc.descripcion }} ({{ doc.fkTipoDoc.abrev }})</td>

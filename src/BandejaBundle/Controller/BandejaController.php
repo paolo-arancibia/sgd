@@ -459,7 +459,21 @@ class BandejaController extends Controller
         $max_docs = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
-                  ->countDespachadosByUsuario($this->getUser()) / 2;
+                  ->countBuscarByQuery($this->getUser(), $searchData['query']) / 2;
+
+        $results = $this->getDoctrine()
+                 ->getManager()
+                 ->getRepository('BandejaBundle:Documentos')
+                 ->findBuscarByQuery($this->getUser(), $searchData['query'],
+                                     ($page - 1) * $docsByPage, $docsByPage);
+
+        $documentos = array_filter($results, function($var) {
+            return $var instanceof Documentos;
+        });
+
+        $derivaciones = array_filter($results, function($var) {
+            return $var instanceof Derivaciones;
+        });
 
         $max_page  = (int) ceil($max_docs / $docsByPage);
         $max_page = ! $max_page ? 1 : $max_page; // si es $max_page == 0, cambia a 1
@@ -467,7 +481,8 @@ class BandejaController extends Controller
         return $this->render(
             'BandejaBundle:Bandeja:buscar.html.twig',
             array(
-                'documentos' => array(),
+                'documentos' => $documentos,
+                'derivaciones' => $derivaciones,
                 'searchForm' => $searchForm->createView(),
                 'menu_op' => 'buscar',
                 'max_page' => $max_page,
