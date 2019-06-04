@@ -174,24 +174,39 @@ class DocumentosRepository extends EntityRepository
                           $query->expr()->isNull('der.fechaE')
                       ));
 
-        switch ($needle) {
-        case is_numeric($needle):
+        if (is_numeric($needle)) {
             $query->where('docs.idDoc = :NEEDLE')
                 ->orWhere('docs.nroExpediente = :NEEDLE')
                 ->setParameter('NEEDLE', $needle);
 
-            break;
-        default:
+        } else if (preg_match('/DESDE[\s]*:([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})[\s]+HASTA[\s]*:([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})/i',
+                              $needle,
+                              $matches)) {
+            $desde = date_create_from_format('d/m/Y', $matches[1]);
+            $hasta = date_create_from_format('d/m/Y', $matches[2]);
+
+            $query->where(
+                $query->expr()->andX(
+                    $query->expr()->gte('docs.fechaDoc', ':DESDE'),
+                    $query->expr()->lte('docs.fechaDoc', ':HASTA')
+                ))
+                ->setParameters(['DESDE' => $desde, 'HASTA' => $hasta]);
+
+        } else if (preg_match('/([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})/i', $needle, $matches)) {
+            $fecha = date_create_from_format('d/m/Y', $matches[1]);
+
+            $query->where($query->expr()->andX($query->expr()->eq('docs.fechaDoc', ':YEAR')))
+                ->setParameter('YEAR', $fecha->format('Y-m-d'));
+
+        } else {
             $query->where(
                 $query->expr()->orX(
                     $query->expr()->like('docs.ant', ':NEEDLE'),
                     $query->expr()->like('docs.mat', ':NEEDLE'),
                     $query->expr()->like('docs.ext', ':NEEDLE'),
                     $query->expr()->like('der.nota', ':NEEDLE')
-                )
-            )->setParameter('NEEDLE', '%' . $needle . '%');
-
-            break;
+                ))
+                ->setParameter('NEEDLE', '%' . $needle . '%');
         }
 
         $query = $query->getQuery();
