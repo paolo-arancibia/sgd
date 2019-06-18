@@ -16,7 +16,7 @@
             "in": "vendor"
         },
         {
-            "name": ["*.*"],
+            "name": ["*.*", "*.crt"],
             "in": "SensioLabs"
         }
     ],

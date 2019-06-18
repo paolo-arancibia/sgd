@@ -12,51 +12,55 @@
 namespace SensioLabs\Security;
 
 use SensioLabs\Security\Exception\RuntimeException;
+use SensioLabs\Security\Crawler\CrawlerInterface;
+use SensioLabs\Security\Crawler\DefaultCrawler;
 
 class SecurityChecker
 {
-    const VERSION = '5.0';
+    const VERSION = '4';
 
+    private $vulnerabilityCount;
     private $crawler;
 
-    public function __construct(Crawler $crawler = null)
+    public function __construct(CrawlerInterface $crawler = null)
     {
-        $this->crawler = null === $crawler ? new Crawler() : $crawler;
+        $this->crawler = null === $crawler ? new DefaultCrawler() : $crawler;
     }
 
     /**
      * Checks a composer.lock file.
      *
-     * @param string $lock    The path to the composer.lock file
-     * @param string $format  The format of the result
-     * @param array  $headers An array of headers to add for this specific HTTP request
+     * @param string $lock The path to the composer.lock file
      *
-     * @return Result
+     * @return array An array of vulnerabilities
      *
      * @throws RuntimeException When the lock file does not exist
      * @throws RuntimeException When the certificate can not be copied
      */
-    public function check($lock, $format = 'json', array $headers = [])
+    public function check($lock)
     {
-        if (0 !== strpos($lock, 'data://text/plain;base64,')) {
-            if (is_dir($lock) && file_exists($lock.'/composer.lock')) {
-                $lock = $lock.'/composer.lock';
-            } elseif (preg_match('/composer\.json$/', $lock)) {
-                $lock = str_replace('composer.json', 'composer.lock', $lock);
-            }
-
-            if (!is_file($lock)) {
-                throw new RuntimeException('Lock file does not exist.');
-            }
+        if (is_dir($lock) && file_exists($lock.'/composer.lock')) {
+            $lock = $lock.'/composer.lock';
+        } elseif (preg_match('/composer\.json$/', $lock)) {
+            $lock = str_replace('composer.json', 'composer.lock', $lock);
         }
 
-        return $this->crawler->check($lock, $format, $headers);
+        if (!is_file($lock)) {
+            throw new RuntimeException('Lock file does not exist.');
+        }
+
+        list($this->vulnerabilityCount, $vulnerabilities) = $this->crawler->check($lock);
+
+        return $vulnerabilities;
+    }
+
+    public function getLastVulnerabilityCount()
+    {
+        return $this->vulnerabilityCount;
     }
 
     /**
-     * @internal
-     *
-     * @return Crawler
+     * @return CrawlerInterface
      */
     public function getCrawler()
     {

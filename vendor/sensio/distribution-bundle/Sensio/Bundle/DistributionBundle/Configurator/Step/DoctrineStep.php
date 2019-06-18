@@ -50,7 +50,7 @@ class DoctrineStep implements StepInterface
 
     public $path;
 
-    public function __construct(array $parameters)
+    public function setParameters(array $parameters)
     {
         foreach ($parameters as $key => $value) {
             if (0 === strpos($key, 'database_')) {
@@ -132,13 +132,13 @@ class DoctrineStep implements StepInterface
     public static function getDrivers()
     {
         return array(
-            'pdo_mysql'  => 'MySQL (PDO)',
+            'pdo_mysql' => 'MySQL (PDO)',
             'pdo_sqlite' => 'SQLite (PDO)',
-            'pdo_pgsql'  => 'PosgreSQL (PDO)',
-            'oci8'       => 'Oracle (native)',
-            'ibm_db2'    => 'IBM DB2 (native)',
-            'pdo_oci'    => 'Oracle (PDO)',
-            'pdo_ibm'    => 'IBM DB2 (PDO)',
+            'pdo_pgsql' => 'PosgreSQL (PDO)',
+            'oci8' => 'Oracle (native)',
+            'ibm_db2' => 'IBM DB2 (native)',
+            'pdo_oci' => 'Oracle (PDO)',
+            'pdo_ibm' => 'IBM DB2 (PDO)',
             'pdo_sqlsrv' => 'SQLServer (PDO)',
         );
     }

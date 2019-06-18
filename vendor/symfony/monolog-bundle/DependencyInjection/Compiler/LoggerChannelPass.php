@@ -63,7 +63,7 @@ class LoggerChannelPass implements CompilerPassInterface
                 }
                 $definition->setMethodCalls($calls);
 
-                if (\method_exists($definition, 'getBindings')) {
+                if (!$definition instanceof ChildDefinition && \method_exists($definition, 'getBindings')) {
                     $binding = new BoundArgument(new Reference($loggerId));
 
                     // Mark the binding as used already, to avoid reporting it as unused if the service does not use a

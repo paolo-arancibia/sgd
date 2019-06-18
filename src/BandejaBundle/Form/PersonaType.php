@@ -16,10 +16,14 @@ class PersonaType extends AbstractType
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('rut', TextType::class, [
-                'attr' => ['class' => 'form-control'],
+            ->add('rut', NumberType::class, [
+                'attr' => ['class' => 'form-control w-auto d-inline'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Rut',
+            ])->add('dv', TextType::class, [
+                'attr' => ['class' => 'form-control w-auto d-inline', 'size' => 1],
+                'label_attr' => ['class' => 'form-label'],
+                'label' => '',
             ])->add('nombres', TextType::class, [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
@@ -37,6 +41,7 @@ class PersonaType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'widget' => 'single_text',
                 'label' => 'Fecha Nacimiento',
+                'required' => false,
             ])->add('nombre_calle', TextType::class, [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label col'],
@@ -49,22 +54,26 @@ class PersonaType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Referencia a la dirección',
+                'required' => false,
             ])->add('nombre_comuna', TextType::class, [
-                'attr' => ['class' => 'form-control'],
+                'attr' => ['class' => 'form-control', 'value' => 'LA FLORIDA'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Comuna donde vive',
             ])->add('fono', NumberType::class, [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Teléfono de contacto',
+                'required' => false,
             ])->add('fono_2', NumberType::class, [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Otro teléfono de contacto',
+                'required' => false,
             ])->add('email', TextType::class, [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Email',
+                'required' => false,
             ])->add('sexo', ChoiceType::class, [
                 'choices' => ['Masculino' => 'masculino', 'Femenino' => 'femenino'],
                 'choices_as_values' => true,

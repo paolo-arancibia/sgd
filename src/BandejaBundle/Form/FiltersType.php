@@ -14,7 +14,7 @@ class FiltersType extends AbstractType
     {
         $builder
             ->setMethod('post')
-            ->add('mostrar', ChoiceType::class, [
+            ->add('mostrar', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
                 'choices' => array(
                     'Pendientes' => 'pendientes',
                     'Archivados' => 'archivados'
@@ -26,7 +26,7 @@ class FiltersType extends AbstractType
                 'placeholder' => false,
                 'attr' => ['class' => 'form-check-input']
             ])
-            ->add('limite', ChoiceType::class, [
+            ->add('limite', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
                 'choices' => [
                     '<i class="fas fa-circle text-danger">&nbsp;</i>Vencidos' => 'vencidos',
                     '<i class="fas fa-circle text-warning">&nbsp;</i>&le; 5 días' => 'menos_5',

@@ -14,7 +14,7 @@ class RecibirType extends AbstractType
     {
         $builder
             ->setMethod('post')
-            ->add('recibir', SubmitType::class, [
+            ->add('recibir', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
                 'label' => false,
                 'attr' => ['class' => 'btn btn-success'],
             ]);

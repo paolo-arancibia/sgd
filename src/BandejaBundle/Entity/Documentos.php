@@ -112,12 +112,9 @@ class Documentos
     private $fkUsuario;
 
     /**
-     * @var \BandejaBundle\Entity\Persona
+     * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Persona")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="FK_RUT_PERSONA", referencedColumnName="rut")
-     * })
+     * @ORM\Column(name="FK_RUT_PERSONA", type="integer", nullable=true)
      */
     private $fkRutPersona;
 
@@ -430,11 +427,11 @@ class Documentos
     /**
      * Set fkRutPersona
      *
-     * @param \BandejaBundle\Entity\Personas $fkRutPersona
+     * @param integer $fkRutPersona
      *
      * @return Documentos
      */
-    public function setFkRutPersona(\BandejaBundle\Entity\Personas $fkRutPersona = null)
+    public function setFkRutPersona($fkRutPersona = null)
     {
         $this->fkRutPersona = $fkRutPersona;
 
@@ -444,7 +441,7 @@ class Documentos
     /**
      * Get fkRutPersona
      *
-     * @return \BandejaBundle\Entity\Persona
+     * @return integer
      */
     public function getFkRutPersona()
     {

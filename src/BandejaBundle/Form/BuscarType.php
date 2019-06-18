@@ -14,7 +14,7 @@ class BuscarType extends AbstractType
     {
         $builder
             ->setMethod('post')
-            ->add('query', SearchType::class, [
+            ->add('query', 'Symfony\Component\Form\Extension\Core\Type\SearchType', [
                 'required' => true,
                 'attr' => ['placeholder' => 'Buscar...'],
             ]);

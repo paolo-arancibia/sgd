@@ -18,11 +18,13 @@ use Symfony\Component\Yaml\Yaml;
  * Configurator.
  *
  * @author Marc Weistroff <marc.weistroff@gmail.com>
+ * @author Jérôme Vieilledent <lolautruche@gmail.com>
  */
 class Configurator
 {
     protected $filename;
     protected $steps;
+    protected $sortedSteps;
     protected $parameters;
 
     public function __construct($kernelDir)
@@ -48,30 +50,62 @@ class Configurator
 
     /**
      * @param StepInterface $step
+     * @param int           $priority
      */
-    public function addStep(StepInterface $step)
+    public function addStep(StepInterface $step, $priority = 0)
     {
-        $this->steps[] = $step;
+        if (!isset($this->steps[$priority])) {
+            $this->steps[$priority] = array();
+        }
+
+        $this->steps[$priority][] = $step;
+        $this->sortedSteps = null;
     }
 
     /**
-     * @param integer $index
+     * @param int $index
      *
      * @return StepInterface
      */
     public function getStep($index)
     {
-        if (isset($this->steps[$index])) {
-            return $this->steps[$index];
+        $steps = $this->getSteps();
+        if (isset($steps[$index])) {
+            return $steps[$index];
         }
     }
 
     /**
-     * @return array
+     * @return StepInterface[]
      */
     public function getSteps()
     {
-        return $this->steps;
+        if (null === $this->sortedSteps) {
+            $this->sortedSteps = $this->getSortedSteps();
+            foreach ($this->sortedSteps as $step) {
+                $step->setParameters($this->parameters);
+            }
+        }
+
+        return $this->sortedSteps;
+    }
+
+    /**
+     * Sort routers by priority.
+     * The highest priority number is the highest priority (reverse sorting).
+     *
+     * @return StepInterface[]
+     */
+    private function getSortedSteps()
+    {
+        $sortedSteps = array();
+        krsort($this->steps);
+
+        foreach ($this->steps as $steps) {
+            $sortedSteps = array_merge($sortedSteps, $steps);
+        }
+
+        return $sortedSteps;
     }
 
     /**
@@ -83,11 +117,11 @@ class Configurator
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getStepCount()
     {
-        return count($this->steps);
+        return count($this->getSteps());
     }
 
     /**
@@ -104,7 +138,7 @@ class Configurator
     public function getRequirements()
     {
         $majors = array();
-        foreach ($this->steps as $step) {
+        foreach ($this->getSteps() as $step) {
             foreach ($step->checkRequirements() as $major) {
                 $majors[] = $major;
             }
@@ -119,7 +153,7 @@ class Configurator
     public function getOptionalSettings()
     {
         $minors = array();
-        foreach ($this->steps as $step) {
+        foreach ($this->getSteps() as $step) {
             foreach ($step->checkOptionalSettings() as $minor) {
                 $minors[] = $minor;
             }
@@ -131,23 +165,27 @@ class Configurator
     /**
      * Renders parameters as a string.
      *
+     * @param int $expanded
+     *
      * @return string
      */
-    public function render()
+    public function render($expanded = 10)
     {
-        return Yaml::dump(array('parameters' => $this->parameters));
+        return Yaml::dump(array('parameters' => $this->parameters), $expanded);
     }
 
     /**
      * Writes parameters to parameters.yml or temporary in the cache directory.
      *
-     * @return boolean
+     * @param int $expanded
+     *
+     * @return int
      */
-    public function write()
+    public function write($expanded = 10)
     {
         $filename = $this->isFileWritable() ? $this->filename : $this->getCacheFilename();
 
-        return file_put_contents($filename, $this->render());
+        return file_put_contents($filename, $this->render($expanded));
     }
 
     /**
@@ -179,7 +217,7 @@ class Configurator
     }
 
     /**
-     * getCacheFilename
+     * getCacheFilename.
      *
      * @return string
      */

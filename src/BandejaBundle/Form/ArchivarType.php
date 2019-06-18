@@ -15,7 +15,7 @@ class ArchivarType extends AbstractType
     {
         $builder
             ->setMethod('post')
-            ->add('razon', TextareaType::class, [
+            ->add('razon', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
                 'label' => 'Razón para archivar',
                 'label_attr' => ['class' => 'form-label mt-2'],
                 'attr' => ['class' => 'form-control'],

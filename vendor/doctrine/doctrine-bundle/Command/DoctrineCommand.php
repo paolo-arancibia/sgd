@@ -1,65 +1,32 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Bundle
+ *
+ * The code was originally distributed inside the Symfony framework.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) Doctrine Project, Benjamin Eberlei <kontakt@beberlei.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Doctrine\Bundle\DoctrineBundle\Command;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Sharding\PoolingShardConnection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\EntityGenerator;
-use LogicException;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 /**
  * Base class for Doctrine console commands to extend from.
  *
- * @internal
+ * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class DoctrineCommand extends Command
+abstract class DoctrineCommand extends ContainerAwareCommand
 {
-    /** @var ManagerRegistry|null */
-    private $doctrine;
-
-    /** @var ContainerInterface|null */
-    private $container;
-
-    public function __construct(ManagerRegistry $doctrine = null)
-    {
-        parent::__construct();
-
-        $this->doctrine = $doctrine;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @return ContainerInterface
-     *
-     * @throws LogicException
-     */
-    protected function getContainer()
-    {
-        if ($this->container === null) {
-            $application = $this->getApplication();
-            if ($application === null) {
-                throw new LogicException('The container cannot be retrieved as the application instance is not yet set.');
-            }
-
-            $this->container = $application->getKernel()->getContainer();
-        }
-
-        return $this->container;
-    }
-
     /**
      * get a doctrine entity generator
      *
@@ -81,18 +48,18 @@ abstract class DoctrineCommand extends Command
     /**
      * Get a doctrine entity manager by symfony name.
      *
-     * @param string   $name
-     * @param int|null $shardId
+     * @param string       $name
+     * @param null|integer $shardId
      *
      * @return EntityManager
      */
     protected function getEntityManager($name, $shardId = null)
     {
-        $manager = $this->getDoctrine()->getManager($name);
+        $manager = $this->getContainer()->get('doctrine')->getManager($name);
 
         if ($shardId) {
-            if (! $manager->getConnection() instanceof PoolingShardConnection) {
-                throw new LogicException(sprintf("Connection of EntityManager '%s' must implement shards configuration.", $name));
+            if (!$manager->getConnection() instanceof PoolingShardConnection) {
+                throw new \LogicException(sprintf("Connection of EntityManager '%s' must implement shards configuration.", $name));
             }
 
             $manager->getConnection()->connect($shardId);
@@ -110,14 +77,6 @@ abstract class DoctrineCommand extends Command
      */
     protected function getDoctrineConnection($name)
     {
-        return $this->getDoctrine()->getConnection($name);
-    }
-
-    /**
-     * @return ManagerRegistry
-     */
-    protected function getDoctrine()
-    {
-        return $this->doctrine ?: $this->doctrine = $this->getContainer()->get('doctrine');
+        return $this->getContainer()->get('doctrine')->getConnection($name);
     }
 }

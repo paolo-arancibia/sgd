@@ -1,6 +1,9 @@
 ``embed``
 =========
 
+.. versionadded:: 1.8
+    The ``embed`` tag was added in Twig 1.8.
+
 The ``embed`` tag combines the behaviour of :doc:`include<include>` and
 :doc:`extends<extends>`.
 It allows you to include another template's contents, just like ``include``
@@ -9,7 +12,7 @@ included template, like when extending a template.
 
 Think of an embedded template as a "micro layout skeleton".
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% embed "teasers_skeleton.twig" %}
         {# These blocks are defined in "teasers_skeleton.twig" #}
@@ -113,7 +116,7 @@ as necessary:
 
 Page template ``foo.twig``:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% extends "layout_skeleton.twig" %}
 
@@ -131,7 +134,7 @@ Page template ``foo.twig``:
 
 And here is the code for ``vertical_boxes_skeleton.twig``:
 
-.. code-block:: html+jinja
+.. code-block:: html+twig
 
     <div class="top_box">
         {% block top %}
@@ -150,7 +153,7 @@ out the HTML markup for the boxes.
 
 The ``embed`` tag takes the exact same arguments as the ``include`` tag:
 
-.. code-block:: jinja
+.. code-block:: twig
 
     {% embed "base" with {'foo': 'bar'} %}
         ...

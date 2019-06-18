@@ -18,6 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use SensioLabs\Security\Exception\ExceptionInterface;
+use SensioLabs\Security\Formatters\JsonFormatter;
+use SensioLabs\Security\Formatters\SimpleFormatter;
+use SensioLabs\Security\Formatters\TextFormatter;
 
 class SecurityCheckerCommand extends Command
 {
@@ -39,13 +42,12 @@ class SecurityCheckerCommand extends Command
     {
         $this
             ->setName('security:check')
-            ->setDefinition([
+            ->setDefinition(array(
                 new InputArgument('lockfile', InputArgument::OPTIONAL, 'The path to the composer.lock file', 'composer.lock'),
-                new InputOption('format', '', InputOption::VALUE_REQUIRED, 'The output format', 'ansi'),
+                new InputOption('format', '', InputOption::VALUE_REQUIRED, 'The output format', 'text'),
                 new InputOption('end-point', '', InputOption::VALUE_REQUIRED, 'The security checker server URL'),
                 new InputOption('timeout', '', InputOption::VALUE_REQUIRED, 'The HTTP timeout in seconds'),
-                new InputOption('token', '', InputOption::VALUE_REQUIRED, 'The server token', ''),
-            ])
+            ))
             ->setDescription('Checks security issues in your project dependencies')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command looks for security issues in the
@@ -79,26 +81,35 @@ EOF
             $this->checker->getCrawler()->setTimeout($timeout);
         }
 
-        if ($token = $input->getOption('token')) {
-            $this->checker->getCrawler()->setToken($token);
-        }
-
-        $format = $input->getOption('format');
-        if ($input->getOption("no-ansi") && 'ansi' === $format) {
-            $format = 'text';
-        }
-
         try {
-            $result = $this->checker->check($input->getArgument('lockfile'), $format);
+            $vulnerabilities = $this->checker->check($input->getArgument('lockfile'));
         } catch (ExceptionInterface $e) {
             $output->writeln($this->getHelperSet()->get('formatter')->formatBlock($e->getMessage(), 'error', true));
 
             return 1;
         }
 
-        $output->writeln((string) $result);
+        switch ($input->getOption('format')) {
+            case 'json':
+                $formatter = new JsonFormatter();
+                break;
+            case 'simple':
+                $formatter = new SimpleFormatter($this->getHelperSet()->get('formatter'));
+                break;
+            case 'text':
+            default:
+                $formatter = new TextFormatter($this->getHelperSet()->get('formatter'));
+        }
 
-        if (count($result) > 0) {
+        if (!is_array($vulnerabilities)) {
+            $output->writeln($this->getHelperSet()->get('formatter')->formatBlock('Security Checker Server returned garbage.', 'error', true));
+
+            return 127;
+        }
+
+        $formatter->displayResults($output, $input->getArgument('lockfile'), $vulnerabilities);
+
+        if ($this->checker->getLastVulnerabilityCount() > 0) {
             return 1;
         }
     }

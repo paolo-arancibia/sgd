@@ -16,7 +16,7 @@ class DerivarType extends AbstractType
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('originales', EntityType::class, [
+            ->add('originales', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
                 'class' => 'BandejaBundle:Departamentos',
                 'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('depto')
@@ -31,12 +31,12 @@ class DerivarType extends AbstractType
                 'choice_value' => function (Departamentos $depto = null) {
                     return $depto ? $depto->getIdDepartamento() : '';
                 }
-            ])->add('nota_original', TextareaType::class, [
+            ])->add('nota_original', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
                 'label' => 'Nota para originales',
                 'label_attr' => ['class' => 'form-label mt-2'],
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
-            ])->add('copias', EntityType::class, [
+            ])->add('copias', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
                 'class' => 'BandejaBundle:Departamentos',
                 'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('depto')
@@ -52,12 +52,12 @@ class DerivarType extends AbstractType
                     return $depto ? $depto->getIdDepartamento() : '';
                 },
                 'required' => false,
-            ])->add('nota_copias', TextareaType::class, [
+            ])->add('nota_copias', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
                 'label' => 'Nota para copias',
                 'label_attr' => ['class' => 'form-label mt-2'],
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
-            ])->add('adjuntos', FileType::class, [
+            ])->add('adjuntos', 'Symfony\Component\Form\Extension\Core\Type\FileType', [
                 'required' => false,
                 'multiple' => true,
                 'attr' => [ 'class' => 'adjuntos' ],

@@ -42,17 +42,21 @@ BandejaBundle\Entity\Usuarios:
             type: datetime
             nullable: true
             column: FECHA_E
-    manyToOne:
         fkPersona:
-            targetEntity: Personas
-            cascade: {  }
-            fetch: LAZY
-            mappedBy: null
-            inversedBy: null
-            joinColumns:
-                FK_ID_PERSONA:
-                    referencedColumnName: rut
-            orphanRemoval: false
+            type: integer
+            nullable: true
+            column: FK_ID_PERSONA
+#    manyToOne:
+#        fkPersona:
+#            targetEntity: Personas
+#            cascade: {  }
+#            fetch: LAZY
+#            mappedBy: null
+#            inversedBy: null
+#            joinColumns:
+#                FK_ID_PERSONA:
+#                    referencedColumnName: rut
+#            orphanRemoval: false
     oneToMany:
         depUsus:
             targetEntity: DepUsu

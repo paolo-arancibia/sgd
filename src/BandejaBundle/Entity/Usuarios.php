@@ -347,6 +347,6 @@ class Usuarios implements UserInterface, \Serializable
             $this->contrasena,
             // see section on salt below
             // $this->salt
-        ) = unserialize($serialized, array('allowed_classes' => false));
+        ) = unserialize($serialized);
     }
 }

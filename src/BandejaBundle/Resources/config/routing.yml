@@ -59,3 +59,7 @@ departamentos_typeahead:
     path: /departamentos/{str}
     defaults: { _controller: BandejaBundle:Bandeja:departamentos }
     methods: [GET]
+
+toggle_menu:
+    path: /tooglemenu
+    defaults: { _controller: BandejaBundle:Bandeja:toggleMenu }

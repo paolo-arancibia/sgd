@@ -76,6 +76,10 @@ BandejaBundle\Entity\Documentos:
             type: text
             nullable: true
             column: LOG
+        fkRutPersona:
+            type: integer
+            nullable: true
+            column: FK_RUT_PERSONA
     manyToOne:
         fkTipoDoc:
             targetEntity: TiposDocumentos
@@ -97,15 +101,15 @@ BandejaBundle\Entity\Documentos:
                 FK_ID_USUARIO:
                     referencedColumnName: ID_USUARIO
             orphanRemoval: false
-        fkRutPersona:
-            targetEntity: Personas
-            cascade: {  }
-            fetch: LAZY
-            mappedBy: null
-            inversedBy: null
-            joinColumns:
-                FK_RUT_PERSONA:
-                    referencedColumnName: rut
+#        fkRutPersona:
+#            targetEntity: Personas
+#            cascade: {  }
+#            fetch: LAZY
+#            mappedBy: null
+#            inversedBy: null
+#            joinColumns:
+#                FK_RUT_PERSONA:
+#                    referencedColumnName: rut
             orphanRemoval: false
     oneToMany:
         derivaciones:

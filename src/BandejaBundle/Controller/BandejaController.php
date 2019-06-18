@@ -29,8 +29,10 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -45,11 +47,11 @@ class BandejaController extends Controller
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
-        $derivarForm = $this->createForm(DerivarType::class);
-        $filtersForm = $this->createForm(FiltersType::class);
-        $archivarForm = $this->createForm(ArchivarType::class);
-        $desarchivarForm = $this->createForm(DesarchivarType::class);
+        $searchForm = $this->createForm('BandejaBundle\Form\BuscarType', null, ['action' => $this->generateUrl('buscar_bandeja')]);
+        $derivarForm = $this->createForm('BandejaBundle\Form\DerivarType');
+        $filtersForm = $this->createForm('BandejaBundle\Form\FiltersType');
+        $archivarForm = $this->createForm('BandejaBundle\Form\ArchivarType');
+        $desarchivarForm = $this->createForm('BandejaBundle\Form\DesarchivarType');
 
         $searchForm->handleRequest($request);
         $derivarForm->handleRequest($request);
@@ -321,8 +323,8 @@ class BandejaController extends Controller
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
-        $recibirForm = $this->createForm(RecibirType::class);
+        $searchForm = $this->createForm('BandejaBundle\Form\BuscarType', null, ['action' => $this->generateUrl('buscar_bandeja')]);
+        $recibirForm = $this->createForm('BandejaBundle\Form\RecibirType');
 
         $searchForm->handleRequest($request);
         $recibirForm->handleRequest($request);
@@ -404,7 +406,7 @@ class BandejaController extends Controller
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
+        $searchForm = $this->createForm('BandejaBundle\Form\BuscarType', null, ['action' => $this->generateUrl('buscar_bandeja')]);
 
         $searchForm->handleRequest($request);
 
@@ -448,7 +450,7 @@ class BandejaController extends Controller
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm(BuscarType::class, null, ['action' => $this->generateUrl('buscar_bandeja')]);
+        $searchForm = $this->createForm('BandejaBundle\Form\BuscarType', null, ['action' => $this->generateUrl('buscar_bandeja')]);
 
         $searchForm->handleRequest($request);
 
@@ -498,10 +500,10 @@ class BandejaController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $derivarForm = $this->createForm(DerivarType::class);
-        $recibirForm = $this->createForm(RecibirType::class);
-        $archivarForm = $this->createForm(ArchivarType::class);
-        $desarchivarForm = $this->createForm(DesarchivarType::class);
+        $derivarForm = $this->createForm('BandejaBundle\Form\DerivarType');
+        $recibirForm = $this->createForm('BandejaBundle\Form\RecibirType');
+        $archivarForm = $this->createForm('BandejaBundle\Form\ArchivarType');
+        $desarchivarForm = $this->createForm('BandejaBundle\Form\DesarchivarType');
 
         $derivarForm->handleRequest($request);
         $recibirForm->handleRequest($request);
@@ -545,6 +547,15 @@ class BandejaController extends Controller
             return $this->redirectToRoute(end($urlArray) . '_bandeja');
         } else
             $documento = $documento[0];
+
+        // get Persona from documento
+        $repo = $this->getDoctrine()->getRepository('BandejaBundle:Personas', 'customer');
+        $query = $repo->createQueryBuilder('pers')
+               ->where('pers.rut = :RUT')
+               ->setParameter('RUT', $documento->getFkRutPersona())
+               ->getQuery();
+
+        $personaDoc = $query->getResult()[0];
 
         $adjuntos = $this->getDoctrine()->getRepository('BandejaBundle:Adjuntos')
                   ->findBy(array('fkDoc' => $documento));
@@ -666,6 +677,7 @@ class BandejaController extends Controller
                 'menu_op' => end($urlArray),
                 'documento' => $documento,
                 'derivacion' => $derivacion,
+                'personaDoc' => $personaDoc,
                 'adjuntos' => $adjuntos,
                 'files_dir' => Adjuntos::UPLOADED_FILE_DIRECTORY,
                 'derivarForm' => $derivarForm->createView(),
@@ -697,13 +709,14 @@ class BandejaController extends Controller
         $this->setOnSession();
 
         $em = $this->getDoctrine()->getManager();
+        $em_admin_lf_barrio = $this->getDoctrine()->getManager('customer');
 
         $tipos = $this->getTiposDocs();
 
-        $derivarForm = $this->createForm(DerivarType::class);
-        $nuevoForm = $this->createForm(NuevoDocumentoType::class);
-        $personaForm = $this->createForm(PersonaType::class);
-        $remitenteForm = $this->createForm(RemitenteType::class);
+        $derivarForm = $this->createForm('BandejaBundle\Form\DerivarType');
+        $nuevoForm = $this->createForm('BandejaBundle\Form\NuevoDocumentoType');
+        $personaForm = $this->createForm('BandejaBundle\Form\PersonaType');
+        $remitenteForm = $this->createForm('BandejaBundle\Form\RemitenteType');
 
         // $nuevoForm es el principal
         $derivarForm->handleRequest($request);
@@ -719,7 +732,7 @@ class BandejaController extends Controller
 
             if ($remitenteData['id_persona']) {
                 $persona = $this->getDoctrine()
-                         ->getRepository('BandejaBundle:Personas')
+                         ->getRepository('BandejaBundle:Personas', 'customer')
                          ->find( $remitenteData['id_persona'] );
             } elseif ($remitenteData['id_depto']) {
                 $persona = $this->getDoctrine()
@@ -728,7 +741,7 @@ class BandejaController extends Controller
             } else {
                 $persona = $this->createNewPersona($personaData);
 
-                $em->persist($persona);
+                $em_admin_lf_barrio->persist($persona);
             }
 
             $loginUser = $this->getUser();
@@ -777,6 +790,8 @@ class BandejaController extends Controller
                 }
 
                 $em->flush();
+                $em_admin_lf_barrio->flush();
+
                 $this->addFlash('success', 'Documento derivado');
                 return $this->redirectToRoute('recibidos_bandeja');
 
@@ -789,6 +804,7 @@ class BandejaController extends Controller
 
                 $em->persist($derivacion);
                 $em->flush();
+                $em_admin_lf_barrio->flush();
 
                 $this->addFlash('success', 'Documento guardado');
                 return $this->redirectToRoute('porrecibir_bandeja');
@@ -854,6 +870,22 @@ class BandejaController extends Controller
         return $response;
     }
 
+    public function toggleMenuAction(Request $request)
+    {
+        $cookies = $request->cookies;
+        $response = new Response('OK', Response::HTTP_OK, array('content-type' => 'text/plain') );
+
+        if ($cookies->get('open_menu') === null)
+            $response->headers->setCookie(new Cookie('open_menu', false));
+
+        if ($cookies->get('open_menu'))
+            $response->headers->setCookie(new Cookie('open_menu', false));
+        else
+            $response->headers->setCookie(new Cookie('open_menu', true));
+
+        return $response;
+    }
+
     private function getDeptos($str = "")
     {
         $repository = $this->getDoctrine()->getRepository('BandejaBundle:Departamentos');
@@ -880,7 +912,7 @@ class BandejaController extends Controller
 
     private function getPersonas($str)
     {
-        $repository = $this->getDoctrine()->getRepository('BandejaBundle:Personas');
+        $repository = $this->getDoctrine()->getRepository('BandejaBundle:Personas', 'customer');
 
         $query = $repository->createQueryBuilder('pers')
                ->where('pers.nombres like :STR')
@@ -898,24 +930,22 @@ class BandejaController extends Controller
     {
         $persona = new Personas();
 
-        list($rut, $vrut) = explode('-', $personaData['rut']);
-
-        $persona->setRut( $rut );
-        $persona->setVrut( $vrut );
+        $persona->setRut( $personaData['rut'] );
+        $persona->setVrut( $personaData['dv'] );
         $persona->setNombres( $personaData['nombres'] );
         $persona->setApellidoPaterno( $personaData['apellidopaterno'] );
         $persona->setApellidoMaterno( $personaData['apellidomaterno'] );
 
         $persona->setNombreCalle( $personaData['nombre_calle'] );
         $persona->setNumdirec( $personaData['numdirec'] );
-        $persona->setReferenciadir( $personaData['referenciadir'] );
+        $persona->setReferenciadir( $personaData['referenciadir'] ? $personaData['referenciadir'] : '' );
         $persona->setNombreComuna( $personaData['nombre_comuna'] );
 
-        $persona->setFono( $personaData['fono'] );
-        $persona->setFono2( $personaData['fono_2'] );
-        $persona->setEmail( $personaData['email'] );
+        $persona->setFono( $personaData['fono'] ? $personaData['fono'] : '' );
+        $persona->setFono2( $personaData['fono_2'] ? $personaData['fono_2'] : '' );
+        $persona->setEmail( $personaData['email'] ? $personaData['email'] : '' );
 
-        $persona->setFechaNacimiento( $personaData['fecha_nacimiento'] );
+        $persona->setFechaNacimiento( $personaData['fecha_nacimiento'] ? $personaData['fecha_nacimiento'] : '0000-00-00' );
         $persona->setSexo( $personaData['sexo'] );
 
         $persona->setUnidadV('');
@@ -934,7 +964,7 @@ class BandejaController extends Controller
         $documento->setMat($nuevoData['mat']);
         $documento->setExt($nuevoData['ext']);
         $documento->setEstado($tipo); // 0=ARCHIVADO,1=NORMAL,2=PORRECIBIR
-        $documento->setFkRutPersona($nuevoData['persona']);
+        $documento->setFkRutPersona($nuevoData['persona']->getRut());
         $documento->setFkUsuario($this->getUser());
         $documento->setFechaC( new \DateTime() );
         $documento->setFechaM( new \DateTime() );
