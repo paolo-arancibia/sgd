@@ -579,6 +579,9 @@ class BandejaController extends Controller
             $encargadoCriteria->where( $expr );
 
             $derivaciones = $documento->getDerivaciones();
+            $documento->setEstado(2);
+
+            $em->persist($documento);
 
             foreach ($derivaciones as $derivacion) {
                 $derivacion->setFechaE(new \DateTime);
@@ -676,6 +679,7 @@ class BandejaController extends Controller
                 'id' => $id,
                 'menu_op' => end($urlArray),
                 'documento' => $documento,
+                'cardex' => $documento->getDerivaciones(),
                 'derivacion' => $derivacion,
                 'personaDoc' => $personaDoc,
                 'adjuntos' => $adjuntos,
@@ -933,8 +937,10 @@ class BandejaController extends Controller
         $persona->setRut( $personaData['rut'] );
         $persona->setVrut( $personaData['dv'] );
         $persona->setNombres( $personaData['nombres'] );
-        $persona->setApellidoPaterno( $personaData['apellidopaterno'] );
-        $persona->setApellidoMaterno( $personaData['apellidomaterno'] );
+        $persona->setApellidoPaterno( $personaData['apellidopaterno']);
+        $persona->setApellidoMaterno( $personaData['apellidomaterno']
+                                      ? $personaData['apellidomaterno']
+                                      : '');
 
         $persona->setNombreCalle( $personaData['nombre_calle'] );
         $persona->setNumdirec( $personaData['numdirec'] );

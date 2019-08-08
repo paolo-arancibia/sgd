@@ -9,33 +9,70 @@
       <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
     {% endif %}
   </h2>
+
+  <div class="modal fade" id="derivacionesModal" tabindex="-1" role="dialog" aria-labelledby="example2ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+	<div class="modal-header">
+          <h5 class="modal-title" id="example2ModalLabel">Historial de Derivaciones</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+	</div>
+	<div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Tipo</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Remitente</th>
+                <th scope="col">Destino</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in cardex %}
+                <tr>
+                  <td scope="row">{% if d.tipo == 1 %}Original{% else %}Copia{% endif %}</td>
+                  <td>{{ d.fechaC | date('d/m/Y H:i') }}</td>
+                  <td><strong>{{ d.fkDeptorem.descripcion }}</strong> <small class="text-muted">{{ d.fkRemitente.nombre }}</small></td>
+                  <td><strong>{{ d.fkDeptodes.descripcion }}</strong> <small class="text-muted">{{ d.fkDestinatario.nombre }}</small></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+	<div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	</div>
+      </div>
+    </div>
+  </div>
+
   {% include 'BandejaBundle:Bandeja:nota.html.twig' with {'nota': derivacion.nota} %}
 {% endblock %}
 
 {% block filters %}
   {# 0=ARCHIVADO, 1=NORMAL, 2=PORRECIBIR #}
-  <div class="">
-    {% if documento.estado == 1 %}
-      <button type="submit" class="btn btn-primary" form="derivar" name="guardar" value="derivar">Guardar y Derivar</button>
-    {% endif %}
+  {% if documento.estado == 1 %}
+    <button type="submit" class="btn btn-primary" form="derivar" name="guardar" value="derivar">Guardar y Derivar</button>
+  {% endif %}
 
-    {% if not documento %}
-      <button type="submit" class="btn btn-secondary" form="derivar" name="guardar" value="guardar">Solo Guardar</button>
-    {% endif %}
+  {% if not documento %}
+    <button type="submit" class="btn btn-secondary" form="derivar" name="guardar" value="guardar">Solo Guardar</button>
+  {% endif %}
 
-    {% if documento.estado == 1 %}
-      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archivarModal">Archivar</button>
+  {% if documento.estado == 1 %}
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archivarModal">Archivar</button>
 
-      {% include 'BandejaBundle:Bandeja:archivar.html.twig' with {'archivarForm': archivarForm} %}
-    {% elseif documento.estado == 0 %}
-      <button type="submit" class="btn btn-warning" data-toggle="modal" data-target="#desarchivarModal">Desarchivar</button>
+    {% include 'BandejaBundle:Bandeja:archivar.html.twig' with {'archivarForm': archivarForm} %}
+  {% elseif documento.estado == 0 %}
+    <button type="submit" class="btn btn-warning" data-toggle="modal" data-target="#desarchivarModal">Desarchivar</button>
 
-      {% include 'BandejaBundle:Bandeja:desarchivar.html.twig' with {'desarchivarForm': desarchivarForm} %}
-    {% elseif documento.estado == 2 %}
-      {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
-      {{ form_end(recibirForm) }}
-    {% endif %}
-  </div>
+    {% include 'BandejaBundle:Bandeja:desarchivar.html.twig' with {'desarchivarForm': desarchivarForm} %}
+  {% elseif documento.estado == 2 %}
+    {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
+    {{ form_end(recibirForm) }}
+  {% endif %}
 {% endblock %}
 
 
@@ -96,6 +133,14 @@
     </div>
 
     <div class="col">
+      {% if cardex %}
+      <div class="row">
+        <div class="col text-right">
+          <a href="#derivaciones" class="" data-toggle="modal" data-target="#derivacionesModal">Cardex</a>
+        </div>
+      </div>
+      {% endif %}
+
       <div class="row">
 	<div class="col"{% if documento.estado == 0 %} style="display: none;"{% endif %}>
 	  {% if documento.estado == 1 %}

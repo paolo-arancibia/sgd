@@ -13,7 +13,7 @@ class RemitenteType extends AbstractType
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id_depto', HiddenType::class)
-            ->add('id_persona', HiddenType::class);
+            ->add('id_depto', 'Symfony\Component\Form\Extension\Core\Type\HiddenType')
+            ->add('id_persona', 'Symfony\Component\Form\Extension\Core\Type\HiddenType');
     }
 }

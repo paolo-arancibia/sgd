@@ -17,7 +17,7 @@ class NuevoDocumentoType extends AbstractType
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fkTipoDoc', EntityType::class, [
+            ->add('fkTipoDoc', 'Symfony\Bridge\Doctrine\Form\Type\EntityType', [
                 'class' => 'BandejaBundle:TiposDocumentos',
                 'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('tdoc')
@@ -32,29 +32,29 @@ class NuevoDocumentoType extends AbstractType
                 'choice_value' => function (TiposDocumentos $td = null) {
                     return $td ? $td->getIdTiposDoc() : '';
                 },
-            ])->add('nroExpediente', NumberType::class, [
+            ])->add('nroExpediente', 'Symfony\Component\Form\Extension\Core\Type\NumberType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Número Expediente',
                 'required' => false,
-            ])->add('fechaDoc', DateType::class, [
+            ])->add('fechaDoc', 'Symfony\Component\Form\Extension\Core\Type\DateType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Fecha Recepción',
                 'widget' => 'single_text',
                 'data' => new \DateTime(),
                 'required' => true,
-            ])->add('ant', TextareaType::class, [
+            ])->add('ant', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Antecedentes',
                 'required' => false,
-            ])->add('mat', TextareaType::class, [
+            ])->add('mat', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Materia',
                 'required' => false,
-            ])->add('ext', TextareaType::class, [
+            ])->add('ext', 'Symfony\Component\Form\Extension\Core\Type\TextareaType', [
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'label_attr' => ['class' => 'mb-0'],
                 'label' => 'Extracto',

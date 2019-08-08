@@ -21,7 +21,8 @@ class DocumentosRepository extends EntityRepository
                           $query->expr()->in('der.idDerivacion', array_column($derivaciones, 'idDer')),
                           $query->expr()->isNull('der.fechaE')
                       ))
-               ->where('1 = 1');
+               ->where('1 = 1')
+               ->orderBy('docs.fechaDoc', 'DESC');
 
         if (isset($mostrar))
             $query->andWhere($query->expr()->eq('docs.estado', $mostrar == 'archivados' ? 0 : 1));
@@ -81,7 +82,8 @@ class DocumentosRepository extends EntityRepository
                           $query->expr()->in('der.idDerivacion', array_column($derivaciones, 'idDer')),
                           $query->expr()->isNull('der.fechaE')
                       ))
-               ->where('docs.estado = 2');
+               ->where('docs.estado = 2')
+               ->orderBy('docs.fechaDoc', 'DESC');
 
         if ($offset)
             $query->setFirstResult($offset); // $offset
@@ -114,6 +116,7 @@ class DocumentosRepository extends EntityRepository
                       ))
                ->where('der.fkRemitente = :USUARIO')
                ->andWhere('docs.estado in (1,0)')
+               ->orderBy('docs.fechaDoc', 'DESC')
                ->setParameter('USUARIO', $usuario)
                ->getQuery();
 
@@ -172,14 +175,15 @@ class DocumentosRepository extends EntityRepository
                           $query->expr()->eq('docs.idDoc', 'der.fkDoc'),
                           $query->expr()->in('der.fkDeptodes', $deptos),
                           $query->expr()->isNull('der.fechaE')
-                      ));
+                      ))
+               ->orderBy('docs.fechaDoc', 'DESC');
 
         if (is_numeric($needle)) {
             $query->where('docs.idDoc = :NEEDLE')
                 ->orWhere('docs.nroExpediente = :NEEDLE')
                 ->setParameter('NEEDLE', $needle);
 
-        } else if (preg_match('/DESDE[\s]*:([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})[\s]+HASTA[\s]*:([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})/i',
+        } else if (preg_match('/DESDE[\s]*:[\s]*([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})[\s]+HASTA[\s]*:[\s]*([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})/i',
                               $needle,
                               $matches)) {
             $desde = date_create_from_format('d/m/Y', $matches[1]);

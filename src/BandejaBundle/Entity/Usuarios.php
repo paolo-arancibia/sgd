@@ -81,7 +81,7 @@ class Usuarios implements UserInterface, \Serializable
 
     public function __construct()
     {
-        $this->idActive = true;
+        $this->isActive = true;
         $this->depUsus = new Collection();
     }
 
