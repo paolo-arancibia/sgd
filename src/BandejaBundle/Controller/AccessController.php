@@ -5,6 +5,7 @@ namespace BandejaBundle\Controller;
 use BandejaBundle\Entity\Usuarios;
 use BandejaBundle\Form\LoginType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AccessController extends Controller
@@ -16,6 +17,7 @@ class AccessController extends Controller
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render(
+            //'Access/login.html.twig',
             'BandejaBundle:Access:login.twig.html',
             array(
                 'last_username' => $lastUsername,
@@ -27,5 +29,17 @@ class AccessController extends Controller
     public function logoutAction()
     {
         return;
+    }
+
+    public function changeDeptoAction(Request $request, $idDepto)
+    {
+        $d = $this->getDoctrine()
+           ->getEntityManager()
+           ->getRepository('BandejaBundle:Departamentos')
+           ->find($idDepto);
+
+        $this->get('session')->set('departamento', $d);
+
+        return $this->redirect($request->headers->get('referer'));
     }
 }

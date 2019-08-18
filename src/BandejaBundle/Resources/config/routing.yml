@@ -10,21 +10,27 @@ logout:
     path:     /logout
     defaults: { _controller: BandejaBundle:Access:logout }
 
+changeDepto_bandeja:
+    path:     /changeDepto/{idDepto}
+    defaults: { _controller: BandejaBundle:Access:changeDepto, idDepto: null }
+    requirements:
+        idDepto: '\d+'
+
 porrecibir_bandeja:
     path:     /porrecibir/{page}
-    defaults: { _controller: BandejaBundle:Bandeja:porrecibir, page: 1  }
+    defaults: { _controller: BandejaBundle:Bandeja:porrecibir, page: 1 }
     requirements:
         page: '\d+'
 
 recibidos_bandeja:
     path:     /recibidos/{page}
-    defaults: { _controller: BandejaBundle:Bandeja:recibidos, page: 1  }
+    defaults: { _controller: BandejaBundle:Bandeja:recibidos, page: 1 }
     requirements:
         page: '\d+'
 
 despachados_bandeja:
     path:     /despachados/{page}
-    defaults: { _controller: BandejaBundle:Bandeja:despachados, page: 1  }
+    defaults: { _controller: BandejaBundle:Bandeja:despachados, page: 1 }
     requirements:
         page: '\d+'
 

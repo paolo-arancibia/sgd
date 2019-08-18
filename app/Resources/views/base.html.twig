@@ -60,14 +60,47 @@
               <i class="fa fa-bars"></i>
             </button>
 
-            <div class="ml-5">{% block page_title %}{% endblock %}</div>
-	    {# <span class="ml-auto"><a href="{{ url('logout') }}">{% if app.user %}@{{ app.user.username }}{% endif %}</a></span> #}
+            <div class="ml-5">
+              {% block page_title %}{% endblock %}
+            </div>
 
             <ul class="nav ml-auto">
               <li class="nav-item dropdown" data-toggle="dropdown" >
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if app.user %}@{{ app.user.username }}{% endif %}</a>
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  {% if app.user %}@{{ app.user.username }}{% endif %}
+                </a>
+
                 <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item" href="{{ url('logout') }}" onclick="window.location.href='{{ url('logout') }}'; return false;">Salir</a>
+                  <h6 class="dropdown-header text-primary">
+		    <i class="fas fa-user"></i> &nbsp;
+                    <strong>
+                      {{ app.session.get('user_persona').nombres }}
+                      {{ app.session.get('user_persona').apellidopaterno }}
+                      {{ app.session.get('user_persona').apellidomaterno }}
+                    </strong>
+                  </h6>
+
+                  <div class="dropdown-divider"></div>
+
+                  <h6 class="dropdown-header">Departamentos</h6>
+
+                  {% for d in app.user.depUsus %}
+                    {% if app.session.get("departamento").idDepartamento == d.fkDepto.idDepartamento %}
+                      {% set active = ' active' %}
+		    {% else %}
+		      {% set active = '' %}
+                    {% endif %}
+                    <a class="dropdown-item{{ active }}" href="{{ url('changeDepto_bandeja', {'idDepto': d.fkDepto.idDepartamento}) }}" onclick="window.location.href='{{ url('changeDepto_bandeja', {'idDepto': d.fkDepto.idDepartamento}) }}'; return false;">
+                      {{ d.fkDepto.descripcion }}
+                    </a>
+                    {% set active = '' %}
+                  {% endfor %}
+
+                  <div class="dropdown-divider"></div>
+
+                  <a class="dropdown-item" href="{{ url('logout') }}" onclick="window.location.href='{{ url('logout') }}'; return false;">
+                    <i class="fas fa-power-off"></i> &nbsp; Salir
+                  </a>
                 </div>
               </li>
             </ul>

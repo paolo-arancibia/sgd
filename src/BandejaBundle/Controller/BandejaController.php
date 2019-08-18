@@ -40,6 +40,8 @@ class BandejaController extends Controller
 {
     public function indexAction()
     {
+        $this->setOnSession();
+
         return $this->redirectToRoute('recibidos_bandeja');
     }
 
@@ -319,7 +321,7 @@ class BandejaController extends Controller
         );
     }
 
-    public function porrecibirAction(Request $request, $page = 0)
+    public function porrecibirAction(Request $request, $page = 1)
     {
         $this->setOnSession();
 
@@ -402,13 +404,12 @@ class BandejaController extends Controller
         );
     }
 
-    public function despachadosAction(Request $request, $page = 0)
+    public function despachadosAction(Request $request, $page = 1)
     {
         $this->setOnSession();
 
-        $searchForm = $this->createForm('BandejaBundle\Form\BuscarType', null, ['action' => $this->generateUrl('buscar_bandeja')]);
-
-        $searchForm->handleRequest($request);
+        $searchForm = $this->createForm('BandejaBundle\Form\BuscarType', null,
+                                        ['action' => $this->generateUrl('buscar_bandeja')]);
 
         $docsByPage = 25; // documentos por página
 
@@ -696,10 +697,12 @@ class BandejaController extends Controller
     {
         $adjunto = $this->getDoctrine()->getRepository('BandejaBundle:Adjuntos')
                ->findBy(array('idAdjunto' => $id))[0];
+
         $response = new BinaryFileResponse(
             Adjuntos::ABSOLUTE_FILE_DIRECTORY
             . DIRECTORY_SEPARATOR
             . $adjunto->getUrl());
+
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $adjunto->getNombreOriginal()
@@ -1016,15 +1019,26 @@ class BandejaController extends Controller
     private function setOnSession()
     {
         $session = $this->get('session');
+        $loginUser = $this->getUser();
+
+
 
         if ($session->get('departamento') === null) {
-            $loginUser = $this->getUser();
+            if (! $loginUser->getDepUsus()->get(0)->getFkDepto() instanceof Departametos )
+                $this->redirectToRoute('login_access');
 
-            $expr = new Comparison('encargado', '=', 1);
-            $encargado = new Criteria();
-            $encargado->where( $expr );
+            $session->set(
+                'departamento',
+                $loginUser->getDepUsus()->get(0)->getFkDepto()
+            );
+        }
 
-            $session->set('departamento', $loginUser->getDepUsus()->matching($encargado)->get(0)->getFkDepto());
+        if ($session->get('user_persona') === null) {
+            $session->set(
+                'user_persona',
+                $this->getDoctrine()->getRepository('BandejaBundle:Personas', 'customer')
+                    ->find($loginUser->getFkPersona())
+            );
         }
     }
 }
