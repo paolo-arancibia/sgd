@@ -17,36 +17,36 @@
       filter='cssrewrite'
       output='css/fontawesome.css'
       combine=true %}
-          <link rel="stylesheet" href="{{ asset_url }}" />
+      <link rel="stylesheet" href="{{ asset_url }}" />
       {% endstylesheets %}
 
       <style type="text/css">
-        .wrapper {
-          display: flex;
-          align-items: stretch;
-        }
+       .wrapper {
+         display: flex;
+         align-items: stretch;
+       }
 
-        #sidebar {
-          min-width: 250px;
-          max-width: 250px;
-          min-height: 100vh;
-          transition: all 0.3s;
-        }
+       #sidebar {
+         min-width: 250px;
+         max-width: 250px;
+         min-height: 100vh;
+         transition: all 0.3s;
+       }
 
-        #sidebar.active {
-          margin-left: -245px;
-        }
+       #sidebar.active {
+         margin-left: -245px;
+       }
 
-        #content {
-          transition: all 0.3s;
-        }
+       #content {
+         transition: all 0.3s;
+       }
       </style>
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('ico.ico') }}" />
   </head>
   <body>
     <div class="wrapper">
-     <!-- Sidebar -->
+      <!-- Sidebar -->
       <nav id="sidebar" class="px-2{% if app.request.cookies.get('open_menu') %} active{% endif %}">
         <h1 class="text-center pt-2"><a href="{{ url('bandeja_homepage') }}">SGD</a></h1>
         {% include 'menu.html.twig' %}
@@ -125,36 +125,36 @@
 
     {% block javascripts %}
       {% javascripts
-        '../vendor/components/jquery/jquery.min.js'
-        output='js/jquery.min.js'
-        combine=true %}
-        <script src="{{ asset_url }}"></script>
+      '../vendor/components/jquery/jquery.min.js'
+      output='js/jquery.min.js'
+      combine=true %}
+      <script src="{{ asset_url }}"></script>
       {% endjavascripts %}
 
       {% javascripts
-        '../vendor/twbs/bootstrap/dist/js/bootstrap.min.js'
-        output='js/bootstrap.min.js'
-        combine=true %}
-          <script src="{{ asset_url }}"></script>
+      '../vendor/twbs/bootstrap/dist/js/bootstrap.min.js'
+      output='js/bootstrap.min.js'
+      combine=true %}
+      <script src="{{ asset_url }}"></script>
       {% endjavascripts %}
     {% endblock %}
 
     <script type="text/javascript">
-      $(document).ready(function () {
+     $(document).ready(function () {
 
-        // Sidebar menu control toggle
-        $('#sidebarCollapse').on('click', function () {
-          $('#sidebar').toggleClass('active');
-	  $.ajax({
-	    cache: false,
-	    url: '{{ url('toggle_menu') }}'
-	  });
-        });
+       // Sidebar menu control toggle
+       $('#sidebarCollapse').on('click', function () {
+         $('#sidebar').toggleClass('active');
+	 $.ajax({
+	   cache: false,
+	   url: '{{ url('toggle_menu') }}'
+	 });
+       });
 
-        setTimeout( function() {
-          $('.alert').alert('close');
-        }, 5000);
-      });
+       setTimeout( function() {
+         $('.alert').alert('close');
+       }, 5000);
+     });
     </script>
   </body>
 </html>
