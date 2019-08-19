@@ -1,0 +1,96 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}SGD{% endblock %}</title>
+    {% block stylesheets %}
+      {% stylesheets
+      '../vendor/twbs/bootstrap/dist/css/bootstrap.min.css'
+      filter='cssrewrite'
+      output='css/bootstrap.min.css'
+      combine=true %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+      {% endstylesheets %}
+
+      {% stylesheets
+      '../vendor/components/font-awesome/css/fontawesome-all.min.css'
+      filter='cssrewrite'
+      output='css/font-awesome.css'
+      combine=true %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+      {% endstylesheets %}
+    {% endblock %}
+
+    <style type="text/css">
+     html {
+       position: relative;
+       min-height: 100%;
+     }
+
+     body {
+       margin-bottom: 60px;
+     }
+
+     #container {
+       min-height: auto;
+       background-color: #f6f6f6;
+       border: 1px solid #e7e7e7;
+     }
+
+     .footer {
+       position: absolute;
+       bottom: 0;
+       width: 100%;
+       height: 60px;
+     }
+
+     #logo {
+       margin: 15px 20px;
+     }
+    </style>
+    <link rel="icon" type="image/x-icon" href="{{ asset('ico.ico') }}" />
+  </head>
+  <body>
+    <!-- Header -->
+    {% block header %}
+      <header class="header">
+	<div class="container-fluid row">
+          <div id="logo" class="col-2 text-left pl-0"><img src="{{ asset('../web/logo-lf.png') }}" /></div>
+          <div class="col-auto text-left ml-auto py-3"><h3 class="px-2"><strong>SGD</strong></h3></div>
+	</div>
+      </header>
+    {% endblock %}
+
+    <!-- Content  -->
+    <div id="container" class="container-fliud d-flex justify-content-center">
+      {% block page_title %}{% endblock %}
+
+      {% block body %}{% endblock %}
+    </div>
+
+    {% block footer %}
+      <footer class="footer">
+        <div class="container-fluid d-flex flex-column justify-content-center">
+          <span class="text-muted w-25">Powered by Análisis y Desarrollo</span>
+	  <span class="text-muted w-25">Ilustre Municipalidad de la Florida</span>
+        </div>
+      </footer>
+    {% endblock %}
+
+    {% block javascripts %}
+      {% javascripts
+        '../vendor/components/jquery/jquery.min.js'
+        output='js/jquery.min.js'
+        combine=true %}
+        <script src="{{ asset_url }}"></script>
+      {% endjavascripts %}
+
+      {% javascripts
+        '../vendor/twbs/bootstrap/dist/js/bootstrap.min.js'
+        output='js/bootstrap.min.js'
+        combine=true %}
+          <script src="{{ asset_url }}"></script>
+      {% endjavascripts %}
+    {% endblock %}
+
+  </body>
+</html>
