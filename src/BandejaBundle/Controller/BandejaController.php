@@ -699,7 +699,7 @@ class BandejaController extends Controller
                ->findBy(array('idAdjunto' => $id))[0];
 
         $response = new BinaryFileResponse(
-            Adjuntos::ABSOLUTE_FILE_DIRECTORY
+            Adjuntos::UPLOADED_FILE_DIRECTORY
             . DIRECTORY_SEPARATOR
             . $adjunto->getUrl());
 
