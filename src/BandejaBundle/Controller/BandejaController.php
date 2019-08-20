@@ -863,10 +863,17 @@ class BandejaController extends Controller
 
             $encargados = $d->getDepUsus()->matching( $criteria );
 
+            if (! $encargados->isEmpty())
+                $persona = $this->getDoctrine()->getRepository('BandejaBundle:Personas', 'customer')
+                         ->find($encargados->first()->getFkUsuario()->getFkPersona());
+            else
+                $persona = null;
+
+            //dump($persona); die;
             $deptosArray[ $d->getIdDepartamento() ] = array(
                 'idDepartamento' => $d->getIdDepartamento(),
                 'descripcion' => $d->getDescripcion(),
-                'encargado' => $encargados->isEmpty() ? null : $encargados->first()->getFkUsuario()->getFkPersona()->getNombreCompleto(),
+                'encargado' => ! $persona ? null : $persona->getNombreCompleto(),
                 'idEncargado' => $encargados->isEmpty() ? null : $encargados->first()->getFkUsuario()->getIdUsuario(),
                 'tipo' => 'depto',
             );
