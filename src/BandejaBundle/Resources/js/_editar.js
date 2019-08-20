@@ -17,7 +17,7 @@ var departamentos = new Bloodhound({
 });
 
 $('#buscadorRemitentes').typeahead({
-    minLength: 2,
+    minLength: 5,
     highlight: true,
     classNames: {
         input: 'form-control',
@@ -28,7 +28,7 @@ $('#buscadorRemitentes').typeahead({
     name: 'personas',
     source: personas,
     async: true,
-    limit: 7,
+    limit: 20,
     templates: {
         header: '<div class="bg-secondary text-white text-center font-weight-bold px-3 py-1">Personas encontradas</div>'
     },
@@ -39,7 +39,7 @@ $('#buscadorRemitentes').typeahead({
     name: 'departamentos',
     source: departamentos,
     async: true,
-    limit: 7,
+    limit: 10,
     templates: {
         header: '<div class="bg-secondary text-white text-center font-weight-bold px-3 py-1">Departamentos encontrados</div>'
     },
