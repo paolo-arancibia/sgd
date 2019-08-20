@@ -926,7 +926,7 @@ class BandejaController extends Controller
                ->orWhere('pers.apellidopaterno like :STR')
                ->orWhere('pers.apellidomaterno like :STR')
                ->orWhere('CONCAT(pers.rut,\'-\',pers.vrut) like :STR')
-               ->setParameter(':STR', '%'.$str.'%')
+               ->setParameter(':STR', $str.'%')
                ->orderBy('pers.apellidopaterno, pers.apellidomaterno, pers.nombres', 'ASC')
                ->getQuery();
 
