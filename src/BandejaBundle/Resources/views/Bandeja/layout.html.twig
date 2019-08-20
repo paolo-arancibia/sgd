@@ -1,0 +1,25 @@
+{% extends 'BandejaBundle:Bandeja:base.html.twig' %}
+
+{% block body %}
+  <!-- Searcher -->
+  <div class="row pb-3">
+    {% block searcher %}{% endblock %}
+  </div>
+
+  <div class="row pb-3">
+    <!-- Filters -->
+    <div class="col pr-0">
+      {% block filters %}{% endblock %}
+    </div>
+
+    <!-- Paginator -->
+    <div class="col-md-auto">
+      {% block pager %}{% endblock %}
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="">
+    {% block content %}{% endblock %}
+  </div>
+{% endblock %}

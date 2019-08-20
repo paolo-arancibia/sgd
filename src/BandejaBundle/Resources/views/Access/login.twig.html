@@ -1,38 +1,44 @@
-{% extends 'restricted.html.twig' %}
+{% extends 'BandejaBundle:Access:restricted.html.twig' %}
 
 {% block page_title %}
-<h2 class="w-50 mx-auto mb-3">Acceso</h2>
+  {# <h2 class="w-50 mx-auto mb-3">Accesos</h2> #}
 {% endblock %}
 
 {% block body %}
-<div class="w-50 mx-auto">
-  {# form_start(loginForm) #}
-  {% if error %}
-     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-  {% endif %}
+<form class="m-0" action="" method="post">
+  <div class="card w-auto">
+    {# form_start(loginForm) #}
+    {% if error %}
+      <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
 
-  <form action="" method="post">
-    <div class="form-group row">
-      {# form_label(loginForm._username, 'Usuario', {'label_attr': {'class': 'col-sm-2 col-form-label'}}) #}
-      <label class="col-sm-2 col-form-label required" for="username">Usuario</label>
-      <div class="col">
-        {# form_widget(loginForm._username, {'attr': {'class': 'form-control'}}) #}
-       <input type="text" id="username" name="_username" required="required" class="form-control" value="{{ last_username }}" />
+    <div class="card-header">
+      <h4>Acceso</h4>
+    </div>
+
+    <div class="card-body">
+      <div class="form-group row">
+	{# form_label(loginForm._username, 'Usuario', {'label_attr': {'class': 'col-sm-2 col-form-label'}}) #}
+	<label class="col col-form-label required" for="username">Usuario</label>
+	<div class="col">
+          {# form_widget(loginForm._username, {'attr': {'class': 'form-control'}}) #}
+	  <input type="text" id="username" name="_username" required="required" class="form-control" value="{{ last_username }}" />
+	</div>
+      </div>
+
+      <div class="form-group row">
+	{# form_label(loginForm._password, 'Contraseña', {'label_attr': {'class': 'col-sm-2 col-form-label'}}) #}
+	<label class="col col-form-label required" for="password">Contraseña</label>
+	<div class="col">
+          {# form_widget(loginForm._password, {'attr': {'class': 'form-control'}}) #}
+          <input type="password" id="password" name="_password" required="required" class="form-control" />
+	</div>
       </div>
     </div>
-    <div class="form-group row">
-      {# form_label(loginForm._password, 'Contraseña', {'label_attr': {'class': 'col-sm-2 col-form-label'}}) #}
-      <label class="col-sm-2 col-form-label required" for="password">Contraseña</label>
-      <div class="col">
-        {# form_widget(loginForm._password, {'attr': {'class': 'form-control'}}) #}
-        <input type="password" id="password" name="_password" required="required" class="form-control" />
-      </div>
-    </div>
-    <div class="form-group row">
-        <button type="submit" class="btn btn-success col">Ingresar</button>
-    </div>
-  </form>
-  {# form_end(loginForm) #}
-</div>
+
+    <button type="submit" class="btn btn-primary">Ingresar</button>
+    {# form_end(loginForm) #}
+  </div>
+</form>
 
 {% endblock %}
