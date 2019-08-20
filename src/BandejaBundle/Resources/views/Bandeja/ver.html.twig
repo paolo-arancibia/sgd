@@ -4,10 +4,12 @@
 
 {% block page_title %}
   <h2 class="">
-    ID-DOC N° {{ documento.idDoc }}
-    {% if derivacion.nota %}
-      <a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
-    {% endif %}
+    <strong>
+      ID-DOC N° {{ documento.idDoc }}
+      {% if derivacion.nota %}
+	<a href="#note" class="text-danger" data-toggle="modal" data-target="#notaModal"><i class="fas fa-sticky-note"></i></a>
+      {% endif %}
+    </strong>
   </h2>
 
   <div class="modal fade" id="derivacionesModal" tabindex="-1" role="dialog" aria-labelledby="example2ModalLabel" aria-hidden="true">

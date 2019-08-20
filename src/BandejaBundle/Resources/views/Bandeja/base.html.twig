@@ -40,6 +40,10 @@
        #content {
          transition: all 0.3s;
        }
+
+       #logo {
+         margin: 15px 20px;
+       }
       </style>
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('ico.ico') }}" />
@@ -47,10 +51,15 @@
   <body>
     <div class="wrapper">
       <!-- Sidebar -->
-      <nav id="sidebar" class="px-2{% if app.request.cookies.get('open_menu') %} active{% endif %}">
-        <h1 class="text-center pt-2"><a href="{{ url('bandeja_homepage') }}">SGD</a></h1>
-        {% include 'menu.html.twig' %}
-      </nav>
+      <div id="sidebar" class="px-2{% if app.request.cookies.get('open_menu') %} active{% endif %}">
+	<h2 class="text-center pt-2 mb-0"><strong><a class="text-decoration-none" href="{{ url('bandeja_homepage') }}">SGD</a></strong></h2>
+
+	<div id="logo" class="mt-0 text-center">
+	  <img class="w-25" src="{{ asset('../web/logo-lf.png') }}" />
+	</div>
+
+        {% include 'BandejaBundle:Bandeja:menu.html.twig' %}
+      </div>
 
       <!-- Content  -->
       <div id="content" class="px-2 w-100">
