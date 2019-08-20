@@ -1,39 +1,39 @@
 {% extends 'BandejaBundle:Bandeja:layout.html.twig' %}
 
 {% block page_title %}
-<h2 class="">BANDEJA RECIBIDOS</h2>
+  <h2 class=""><strong>BANDEJA RECIBIDOS</strong></h2>
 {% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
   {% stylesheets
-    '../vendor/harvesthq/chosen/chosen.css'
-    filter='cssrewrite'
-    output='css/chosen.css'
-    combine=true %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+  '../vendor/harvesthq/chosen/chosen.css'
+  filter='cssrewrite'
+  output='css/chosen.css'
+  combine=true %}
+  <link rel="stylesheet" href="{{ asset_url }}" />
   {% endstylesheets %}
 
   {% stylesheets
-    '../vendor/kartik-v/bootstrap-fileinput/css/fileinput.css'
-    output='css/fileinput.css'
-    combine=true %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+  '../vendor/kartik-v/bootstrap-fileinput/css/fileinput.css'
+  output='css/fileinput.css'
+  combine=true %}
+  <link rel="stylesheet" href="{{ asset_url }}" />
   {% endstylesheets %}
 
   <style type="text/css">
    .doc-pendiente {
-       background-color: rgb(0, 123, 255, 0.1);
+     background-color: rgb(0, 123, 255, 0.1);
    }
 
    .doc-archivado {
-       background-color: rgb(255, 193, 7, 0.1);
+     background-color: rgb(255, 193, 7, 0.1);
    }
   </style>
 {% endblock %}
 
 {% block searcher %}
-    {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
+  {% include 'BandejaBundle:Bandeja:buscador.html.twig' %}
 {% endblock %}
 
 {% form_theme filtersForm _self %}
