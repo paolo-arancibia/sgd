@@ -356,7 +356,7 @@ class Adjuntos
         // move takes the target directory and then the
         // target filename to move to
         $this->getFile()->move(
-            $this->getUploadRootDir(),
+            $this->getUploadDir(),
             $this->url
         );
 

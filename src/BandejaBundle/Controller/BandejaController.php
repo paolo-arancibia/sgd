@@ -699,7 +699,7 @@ class BandejaController extends Controller
                ->findBy(array('idAdjunto' => $id))[0];
 
         $response = new BinaryFileResponse(
-            Adjuntos::ABSOLUTE_FILE_DIRECTORY
+            Adjuntos::UPLOADED_FILE_DIRECTORY
             . DIRECTORY_SEPARATOR
             . $adjunto->getUrl());
 
@@ -863,10 +863,17 @@ class BandejaController extends Controller
 
             $encargados = $d->getDepUsus()->matching( $criteria );
 
+            if (! $encargados->isEmpty())
+                $persona = $this->getDoctrine()->getRepository('BandejaBundle:Personas', 'customer')
+                         ->find($encargados->first()->getFkUsuario()->getFkPersona());
+            else
+                $persona = null;
+
+            //dump($persona); die;
             $deptosArray[ $d->getIdDepartamento() ] = array(
                 'idDepartamento' => $d->getIdDepartamento(),
                 'descripcion' => $d->getDescripcion(),
-                'encargado' => $encargados->isEmpty() ? null : $encargados->first()->getFkUsuario()->getFkPersona()->getNombreCompleto(),
+                'encargado' => ! $persona ? null : $persona->getNombreCompleto(),
                 'idEncargado' => $encargados->isEmpty() ? null : $encargados->first()->getFkUsuario()->getIdUsuario(),
                 'tipo' => 'depto',
             );
@@ -1021,7 +1028,8 @@ class BandejaController extends Controller
         $session = $this->get('session');
         $loginUser = $this->getUser();
 
-
+        if (! $loginUser)
+            return $this->redirectToRoute('login_access');
 
         if ($session->get('departamento') === null) {
             if (! $loginUser->getDepUsus()->get(0)->getFkDepto() instanceof Departametos )
