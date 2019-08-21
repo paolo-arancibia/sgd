@@ -1028,7 +1028,8 @@ class BandejaController extends Controller
         $session = $this->get('session');
         $loginUser = $this->getUser();
 
-
+        if (! $loginUser)
+            return $this->redirectToRoute('login_access');
 
         if ($session->get('departamento') === null) {
             if (! $loginUser->getDepUsus()->get(0)->getFkDepto() instanceof Departametos )
