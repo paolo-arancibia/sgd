@@ -13,30 +13,32 @@
       <th scope="col">Nro Expediente</th>
       <th scope="col">Fecha Recepción</th>
       <th scope="col">Origen</th>
+      <th scope="col">Destino</th>
       <th scope="col">Tipo de Documento</th>
       <th scope="col">Tipo de Envío</th>
     </tr>
   </thead>
   <tbody>
-{% for key, doc in documentos %}
-    <tr class="{% if doc.estado == 1 %}doc-pendiente{% elseif doc.estado == 0 %}doc-archivado{% endif %}" data-href="{{ url('ver_bandeja') }}/{{ doc.idDoc }}">
-      <th scope="row"><input type="checkbox" id="doc{{ doc.idDoc }}" name="docs[]" value="{{ doc.idDoc }}" /></th>
-      <td>
-        {% if doc.fechaDoc|date('Ymd') > 'now'|date_modify("+5 days")|date('Ymd') %}
-          <i class="fas fa-circle text-success">&nbsp;</i>
-        {% elseif 'now'|date_modify("+5 days")|date('Ymd') >= doc.fechaDoc|date('Ymd') and
-           doc.fechaDoc|date('Ymd') >= 'now'|date('Ymd') %}
-          <i class="fas fa-circle text-warning">&nbsp;</i>
-        {% elseif 'now'|date('Ymd') > doc.fechaDoc|date('Ymd')  %}
-          <i class="fas fa-circle text-danger">&nbsp;</i>
-        {% else %}
-          <i class="fas fa-circle text-info">&nbsp;</i>
-        {% endif %}
-        <span class="font-weight-bold">{{ doc.idDoc }}</span>
-      </td>
-      <td>{{ doc.nroExpediente }}</td>
-      <td>{{ doc.fechaDoc|date('d/m/Y') }}</td>
-      <td>{{ derivaciones[key+1].fkDeptorem.descripcion }}</td>
+    {% for key, doc in documentos %}
+      <tr class="{% if doc.estado == 1 %}doc-pendiente{% elseif doc.estado == 0 %}doc-archivado{% endif %}" data-href="{{ url('ver_bandeja') }}/{{ doc.idDoc }}">
+	<th scope="row"><input type="checkbox" id="doc{{ doc.idDoc }}" name="docs[]" value="{{ doc.idDoc }}" /></th>
+	<td>
+          {% if doc.fechaDoc|date('Ymd') > 'now'|date_modify("+5 days")|date('Ymd') %}
+            <i class="fas fa-circle text-success">&nbsp;</i>
+          {% elseif 'now'|date_modify("+5 days")|date('Ymd') >= doc.fechaDoc|date('Ymd') and
+          doc.fechaDoc|date('Ymd') >= 'now'|date('Ymd') %}
+            <i class="fas fa-circle text-warning">&nbsp;</i>
+          {% elseif 'now'|date('Ymd') > doc.fechaDoc|date('Ymd')  %}
+            <i class="fas fa-circle text-danger">&nbsp;</i>
+          {% else %}
+            <i class="fas fa-circle text-info">&nbsp;</i>
+          {% endif %}
+          <span class="font-weight-bold">{{ doc.idDoc }}</span>
+	</td>
+	<td>{{ doc.nroExpediente }}</td>
+	<td>{{ doc.fechaDoc|date('d/m/Y') }}</td>
+	<td>{{ derivaciones[key+1].fkDeptorem.descripcion }}</td>
+	<td>{{ derivaciones[key+1].fkDeptodes.descripcion }}</td>
       <td>{{ doc.fkTipoDoc.descripcion }} ({{ doc.fkTipoDoc.abrev }})</td>
       <td>{% if derivaciones[key+1].tipo == 1 %}Original{% else %}Copia{% endif %}</td>
     </tr>
