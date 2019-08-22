@@ -72,7 +72,6 @@
 
     {% include 'BandejaBundle:Bandeja:desarchivar.html.twig' with {'desarchivarForm': desarchivarForm} %}
   {% elseif documento.estado == 2 and derivacion.fkDeptodes.idDepartamento == app.session.get('departamento').idDepartamento %}
-    {{ dump(derivacion) }}
     {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
     {{ form_end(recibirForm) }}
   {% elseif documento.estado == 2 and derivacion.fkDeptorem.idDepartamento == app.session.get('departamento').idDepartamento %}
