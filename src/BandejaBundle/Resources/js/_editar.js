@@ -30,7 +30,8 @@ $('#buscadorRemitentes').typeahead({
     async: true,
     limit: 20,
     templates: {
-        header: '<div class="bg-secondary text-white text-center font-weight-bold px-3 py-1">Personas encontradas</div>'
+        header: '<div class="bg-warning text-dark text-center font-weight-bold px-3 py-1">Personas encontradas</div>',
+	pending: '<div class="text-info text-center px-3 py-1"><i class="rotate fas fa-spinner"></i> Buscando personas ...</div>'
     },
     display: function(obj) {
         return obj.nombre;
@@ -41,7 +42,9 @@ $('#buscadorRemitentes').typeahead({
     async: true,
     limit: 10,
     templates: {
-        header: '<div class="bg-secondary text-white text-center font-weight-bold px-3 py-1">Departamentos encontrados</div>'
+        header: '<div class="bg-info text-white text-center font-weight-bold px-3 py-1">Departamentos encontrados</div>',
+	pending: '<div class="text-info text-center px-3 py-1"><i class="rotate fas fa-spinner"></i> Buscando departamentos municipales ...</div>'
+
     },
     display: function(obj) {
         return obj.descripcion;

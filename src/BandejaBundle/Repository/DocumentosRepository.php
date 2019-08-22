@@ -102,8 +102,10 @@ class DocumentosRepository extends EntityRepository
         return (int) count($docs) / 2;
     }
 
-    public function findDespachadosByUsuario($usuario, $offset = 0, $limit = 0)
+    public function findDespachadosByUsuario($usuario, $depto, $offset = 0, $limit = 0)
     {
+        $derivaciones = $this->sentDerivaciones($depto);
+
         $query = $this->getEntityManager()->createQueryBuilder();
 
         $query = $query->select('docs')
@@ -112,12 +114,15 @@ class DocumentosRepository extends EntityRepository
                ->join('BandejaBundle:Derivaciones', 'der', 'with',
                       $query->expr()->andX(
                           $query->expr()->eq('docs.idDoc', 'der.fkDoc'),
+                          $query->expr()->in('der.idDerivacion', array_column($derivaciones, 'idDer')),
                           $query->expr()->isNull('der.fechaE')
                       ))
                ->where('der.fkRemitente = :USUARIO')
-               ->andWhere('docs.estado in (1,0)')
+               ->andWhere('der.fkDeptorem = :DEPTO')
+               ->andWhere('docs.estado = 2')
                ->orderBy('docs.fechaDoc', 'DESC')
                ->setParameter('USUARIO', $usuario)
+               ->setParameter('DEPTO', $depto)
                ->getQuery();
 
         if ($offset)
@@ -129,9 +134,9 @@ class DocumentosRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function countDespachadosByUsuario($usuario)
+    public function countDespachadosByUsuario($usuario, $depto)
     {
-        $docs = $this->findDespachadosByUsuario($usuario);
+        $docs = $this->findDespachadosByUsuario($usuario, $depto);
         return (int) count($docs) / 2;
     }
 
@@ -142,6 +147,7 @@ class DocumentosRepository extends EntityRepository
         $derivaciones = $query->select('MAX(der.idDerivacion) as idDer')
                       ->addSelect('IDENTITY(der.fkDoc) as fkDoc')
                       ->addSelect('IDENTITY(der.fkDeptodes) as fkDeptodes')
+                      ->addSelect('IDENTITY(der.fkDeptorem) as fkDeptorem')
                       ->from('BandejaBundle:Derivaciones', 'der')
                       ->groupBy('der.fkDoc')
                       ->orderBy('der.fkDoc', 'DESC')
@@ -151,6 +157,28 @@ class DocumentosRepository extends EntityRepository
 
         $derivaciones = array_filter($derivaciones, function($var) use ($depto) {
             return $var['fkDeptodes'] == $depto->getIdDepartamento();
+        });
+
+        return $derivaciones;
+    }
+
+    private function sentDerivaciones($depto)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder();
+
+        $derivaciones = $query->select('MAX(der.idDerivacion) as idDer')
+                      ->addSelect('IDENTITY(der.fkDoc) as fkDoc')
+                      ->addSelect('IDENTITY(der.fkDeptodes) as fkDeptodes')
+                      ->addSelect('IDENTITY(der.fkDeptorem) as fkDeptorem')
+                      ->from('BandejaBundle:Derivaciones', 'der')
+                      ->groupBy('der.fkDoc')
+                      ->orderBy('der.fkDoc', 'DESC')
+                      ->setMaxResults(9999)
+                      ->getQuery()
+                      ->getResult();
+
+        $derivaciones = array_filter($derivaciones, function($var) use ($depto) {
+            return $var['fkDeptorem'] == $depto->getIdDepartamento();
         });
 
         return $derivaciones;

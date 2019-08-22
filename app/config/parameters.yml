@@ -7,7 +7,7 @@ parameters:
     database_password: ASD123
     database_host2: 127.0.0.1
     database_port2: 3306
-    database_name2: SGDDB
+    database_name2: admin_lf_barrio
     database_user2: SGDUSER
     database_password2: ASD123
     mailer_transport: smtp
