@@ -16,13 +16,12 @@ class AccessController extends Controller
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
+        if ($error)
+            $this->addFlash('danger', $error->getMessage());
+
         return $this->render(
-            //'Access/login.html.twig',
-            'BandejaBundle:Access:login.twig.html',
-            array(
-                'last_username' => $lastUsername,
-                'error' => $error,
-            )
+            'BandejaBundle:Access:login.twig.html', array(
+                'last_username' => $lastUsername)
         );
     }
 
