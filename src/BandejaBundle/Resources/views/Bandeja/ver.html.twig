@@ -71,9 +71,12 @@
     <button type="submit" class="btn btn-warning" data-toggle="modal" data-target="#desarchivarModal">Desarchivar</button>
 
     {% include 'BandejaBundle:Bandeja:desarchivar.html.twig' with {'desarchivarForm': desarchivarForm} %}
-  {% elseif documento.estado == 2 %}
+  {% elseif documento.estado == 2 and derivacion.fkDeptodes.idDepartamento == app.session.get('departamento').idDepartamento %}
+    {{ dump(derivacion) }}
     {{ form_start(recibirForm, {'attr': {'id': 'recibir'}}) }}
     {{ form_end(recibirForm) }}
+  {% elseif documento.estado == 2 and derivacion.fkDeptorem.idDepartamento == app.session.get('departamento').idDepartamento %}
+    <button type="submit" class="btn btn-primary" form="derivar" name="guardar" value="derivar">Guardar y Derivar</button>
   {% endif %}
 {% endblock %}
 
@@ -145,7 +148,8 @@
 
       <div class="row">
 	<div class="col"{% if documento.estado == 0 %} style="display: none;"{% endif %}>
-	  {% if documento.estado == 1 %}
+	  {% if documento.estado == 1
+	  or documento.estado == 2 and derivacion.fkDeptorem.idDepartamento == app.session.get('departamento').idDepartamento %}
             <h5>Derivar a</h5>
             {{ form_start(derivarForm, {'attr': {'id': 'derivar', 'enctype': 'multipart/form-data'}}) }}
             {{ form_end(derivarForm) }}
