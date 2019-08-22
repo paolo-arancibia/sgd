@@ -189,18 +189,28 @@
   {% endstylesheets %}
 
   <style type="text/css">
-    #data > div.row {
-      margin-bottom: .5rem !important;
-    }
+   #data > div.row {
+     margin-bottom: .5rem !important;
+   }
 
-    .twitter-typeahead {
-      width: 100%;
-    }
+   .twitter-typeahead {
+     width: 100%;
+   }
 
-    .tt-suggestion:hover {
-        background-color: #007bff;
-        cursor: pointer;
-    }
+   .tt-suggestion:hover {
+     background-color: #007bff;
+     cursor: pointer;
+   }
+
+   .rotate {
+     -webkit-animation: spin 2s linear infinite;
+     -moz-animation: spin 2s linear infinite;
+     animation: spin 2s linear infinite ;
+   }
+
+   @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+   @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+   @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
   </style>
 {% endblock %}
 
@@ -208,16 +218,16 @@
   {{ parent() }}
 
   {% javascripts
-    '../vendor/harvesthq/chosen/chosen.jquery.js'
-    output='js/chosen.jquery.js'
-    combine=true %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
+  '../vendor/harvesthq/chosen/chosen.jquery.js'
+  output='js/chosen.jquery.js'
+  combine=true %}
+  <script type="text/javascript" src="{{ asset_url }}"></script>
   {% endjavascripts %}
 
   {% javascripts
-    '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
-    output='js/fileinput.min.js'
-    combine=true %}
+  '../vendor/kartik-v/bootstrap-fileinput/js/fileinput.min.js'
+  output='js/fileinput.min.js'
+  combine=true %}
     <script src="{{ asset_url }}"></script>
   {% endjavascripts %}
 
