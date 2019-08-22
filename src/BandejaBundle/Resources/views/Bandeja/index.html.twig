@@ -116,7 +116,8 @@
 {% endblock %}
 
 {% block pager %}
-  {% include 'Bandeja/pager.html.twig' with {'menu_op': menu_op, 'page': page, 'max_page': max_page} %}
+  {# include 'Bandeja/pager.html.twig' with {'menu_op': menu_op, 'page': page, 'max_page': max_page} #}
+  {{ paginator | raw }}
 {% endblock %}
 
 {% block content %}
