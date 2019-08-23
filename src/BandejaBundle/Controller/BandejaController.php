@@ -1061,15 +1061,16 @@ class BandejaController extends Controller
     {
         $session = $this->get('session');
         $loginUser = $this->getUser();
-        $persona = $this->getDoctrine()
-                 ->getRepository('BandejaBundle:Personas', 'customer')
-                 ->find($loginUser->getFkPersona());
 
         // Check the login user data
         if (! $loginUser) {
             $this->addFlash('danger', 'No existe el usuario.');
             return false;
         }
+
+        $persona = $this->getDoctrine()
+                 ->getRepository('BandejaBundle:Personas', 'customer')
+                 ->find($loginUser->getFkPersona());
 
         if (! $persona) {
             $this->addFlash('danger', 'El usuario no tiene sus datos personales.');
