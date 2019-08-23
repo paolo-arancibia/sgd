@@ -574,7 +574,13 @@ class BandejaController extends Controller
                ->setParameter('RUT', $documento->getFkRutPersona())
                ->getQuery();
 
-        $personaDoc = $query->getResult()[0];
+        $personaDoc = $query->getResult();
+
+        if (empty($personaDoc)) {
+            $this->addFlash('warning', 'Los datos del Remitente no se encuentran disponibles.');
+            $personaDoc = new Personas();
+        } else
+            $personaDoc = $personaDoc[0];
 
         $adjuntos = $this->getDoctrine()->getRepository('BandejaBundle:Adjuntos')
                   ->findBy(array('fkDoc' => $documento));
