@@ -805,16 +805,54 @@ class BandejaController extends Controller
 
             if ($request->get('guardar') === 'derivar') {
                 foreach ($derivarData['originales'] as $depto) {
+                    if ($depto->getDepUsus()->matching($encargadoCriteria)->get(0) === null) {
+                        $this->addFlash('danger', 'El departamento ' . $depto->getDescripcion()
+                                        . ' no tiene encargado. '
+                                        . 'Informe del problema al administrador del sistema '
+                                        . 'para que le asigne uno');
+
+                        return $this->render(
+                            'BandejaBundle:Bandeja:editar.html.twig',
+                            array(
+                                'menu_op' => '',
+                                'tipos' => $tipos,
+                                'derivarForm' => $derivarForm->createView(),
+                                'nuevoForm' => $nuevoForm->createView(),
+                                'personaForm' => $personaForm->createView(),
+                                'remitenteForm' => $remitenteForm->createView(),
+                            )
+                        );
+                    }
+
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 1, 'nota' => $derivarData['nota_original']),
                         $documento,
                         $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
                         $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
-                    $em->persist($derivacion);
+                        $em->persist($derivacion);
                 }
 
                 foreach ($derivarData['copias'] as $depto) {
+                    if ($depto->getDepUsus()->matching($encargadoCriteria)->get(0) === null) {
+                        $this->addFlash('danger', 'El departamento ' . $depto->getDescripcion()
+                                        . ' no tiene encargado. '
+                                        . 'Informe del problema al administrador del sistema '
+                                        . 'para que le asigne uno');
+
+                        return $this->render(
+                            'BandejaBundle:Bandeja:editar.html.twig',
+                            array(
+                                'menu_op' => '',
+                                'tipos' => $tipos,
+                                'derivarForm' => $derivarForm->createView(),
+                                'nuevoForm' => $nuevoForm->createView(),
+                                'personaForm' => $personaForm->createView(),
+                                'remitenteForm' => $remitenteForm->createView(),
+                            )
+                        );
+                    }
+
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                         $documento,
