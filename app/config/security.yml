@@ -33,7 +33,7 @@ security:
 
             # https://symfony.com/doc/current/security/form_login_setup.html
             form_login:
-                default_target_path: recibidos_bandeja
+                default_target_path: access_apps
                 login_path: login_access
                 check_path: login_access
             logout:
