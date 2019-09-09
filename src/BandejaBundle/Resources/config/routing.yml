@@ -1,14 +1,6 @@
 bandeja_homepage:
-    path:     //
+    path:     /
     defaults: { _controller: BandejaBundle:Bandeja:index }
-
-login_access:
-    path:     /login
-    defaults: { _controller: BandejaBundle:Access:login }
-
-logout:
-    path:     /logout
-    defaults: { _controller: BandejaBundle:Access:logout }
 
 changeDepto_bandeja:
     path:     /changeDepto/{idDepto}
@@ -35,7 +27,7 @@ despachados_bandeja:
         page: '\d+'
 
 buscar_bandeja:
-    path: /buscar
+    path:     /buscar
     defaults: { _controller: BandejaBundle:Bandeja:buscar, page: 1 }
     requirements:
         page: '\d+'

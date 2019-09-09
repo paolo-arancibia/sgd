@@ -1,7 +1,19 @@
+imlf_access:
+    resource: "@AccessBundle/Resources/config/routing.yml"
+    prefix:   /access
+
 bandeja:
     resource: "@BandejaBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /sgd
 
-app:
-    resource: '@AppBundle/Controller/'
-    type: annotation
+login_access:
+    path:     /login
+    defaults: { _controller: AccessBundle:Default:login }
+
+logout:
+    path:     /logout
+    defaults: { _controller: AccessBundle:Default:logout }
+
+index:
+    path:     //
+    defaults: { _controller: AccessBundle:Default:index }

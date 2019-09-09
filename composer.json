@@ -5,8 +5,8 @@
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
         "psr-4": {
-            "AppBundle\\": "src/AppBundle",
-            "BandejaBundle\\": "src/BandejaBundle"
+            "BandejaBundle\\": "src/BandejaBundle",
+            "AccessBundle\\": "src/AccessBundle"
         },
         "classmap": [
             "app/AppKernel.php",

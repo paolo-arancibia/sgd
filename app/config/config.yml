@@ -3,6 +3,7 @@ imports:
     - { resource: security.yml }
     - { resource: services.yml }
     - { resource: "@BandejaBundle/Resources/config/services.yml" }
+    - { resource: "@AccessBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -78,6 +79,7 @@ doctrine:
                 connection: customer
                 mappings:
                     BandejaBundle: ~
+                    AccessBundle: ~
 
 # Swiftmailer Configuration
 swiftmailer:

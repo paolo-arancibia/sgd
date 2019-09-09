@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>{% block title %}SGD {% if app.user %}- @{{ app.user.username }}{% endif %} {% endblock %}</title>
+    <title>{% block title %}Gestión Municipal - @usuario {% endblock %}</title>
     {% block stylesheets %}
       {% stylesheets
       '../vendor/twbs/bootstrap/dist/css/bootstrap.min.css'
@@ -21,95 +21,46 @@
       {% endstylesheets %}
 
       <style type="text/css">
-        .wrapper {
-          display: flex;
-          align-items: stretch;
-        }
+       html {
+	 position: relative;
+	 min-height: 100%;
+       }
 
-        #sidebar {
-          min-width: 250px;
-          max-width: 250px;
-          min-height: 100vh;
-          transition: all 0.3s;
-        }
+       body {
+	 margin-bottom: 60px;
+       }
 
-        #sidebar.active {
-          margin-left: -245px;
-        }
+       .wrapper {
+         display: flex;
+         align-items: stretch;
+       }
 
-        #content {
-          transition: all 0.3s;
-        }
+       .footer {
+	 position: absolute;
+	 bottom: 0;
+	 width: 100%;
+	 height: 60px;
+       }
       </style>
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('ico.ico') }}" />
   </head>
   <body>
     <div class="wrapper">
-     <!-- Sidebar -->
-      <nav id="sidebar" class="px-2{% if app.request.cookies.get('open_menu') %} active{% endif %}">
-        <h1 class="text-center pt-2"><a href="{{ url('bandeja_homepage') }}">SGD</a></h1>
-        {% include 'menu.html.twig' %}
-      </nav>
 
       <!-- Content  -->
       <div id="content" class="px-2 w-100">
-        <nav class="navbar px-0">
-          <div class="container-fluid px-0 d-flex">
-            <button id="sidebarCollapse" class="btn btn-light" type="button">
-              <i class="fa fa-bars"></i>
-            </button>
-
-            <div class="ml-5">
-              {% block page_title %}{% endblock %}
-            </div>
-
-            <ul class="nav ml-auto">
-              <li class="nav-item dropdown" data-toggle="dropdown" >
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  {% if app.user %}@{{ app.user.username }}{% endif %}
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-right">
-                  <h6 class="dropdown-header text-primary">
-                    <i class="fas fa-user"></i> &nbsp;
-                    <strong>
-                      {{ app.session.get('user_persona').nombres }}
-                      {{ app.session.get('user_persona').apellidopaterno }}
-                      {{ app.session.get('user_persona').apellidomaterno }}
-                    </strong>
-                  </h6>
-
-                  <div class="dropdown-divider"></div>
-
-                  <h6 class="dropdown-header">Departamentos</h6>
-
-                  {% for d in app.user.depUsus %}
-                    {% if app.session.get("departamento").idDepartamento == d.fkDepto.idDepartamento %}
-                      {% set active = ' active' %}
-                    {% else %}
-                      {% set active = '' %}
-                    {% endif %}
-                    <a class="dropdown-item{{ active }}" href="{{ url('changeDepto_bandeja', {'idDepto': d.fkDepto.idDepartamento}) }}" onclick="window.location.href='{{ url('changeDepto_bandeja', {'idDepto': d.fkDepto.idDepartamento}) }}'; return false;">
-                      {{ d.fkDepto.descripcion }}
-                    </a>
-                    {% set active = '' %}
-                  {% endfor %}
-
-                  <div class="dropdown-divider"></div>
-
-                  <a class="dropdown-item" href="{{ url('logout') }}" onclick="window.location.href='{{ url('logout') }}'; return false;">
-                    <i class="fas fa-power-off"></i> &nbsp; Salir
-                  </a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        {% block body %}{% endblock %}
+        {% block content %}{% endblock %}
       </div>
 
     </div>
+
+    <footer class="footer">
+      <div class="container-fluid d-flex flex-column justify-content-center">
+        <span class="text-muted w-25">Powered by Análisis y Desarrollo</span>
+	<span class="text-muted w-25">Ilustre Municipalidad de la Florida</span>
+      </div>
+    </footer>
 
     {# read and display several types of flash messages #}
     {% for label, messages in app.session.flashBag.all %}
@@ -125,36 +76,26 @@
 
     {% block javascripts %}
       {% javascripts
-        '../vendor/components/jquery/jquery.min.js'
-        output='js/jquery.min.js'
-        combine=true %}
-        <script src="{{ asset_url }}"></script>
+      '../vendor/components/jquery/jquery.min.js'
+      output='js/jquery.min.js'
+      combine=true %}
+      <script src="{{ asset_url }}"></script>
       {% endjavascripts %}
 
       {% javascripts
-        '../vendor/twbs/bootstrap/dist/js/bootstrap.min.js'
-        output='js/bootstrap.min.js'
-        combine=true %}
-          <script src="{{ asset_url }}"></script>
+      '../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js'
+      output='js/bootstrap.bundle.min.js'
+      combine=true %}
+      <script src="{{ asset_url }}"></script>
       {% endjavascripts %}
+
+      <script type="text/javascript">
+       $(document).ready(function () {
+	 setTimeout( function() {
+           $('.alert').alert('close');
+	 }, 5000);
+       });
+      </script>
     {% endblock %}
-
-    <script type="text/javascript">
-      $(document).ready(function () {
-
-        // Sidebar menu control toggle
-        $('#sidebarCollapse').on('click', function () {
-          $('#sidebar').toggleClass('active');
-	  $.ajax({
-	    cache: false,
-	    url: '{{ url('toggle_menu') }}'
-	  });
-        });
-
-        setTimeout( function() {
-          $('.alert').alert('close');
-        }, 5000);
-      });
-    </script>
   </body>
 </html>

@@ -1102,7 +1102,7 @@ class BandejaController extends Controller
 
         // Check the login user data
         if (! $loginUser) {
-            $this->addFlash('danger', 'No existe el usuario.');
+            $this->addFlash('danger', 'Tiene que iniciar sesión para continuar.');
             return false;
         }
 
