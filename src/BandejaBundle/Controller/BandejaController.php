@@ -257,7 +257,7 @@ class BandejaController extends Controller
                     }
                 }
 
-                $expr = new Comparison('encargado', '=', 1);
+                $expr = new Comparison('encargado', '=', true);
                 $encargadoCriteria = new Criteria();
                 $encargadoCriteria->where( $expr );
 
@@ -429,7 +429,8 @@ class BandejaController extends Controller
         $max_docs = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('BandejaBundle:Documentos')
-                  ->countDespachadosByUsuario($this->getUser()) / 2;
+                  ->countDespachadosByUsuario($this->getUser(),
+                                              $this->get('session')->get('departamento'));
 
         $max_page  = (int) ceil($max_docs / $docsByPage);
         $max_page = ! $max_page ? 1 : $max_page; // si es $max_page == 0, cambia a 1
@@ -437,7 +438,9 @@ class BandejaController extends Controller
         $results = $this->getDoctrine()
                  ->getManager()
                  ->getRepository('BandejaBundle:Documentos')
-                 ->findDespachadosByUsuario($this->getUser(), ($page - 1) * $docsByPage, $docsByPage);
+                 ->findDespachadosByUsuario($this->getUser(),
+                                            $this->get('session')->get('departamento'),
+                                            ($page - 1) * $docsByPage, $docsByPage);
 
         $documentos = array_filter($results, function($var) {
             return $var instanceof Documentos;
@@ -571,7 +574,13 @@ class BandejaController extends Controller
                ->setParameter('RUT', $documento->getFkRutPersona())
                ->getQuery();
 
-        $personaDoc = $query->getResult()[0];
+        $personaDoc = $query->getResult();
+
+        if (empty($personaDoc)) {
+            $this->addFlash('warning', 'Los datos del Remitente no se encuentran disponibles.');
+            $personaDoc = new Personas();
+        } else
+            $personaDoc = $personaDoc[0];
 
         $adjuntos = $this->getDoctrine()->getRepository('BandejaBundle:Adjuntos')
                   ->findBy(array('fkDoc' => $documento));
@@ -590,7 +599,7 @@ class BandejaController extends Controller
                 }
             }
 
-            $expr = new Comparison('encargado', '=', 1);
+            $expr = new Comparison('encargado', '=', true);
             $encargadoCriteria = new Criteria();
             $encargadoCriteria->where( $expr );
 
@@ -790,22 +799,60 @@ class BandejaController extends Controller
                 }
             }
 
-            $expr = new Comparison('encargado', '=', 1);
+            $expr = new Comparison('encargado', '=', true);
             $encargadoCriteria = new Criteria();
             $encargadoCriteria->where( $expr );
 
             if ($request->get('guardar') === 'derivar') {
                 foreach ($derivarData['originales'] as $depto) {
+                    if ($depto->getDepUsus()->matching($encargadoCriteria)->get(0) === null) {
+                        $this->addFlash('danger', 'El departamento ' . $depto->getDescripcion()
+                                        . ' no tiene encargado. '
+                                        . 'Informe del problema al administrador del sistema '
+                                        . 'para que le asigne uno');
+
+                        return $this->render(
+                            'BandejaBundle:Bandeja:editar.html.twig',
+                            array(
+                                'menu_op' => '',
+                                'tipos' => $tipos,
+                                'derivarForm' => $derivarForm->createView(),
+                                'nuevoForm' => $nuevoForm->createView(),
+                                'personaForm' => $personaForm->createView(),
+                                'remitenteForm' => $remitenteForm->createView(),
+                            )
+                        );
+                    }
+
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 1, 'nota' => $derivarData['nota_original']),
                         $documento,
                         $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
                         $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
-                    $em->persist($derivacion);
+                        $em->persist($derivacion);
                 }
 
                 foreach ($derivarData['copias'] as $depto) {
+                    if ($depto->getDepUsus()->matching($encargadoCriteria)->get(0) === null) {
+                        $this->addFlash('danger', 'El departamento ' . $depto->getDescripcion()
+                                        . ' no tiene encargado. '
+                                        . 'Informe del problema al administrador del sistema '
+                                        . 'para que le asigne uno');
+
+                        return $this->render(
+                            'BandejaBundle:Bandeja:editar.html.twig',
+                            array(
+                                'menu_op' => '',
+                                'tipos' => $tipos,
+                                'derivarForm' => $derivarForm->createView(),
+                                'nuevoForm' => $nuevoForm->createView(),
+                                'personaForm' => $personaForm->createView(),
+                                'remitenteForm' => $remitenteForm->createView(),
+                            )
+                        );
+                    }
+
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                         $documento,
@@ -881,7 +928,7 @@ class BandejaController extends Controller
         $deptosArray = [];
 
         foreach($deptos as $d) {
-            $expr = new Comparison('encargado', '=', 1);
+            $expr = new Comparison('encargado', '=', true);
 
             $criteria = new Criteria();
             $criteria->where( $expr );
@@ -1052,15 +1099,16 @@ class BandejaController extends Controller
     {
         $session = $this->get('session');
         $loginUser = $this->getUser();
-        $persona = $this->getDoctrine()
-                 ->getRepository('BandejaBundle:Personas', 'customer')
-                 ->find($loginUser->getFkPersona());
 
         // Check the login user data
         if (! $loginUser) {
-            $this->addFlash('danger', 'No existe el usuario.');
+            $this->addFlash('danger', 'Tiene que iniciar sesión para continuar.');
             return false;
         }
+
+        $persona = $this->getDoctrine()
+                 ->getRepository('BandejaBundle:Personas', 'customer')
+                 ->find($loginUser->getFkPersona());
 
         if (! $persona) {
             $this->addFlash('danger', 'El usuario no tiene sus datos personales.');
