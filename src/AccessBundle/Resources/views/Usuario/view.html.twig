@@ -1,0 +1,29 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+  <h2>Editar Usuario</h2>
+
+  <div class="">
+    <h4>Datos del Usuario</h4>
+    {{ form_start(usuarioForm) }}
+      {{ form_label(usuarioForm.nombre, 'Nombre de Usuario') }}
+      {# form_widget(usuarioForm.nombre, {'attr': {'value': usuario.nombre}}) #}
+      {{ form_widget(usuarioForm.nombre) }}
+
+      {{ form_label(usuarioForm.contrasena, 'Contraseña') }}
+      {{ form_widget(usuarioForm.contrasena) }}
+
+      {{ form_label(usuarioForm.validar_contrasena, 'Repetir contraseña') }}
+      {{ form_widget(usuarioForm.validar_contrasena) }}
+
+      <input type="submit" class="btn btn-primary" value="Guardar"/>
+    {{ form_end(usuarioForm) }}
+  </div>
+
+  <div class="">
+    <h4>Datos Personales</h4>
+    {{ form_start(personaForm) }}
+
+    {{ form_end(personaForm) }}
+  </div>
+{% endblock %}

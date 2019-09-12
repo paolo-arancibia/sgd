@@ -5,3 +5,9 @@ access_apps:
 access_homepage:
     path:     //
     defaults: { _controller: AccessBundle:Default:index }
+
+usuario_view:
+    path:     /usuario/view/{id}
+    defaults: { _controller: AccessBundle:Usuario:view }
+    requirements:
+        id: '\d+'

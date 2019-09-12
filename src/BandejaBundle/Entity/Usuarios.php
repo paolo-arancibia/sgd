@@ -39,6 +39,8 @@ class Usuarios implements UserInterface, \Serializable
      */
     private $contrasena;
 
+    const ENCRYPT_TYPE = PASSWORD_DEFAULT;
+
     /**
      * @var \DateTime
      *
@@ -128,7 +130,7 @@ class Usuarios implements UserInterface, \Serializable
      */
     public function setContrasena($contrasena)
     {
-        $this->contrasena = $contrasena;
+        $this->contrasena = password_hash($contrasena, Usuarios::ENCRYPT_TYPE);
 
         return $this;
     }
