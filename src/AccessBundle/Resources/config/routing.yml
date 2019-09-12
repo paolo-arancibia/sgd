@@ -1,0 +1,7 @@
+access_apps:
+    path:     /apps
+    defaults: { _controller: AccessBundle:Default:apps }
+
+access_homepage:
+    path:     //
+    defaults: { _controller: AccessBundle:Default:index }

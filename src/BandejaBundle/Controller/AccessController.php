@@ -26,8 +26,7 @@ class AccessController extends Controller
     }
 
     public function logoutAction()
-    {
-        return;
+    { return;
     }
 
     public function changeDeptoAction(Request $request, $idDepto)

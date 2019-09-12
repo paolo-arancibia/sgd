@@ -40,5 +40,5 @@ return array(
     'Doctrine\\Bundle\\DoctrineBundle\\' => array($vendorDir . '/doctrine/doctrine-bundle'),
     'Composer\\CaBundle\\' => array($vendorDir . '/composer/ca-bundle/src'),
     'BandejaBundle\\' => array($baseDir . '/src/BandejaBundle'),
-    'AppBundle\\' => array($baseDir . '/src/AppBundle'),
+    'AccessBundle\\' => array($baseDir . '/src/AccessBundle'),
 );

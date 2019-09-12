@@ -1,0 +1,48 @@
+AccessBundle\Entity\App:
+    type: entity
+    table: APP
+    id:
+        idApp:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_APP
+            generator:
+                strategy: IDENTITY
+    fields:
+        nombre:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: NOMBRE
+        img:
+            type: string
+            nullable: false
+            length: 500
+            options:
+                fixed: false
+            column: IMG
+        url:
+            type: string
+            nullable: false
+            length: 500
+            options:
+                fixed: false
+            column: URL
+        fechaC:
+            type: datetime
+            nullable: false
+            column: FECHA_C
+        fechaM:
+            type: datetime
+            nullable: false
+            column: FECHA_M
+        fechaE:
+            type: datetime
+            nullable: true
+            column: FECHA_E
+    lifecycleCallbacks: {  }

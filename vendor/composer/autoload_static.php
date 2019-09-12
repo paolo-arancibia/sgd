@@ -87,7 +87,7 @@ class ComposerStaticInit1f333e79dcc948de76c5751a53d7d758
         ),
         'A' => 
         array (
-            'AppBundle\\' => 10,
+            'AccessBundle\\' => 13,
         ),
     );
 
@@ -228,9 +228,9 @@ class ComposerStaticInit1f333e79dcc948de76c5751a53d7d758
         array (
             0 => __DIR__ . '/../..' . '/src/BandejaBundle',
         ),
-        'AppBundle\\' => 
+        'AccessBundle\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/AppBundle',
+            0 => __DIR__ . '/../..' . '/src/AccessBundle',
         ),
     );
 
