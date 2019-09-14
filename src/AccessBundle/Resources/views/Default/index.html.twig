@@ -1,4 +1,4 @@
-{% extends '::base.html.twig' %}
+{% extends 'AccessBundle:Default:layout.html.twig' %}
 
 {% block stylesheets %}
   {{ parent() }}
@@ -17,52 +17,21 @@
 {% endblock %}
 
 {% block content %}
-  <header class="mx-1 mt-2 mb-6 px-1 container-fluid d-flex">
-    <h4><strong>APP Desk &ndash; IMLF</strong></h4>
+  {% for app in apps %}
+    {% if app.url starts with 'http' %}
+      {% set url = app.url %}
+    {% else %}
+      {% set url = url(app.url) %}
+    {% endif %}
 
-    <ul class="nav ml-auto">
-      <li class="nav-item dropdown" data-toggle="dropdown" >
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-          {% if app.user %}@{{ app.user.username }}{% endif %}
-        </a>
+    <a href="{{ url }}">
+      <div class="card justify-content-center mx-4 my-4 d-flex" style="width: 126px;">
+        <img src="{{ asset(app.img) }}" class="card-img-top" alt="SGD" />
 
-        <div class="dropdown-menu dropdown-menu-right">
-          <h6 class="dropdown-header text-primary">
-            <i class="fas fa-user"></i> &nbsp;
-            <strong>
-              Paolo Arancibia Vásquez
-            </strong>
-          </h6>
-
-          <div class="dropdown-divider"></div>
-
-          <a class="dropdown-item" href="#">
-            <i class="fas fa-power-off"></i> &nbsp; Salir
-          </a>
+        <div class="card-body text-center px-0 mx-0">
+          <h6 class="card-title">{{ app.nombre }}</h6>
         </div>
-      </li>
-    </ul>
-
-  </header>
-
-  <div id="app-list" class="m-3 d-flex flex-wrap">
-    {% for app in apps %}
-      {% if app.url starts with 'http' %}
-	{% set url = app.url %}
-      {% else %}
-	{% set url = url(app.url) %}
-      {% endif %}
-
-      <a href="{{ url }}">
-	<div class="mx-4 mb-4">
-	  <div class="card border-0">
-            <img src="{{ asset(app.img) }}" class="card-img-top rounded-app" alt="SGD" />
-            <div class="card-body text-center px-0 mx-0">
-              <h6 class="card-title">{{ app.nombre }}</h6>
-            </div>
-	  </div>
-	</div>
-      </a>
-    {% endfor %}
-
+      </div>
+    </a>
+  {% endfor %}
 {% endblock %}
