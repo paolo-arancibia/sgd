@@ -1,10 +1,19 @@
 {% extends '::base.html.twig' %}
 
+{% block stylesheets %}
+  {{ parent() }}
+
+  <style type="text/css">
+   #user-menu-dropdown > a {
+     text-decoration: none !important;
+   }
+  </style>
+{% endblock %}
+
 {% block javascripts %}
   {{ parent() }}
 
   <script type="text/javascript">
-
    $(document).ready(function () {
      $('#user-menu-dropdown > a').click(function (e) {
        e.stopPropagation();
@@ -19,12 +28,12 @@
     <div id="login_menu" class="container-fluid d-flex">
       <ul class="nav ml-auto align-middle">
 	<li class="nav-item dropdown" data-toggle="dropdown">
-          <a id="toogle-bottom" class="nav-link dropdown-toggle p-0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          <a id="toggle" class="nav-link dropdown-toggle p-0" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" :hover="color: #ddd;">
 	    {% if app.user %}@{{ app.user.username }}{% endif %}
           </a>
 
           <div id="user-menu-dropdown" class="dropdown-menu dropdown-menu-right" role="menu">
-            <a href="{{ url('usuario_view', {'id': 1}) }}" class="stretched-link dropdown-header text-primary">
+            <a href="{{ url('usuario_view') }}" class="stretched-link dropdown-header text-primary">
 	      <i class="fas fa-user"></i> &nbsp;
 	      <strong class="text-decoration-none">
 		{{ app.session.get('user_persona').nombres }}
@@ -52,8 +61,5 @@
     </div>
   </header>
 
-
-  <div id="app-list" class="my-3 container-fluid d-flex flex-wrap bg-light border border-light">
-    {% block content %}{% endblock %}
-  </div>
+  {% block content %}{% endblock %}
 {% endblock %}

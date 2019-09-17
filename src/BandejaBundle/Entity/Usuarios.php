@@ -130,7 +130,7 @@ class Usuarios implements UserInterface, \Serializable
      */
     public function setContrasena($contrasena)
     {
-        $this->contrasena = password_hash($contrasena, Usuarios::ENCRYPT_TYPE);
+        $this->contrasena = $contrasena;
 
         return $this;
     }

@@ -1,29 +1,140 @@
-{% extends '::base.html.twig' %}
+{% extends 'AccessBundle:Default:layout.html.twig' %}
+
+{% form_theme usuarioForm _self %}
+
+{%- block form_errors -%}
+  {%- if errors|length > 0 -%}
+    {%- for error in errors -%}
+      <small class="text-danger">{{ error.message }}</small>
+    {%- endfor -%}
+  {%- endif -%}
+{%- endblock form_errors -%}
+
 
 {% block content %}
-  <h2>Editar Usuario</h2>
+  <div class="my-3 container-fluid bg-light border border-light">
+    <h2 class="mb-5">Actualiza tu contraseña</h2>
 
-  <div class="">
-    <h4>Datos del Usuario</h4>
-    {{ form_start(usuarioForm) }}
-      {{ form_label(usuarioForm.nombre, 'Nombre de Usuario') }}
-      {# form_widget(usuarioForm.nombre, {'attr': {'value': usuario.nombre}}) #}
-      {{ form_widget(usuarioForm.nombre) }}
+    {{ form_start(usuarioForm, {'attr': {'class': 'mb-5'}}) }}
 
-      {{ form_label(usuarioForm.contrasena, 'Contraseña') }}
-      {{ form_widget(usuarioForm.contrasena) }}
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">
+	  {{ form_label(usuarioForm.oldPassword, 'Contraseña anterior') }}
+	</div>
+	<div class="col col-sm col-md-7 col-lg-4">
+	  {{ form_widget(usuarioForm.oldPassword, {'attr': {'class': 'form-control'}}) }}
+	  {{ form_errors(usuarioForm.oldPassword) }}
+	</div>
+      </div>
 
-      {{ form_label(usuarioForm.validar_contrasena, 'Repetir contraseña') }}
-      {{ form_widget(usuarioForm.validar_contrasena) }}
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">
+	  {{ form_label(usuarioForm.newPassword.first, 'Nueva Contraseña') }}
+	</div>
+	<div class="col col-sm col-md-7 col-lg-4">
+	  {{ form_widget(usuarioForm.newPassword.first, {'attr': {'class': 'form-control'}}) }}
+	  {{ form_errors(usuarioForm.newPassword.first) }}
+	</div>
+      </div>
 
-      <input type="submit" class="btn btn-primary" value="Guardar"/>
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">
+	  {{ form_label(usuarioForm.newPassword.second, 'Repetir Nueva Contraseña') }}
+	</div>
+	<div class="col col-sm col-md-7 col-lg-4">
+	  {{ form_widget(usuarioForm.newPassword.second, {'attr': {'class': 'form-control'}}) }}
+	  {{ form_errors(usuarioForm.newPassword.second) }}
+	</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm col-md-10 col-lg-6">
+	  <input type="submit" class="btn btn-primary" value="Actualizar Contraseña"/>
+	</div>
+      </div>
     {{ form_end(usuarioForm) }}
-  </div>
 
-  <div class="">
-    <h4>Datos Personales</h4>
-    {{ form_start(personaForm) }}
+    {{ form_start(personaForm, {'attr': {'class': 'mb-5'}}) }}
+      <h4 class="">Datos Personales</h4>
 
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.rut, 'Rut') }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">
+	  {{ form_widget(personaForm.rut, {'attr': {'class': 'form-control w-auto d-inline', 'size': 10, 'value': persona.rut}}) }}
+	  &ndash; {{ form_widget(personaForm.dv, {'attr': {'class': 'form-control w-auto w-md-50 d-inline ', 'size': 1}, 'value': persona.vrut}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.nombres) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.nombres, {'attr': {'class': 'form-control', 'value': persona.nombres}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.apellidopaterno) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.apellidopaterno, {'attr': {'class': 'form-control', 'value': persona.apellidopaterno}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.apellidomaterno) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.apellidomaterno, {'attr': {'class': 'form-control', 'value': persona.apellidomaterno}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.fecha_nacimiento) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.fecha_nacimiento, {'attr': {'class': 'form-control', 'value': persona.fechaNacimiento | date('Y-m-d')}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.nombre_calle, 'Dirección') }}</div>
+	<div class="col col-sm col-md-7 col-lg-4 input-group">
+	  {{ form_widget(personaForm.nombre_calle, {'attr': {'class': 'form-control', 'value': persona.nombreCalle}}) }}
+	  <div class="input-group-prepend">
+	    <div class="input-group-text">#</div>
+	    {{ form_widget(personaForm.numdirec, {'attr': {'class': 'form-control w-auto d-inline', 'size': 3, 'value': persona.numdirec}}) }}
+	  </div>
+	</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.numdirec, 'Número') }}</div>
+	<div class="col col-sm col-md-7 col-lg-4"></div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.referenciadir) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.referenciadir, {'attr': {'class': 'form-control', 'value': persona.referenciadir}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.nombre_comuna) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.nombre_comuna, {'attr': {'class': 'form-control', 'value': persona.nombreComuna}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.fono) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.fono, {'attr': {'class': 'form-control', 'value': persona.fono}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.fono_2) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.fono_2, {'attr': {'class': 'form-control', 'value': persona.fono2}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.email) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.email, {'attr': {'class': 'form-control', 'value': persona.email}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.sexo) }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.sexo, {'attr': {'class': 'form-control', 'value': persona.sexo}}) }}</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm col-md-10 col-lg-6">
+	  <input type="submit" class="btn btn-primary" value="Guardar"/>
+	</div>
+      </div>
     {{ form_end(personaForm) }}
   </div>
 {% endblock %}
