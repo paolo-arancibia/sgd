@@ -39,6 +39,8 @@ class Usuarios implements UserInterface, \Serializable
      */
     private $contrasena;
 
+    const ENCRYPT_TYPE = PASSWORD_DEFAULT;
+
     /**
      * @var \DateTime
      *
