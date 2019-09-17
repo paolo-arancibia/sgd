@@ -10,28 +10,30 @@
      height: 100px;
    }
 
-   .mb-6 {
-     margin-bottom: 7em !important;
+   .app {
+     text-decoration: none !important;
    }
   </style>
 {% endblock %}
 
 {% block content %}
-  {% for app in apps %}
-    {% if app.url starts with 'http' %}
-      {% set url = app.url %}
-    {% else %}
-      {% set url = url(app.url) %}
-    {% endif %}
+  <div class="my-3 container-fluid d-flex flex-wrap bg-light border border-light">
+    {% for app in apps %}
+      {% if app.url starts with 'http' %}
+	{% set url = app.url %}
+      {% else %}
+	{% set url = url(app.url) %}
+      {% endif %}
 
-    <a href="{{ url }}">
-      <div class="card justify-content-center mx-4 my-4 d-flex" style="width: 126px;">
-        <img src="{{ asset(app.img) }}" class="card-img-top" alt="SGD" />
+      <a href="{{ url }}" class="app">
+	<div class="card justify-content-center mx-4 my-4 d-flex" style="width: 126px;">
+          <img src="{{ asset(app.img) }}" class="card-img-top" alt="SGD" />
 
-        <div class="card-body text-center px-0 mx-0">
-          <h6 class="card-title">{{ app.nombre }}</h6>
-        </div>
-      </div>
-    </a>
-  {% endfor %}
+          <div class="card-body text-center px-0 mx-0">
+            <h6 class="card-title text-secondary">{{ app.nombre }}</h6>
+          </div>
+	</div>
+      </a>
+    {% endfor %}
+  </div>
 {% endblock %}
