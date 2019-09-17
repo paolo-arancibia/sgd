@@ -23,6 +23,7 @@ class DefaultController extends Controller
         if (! $this->setOnSession())
             return $this->redirectToRoute('login_access');
 
+        /** @todo filter apps by ACL */
         $apps = $this->getDoctrine()->getManager('customer')
               ->getRepository('AccessBundle:App')
               ->findAll();
@@ -72,6 +73,13 @@ class DefaultController extends Controller
 
             return false;
         }
+
+        // Set session variables
+        if ($session->get('departamento') === null)
+            $session->set('departamento', $loginUser->getDepUsus()->get(0)->getFkDepto());
+
+        if ($session->get('user_persona') === null)
+            $session->set('user_persona', $persona);
 
         return true;
     }
