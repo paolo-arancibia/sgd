@@ -45,7 +45,7 @@ class PersonaType extends AbstractType
                 'required' => false,
             ])->add('nombre_calle', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
                 'attr' => ['class' => 'form-control'],
-                'label_attr' => ['class' => 'form-label col'],
+                'label_attr' => ['class' => 'form-label'],
                 'label' => 'Calle donde vive',
             ])->add('numdirec', 'Symfony\Component\Form\Extension\Core\Type\NumberType', [
                 'attr' => ['class' => 'form-control text-right'],

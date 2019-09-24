@@ -1,10 +1,10 @@
-{% extends 'BandejaBundle:Access:restricted.html.twig' %}
+{% extends 'AccessBundle:Default:restricted.html.twig' %}
 
 {% block page_title %}
   {# <h2 class="w-50 mx-auto mb-3">Accesos</h2> #}
 {% endblock %}
 
-{% block body %}
+{% block content %}
   <form class="m-0" action="" method="post">
     <div class="card w-auto">
       {# form_start(loginForm) #}
@@ -38,16 +38,16 @@
 
 	<div class="form-group row">
 	  {# form_label(loginForm._password, 'Contraseña', {'label_attr': {'class': 'col-sm-2 col-form-label'}}) #}
-	<label class="col col-form-label required" for="password">Contraseña</label>
-	<div class="col">
-          {# form_widget(loginForm._password, {'attr': {'class': 'form-control'}}) #}
-          <input type="password" id="password" name="_password" required="required" class="form-control" />
+	  <label class="col col-form-label required" for="password">Contraseña</label>
+	  <div class="col">
+            {# form_widget(loginForm._password, {'attr': {'class': 'form-control'}}) #}
+            <input type="password" id="password" name="_password" required="required" class="form-control" />
+	  </div>
 	</div>
       </div>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Ingresar</button>
-    {# form_end(loginForm) #}
+      <button type="submit" class="btn btn-primary">Ingresar</button>
+      {# form_end(loginForm) #}
   </div>
 </form>
 
