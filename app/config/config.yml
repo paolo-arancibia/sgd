@@ -75,6 +75,7 @@ doctrine:
                 connection: default
                 mappings:
                     BandejaBundle: ~
+                    AccessBundle: ~
             customer:
                 connection: customer
                 mappings:

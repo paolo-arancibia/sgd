@@ -1,39 +1,35 @@
-AccessBundle\Entity\App:
+AccessBundle\Entity\Perfiles:
     type: entity
-    repositoryClass: AccessBundle\Repository\AppRepository
-    table: APP
+    table: PERFILES
+    uniqueConstraints:
+        NOMBRE:
+            columns:
+                - NOMBRE
     id:
-        idApp:
+        idPerfil:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
-            column: ID_APP
+            column: ID_PERFIL
             generator:
                 strategy: IDENTITY
     fields:
         nombre:
             type: string
             nullable: false
-            length: 255
+            length: 50
             options:
                 fixed: false
             column: NOMBRE
-        img:
+        descripcion:
             type: string
-            nullable: false
+            nullable: true
             length: 500
             options:
                 fixed: false
-            column: IMG
-        url:
-            type: string
-            nullable: false
-            length: 500
-            options:
-                fixed: false
-            column: URL
+            column: DESCRIPCION
         fechaC:
             type: datetime
             nullable: false
@@ -43,12 +39,9 @@ AccessBundle\Entity\App:
             nullable: false
             column: FECHA_M
         fechaE:
-            type: datetime
+            type: integer
             nullable: true
+            options:
+                unsigned: false
             column: FECHA_E
-    oneToMany:
-        fkPermisos:
-            targetEntity: Permisos
-            mappedBy: fkApp
-            fetch: LAZY
     lifecycleCallbacks: {  }
