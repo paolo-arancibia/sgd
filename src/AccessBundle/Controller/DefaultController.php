@@ -23,8 +23,6 @@ class DefaultController extends Controller
         if (! $this->setOnSession())
             return $this->redirectToRoute('login_access');
 
-        // $usuario =  $this->getUser();
-
         $apps = $this->getDoctrine()->getManager('default')
               ->getRepository('AccessBundle:App')
               ->findByUser($this->getUser());
