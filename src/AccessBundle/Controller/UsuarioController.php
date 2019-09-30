@@ -107,6 +107,12 @@ class UsuarioController extends Controller
         ]);
     }
 
+    private function listAcction()
+    {
+        return $this->render('AccessBundle:Usuario:list.html.twig');
+
+    }
+
     private function setOnSession()
     {
         $session = $this->get('session');
