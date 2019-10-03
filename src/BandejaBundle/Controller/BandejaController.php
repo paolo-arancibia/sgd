@@ -617,7 +617,7 @@ class BandejaController extends Controller
                 $derivacion = $this->createNewDerivacion(
                     array('tipo' => 1, 'nota' => $derivarData['nota_original']),
                     $documento,
-                    $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                    $loginUser, $this->get('session')->get('departamento'),
                     $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
                 $em->persist($derivacion);
@@ -628,7 +628,7 @@ class BandejaController extends Controller
                 $derivacion = $this->createNewDerivacion(
                     array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                     $documento,
-                    $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                    $loginUser, $this->get('session')->get('departamento'),
                     $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
                 $em->persist($derivacion);
@@ -780,6 +780,10 @@ class BandejaController extends Controller
             }
 
             $loginUser = $this->getUser();
+
+            $deptoRem = $this->getDoctrine()->getRepository('BandejaBundle:Departamentos')
+                      ->find($this->get('session')->get('departamento'));
+
             $nuevoData['persona'] = $persona;
 
             $documento = $this->createNewDocumento($nuevoData, 2);
@@ -827,10 +831,10 @@ class BandejaController extends Controller
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 1, 'nota' => $derivarData['nota_original']),
                         $documento,
-                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $loginUser, $deptoRem,
                         $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
-                        $em->persist($derivacion);
+                    $em->persist($derivacion);
                 }
 
                 foreach ($derivarData['copias'] as $depto) {
@@ -856,7 +860,7 @@ class BandejaController extends Controller
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                         $documento,
-                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $loginUser, $deptoRem,
                         $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
                     $em->persist($derivacion);
@@ -872,7 +876,7 @@ class BandejaController extends Controller
                 $derivacion = $this->createNewDerivacion(
                     array('tipo' => 1, 'nota' => $derivarData['nota_original']),
                     $documento,
-                    $loginUser, $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto(),
+                    $loginUser, $deptoRem,
                     $loginUser, $loginUser->getDepUsus()->matching($criteria)->get(0)->getFkDepto());
 
                 $em->persist($derivacion);
@@ -941,7 +945,6 @@ class BandejaController extends Controller
             else
                 $persona = null;
 
-            //dump($persona); die;
             $deptosArray[ $d->getIdDepartamento() ] = array(
                 'idDepartamento' => $d->getIdDepartamento(),
                 'descripcion' => $d->getDescripcion(),
