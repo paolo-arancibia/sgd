@@ -1,6 +1,7 @@
 <?php
-
 namespace AccessBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * App
@@ -45,7 +46,7 @@ class App
     /**
      * @var \Collection
      *
-     * @ORM\OneToMay(targetEntity="AccessBundle\Entity\Permisos", mappedBy="fkApp", fetch="LAZY")
+     * @ORM\OneToMany(targetEntity="AccessBundle\Entity\Permisos", mappedBy="fkApp", fetch="LAZY")
      */
     private $fkPermisos;
 

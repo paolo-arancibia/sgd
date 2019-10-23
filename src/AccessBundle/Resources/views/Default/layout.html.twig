@@ -21,6 +21,17 @@
   </style>
 {% endblock %}
 
+{% block javascripts %}
+  {{ parent() }}
+  <script type="text/javascript">
+   $(document).ready(function () {
+     $('#user-menu-dropdown > a').click(function (e) {
+       e.stopPropagation();
+     });
+   });
+  </script>
+{% endblock %}
+
 {% block body %}
   <!-- login menu -->
   {% block login_menu %}
@@ -41,17 +52,17 @@
 	      </strong>
 	    </h6>
 
-	    <a href="{{ url('usuario_view') }}" class="stretched-link dropdown-item">
+	    <a href="{{ url('usuario_view') }}" class="stretched-link dropdown-item" onclick="this.stopPropagation()">
 	      Cambiar Contraseña
 	    </a>
 	    {#
             <a href="{{ url('usuario_view') }}" class="stretched-link dropdown-item text-primary">
-	      <i class="fas fa-user"></i> &nbsp;
-	      <strong class="text-decoration-none">
-		{{ app.session.get('user_persona').nombres }}
-		{{ app.session.get('user_persona').apellidopaterno }}
-		{{ app.session.get('user_persona').apellidomaterno }}
-	      </strong>
+	    <i class="fas fa-user"></i> &nbsp;
+	    <strong class="text-decoration-none">
+	    {{ app.session.get('user_persona').nombres }}
+	    {{ app.session.get('user_persona').apellidopaterno }}
+	    {{ app.session.get('user_persona').apellidomaterno }}
+	    </strong>
             </a>
 	    #}
             <div class="dropdown-divider"></div>

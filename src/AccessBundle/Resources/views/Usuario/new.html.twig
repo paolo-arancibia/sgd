@@ -1,0 +1,151 @@
+{% extends 'AccessBundle:Default:layout.html.twig' %}
+
+{% if usuarioForm %}
+  {% form_theme usuarioForm _self %}
+
+  {%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+      {%- for error in errors -%}
+	<small class="text-danger">{{ error.message }}</small>
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endblock form_errors -%}
+{% endif %}
+
+
+{% block content %}
+  <div class="my-3 container-fluid bg-light border border-light">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+	<li class="breadcrumb-item"><a href="{{ url('usuario_list') }}">usuarios</a></li>
+	<li class="breadcrumb-item active" aria-current="page">nuevo</li>
+      </ol>
+    </nav>
+
+    <h2>Nuevo Usuario</h2>
+
+    {{ form_start(buscarRutForm) }}
+
+      <div class="form-row">
+	<div class="col col-sm-3 col-lg-2">{{ form_label(buscarRutForm.rut, 'Rut') }}</div>
+	<div class="col col-sm col-md-7 col-lg-4">
+	  {{ form_widget(buscarRutForm.rut, {'attr': {'class': 'form-control w-auto d-inline', 'size': 10}}) }}
+	  &ndash; {{ form_widget(buscarRutForm.dv, {'attr': {'class': 'form-control w-auto w-md-50 d-inline', 'size': 1}}) }}
+	</div>
+      </div>
+
+      <div class="form-row">
+	<div class="col col-sm col-md-10 col-lg-6">
+	  <input type="submit" class="btn btn-primary" value="Buscar"/>
+	</div>
+      </div>
+    {{ form_end(buscarRutForm) }}
+
+    {#
+    {{ form_start(personaForm, {'attr': {'class': 'mb-5'}}) }}
+    <h4 class="">Datos Personales</h4>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.rut, 'Rut') }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">
+    {{ form_widget(personaForm.rut, {'attr': {'class': 'form-control w-auto d-inline', 'size': 10}}) }}
+    &ndash; {{ form_widget(personaForm.dv, {'attr': {'class': 'form-control w-auto w-md-50 d-inline ', 'size': 1}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.nombres) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.nombres, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.apellidopaterno) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.apellidopaterno, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.apellidomaterno) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.apellidomaterno, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.fecha_nacimiento) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.fecha_nacimiento, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.nombre_calle, 'Dirección') }}</div>
+    <div class="col col-sm col-md-7 col-lg-4 input-group">
+    {{ form_widget(personaForm.nombre_calle, {'attr': {'class': 'form-control w-auto'}}) }}
+    &nbsp;
+    <div class="input-group-prepend">
+    <div class="input-group-text">#</div>
+    </div>
+    {{ form_widget(personaForm.numdirec, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.numdirec, 'Número') }}</div>
+    <div class="col col-sm col-md-7 col-lg-4"></div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.referenciadir) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.referenciadir, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.nombre_comuna) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.nombre_comuna, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.fono) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.fono, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.fono_2) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.fono_2, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.email) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.email, {'attr': {'class': 'form-control'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm-3 col-lg-2">{{ form_label(personaForm.sexo) }}</div>
+    <div class="col col-sm col-md-7 col-lg-4">{{ form_widget(personaForm.sexo, {'attr': {'class': 'custom-select'}}) }}</div>
+    </div>
+
+    <div class="form-row">
+    <div class="col col-sm col-md-10 col-lg-6">
+    <input type="submit" class="btn btn-primary" value="Guardar"/>
+    </div>
+    </div>
+    {{ form_end(personaForm) }}
+    #}
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  {% javascripts
+  '../vendor/validarut/validar.js'
+  output='js/validarrut.js'
+  combine=true  %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  <script type="text/javascript">
+   $(document).ready( function () {
+     $('#buscar_rut_rut').keyup(function(){
+       var dv = validarRUT($(this).val());
+
+       $('#buscar_rut_dv').val(dv);
+     });
+   } );
+  </script>
+{% endblock %}

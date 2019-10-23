@@ -9,3 +9,28 @@ access_homepage:
 usuario_view:
     path:     //updsuser
     defaults: { _controller: AccessBundle:Usuario:view }
+
+usuario_list:
+    path:     /usuarios
+    defaults: { _controller: AccessBundle:Usuario:list }
+
+usuario_edit:
+    path:     /usuarios/{id}
+    defaults: { _controller: AccessBundle:Usuario:edit, id: null }
+    requirements:
+        id: '\d+'
+
+usuario_new:
+    path:     /usuarios/new
+    defaults: { _controller: AccessBundle:Usuario:new }
+
+usuario_delperm:
+    path:     /usuarios/delperm/{id}
+    defaults: { _controller: AccessBundle:Usuario:deletePermiso, id: null }
+    requirements:
+        id: '\d+'
+
+usuario_ajax:
+    path:    /u
+    defaults: { _controller: AccessBundle:Usuario:usuarios }
+    methods: [GET]

@@ -22,6 +22,7 @@
         "php": ">=5.3.9",
         "components/font-awesome": "^5.9",
         "components/jquery": "^3.3",
+        "datatables/datatables": "^1.10",
         "doctrine/doctrine-bundle": "~1.4",
         "doctrine/orm": "^2.4.8",
         "harvesthq/chosen": "^1.8",

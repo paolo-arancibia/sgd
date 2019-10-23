@@ -5,6 +5,7 @@ namespace BandejaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Usuarios
@@ -62,13 +63,11 @@ class Usuarios implements UserInterface, \Serializable
      */
     private $fechaE;
 
+
     /**
-     * @var \BandejaBundle\Entity\Personas
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="BandejaBundle\Entity\Personas")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="FK_ID_PERSONA", referencedColumnName="rut")
-     * })
+     * @ORM\Column(name="FK_ID_PERSONA", type="integer", nullable=true)
      */
     private $fkPersona;
 
@@ -84,7 +83,7 @@ class Usuarios implements UserInterface, \Serializable
     public function __construct()
     {
         $this->isActive = true;
-        $this->depUsus = new Collection();
+        $this->depUsus = new ArrayCollection();
     }
 
     /**
@@ -220,11 +219,11 @@ class Usuarios implements UserInterface, \Serializable
     /**
      * Set fkPersona
      *
-     * @param \BandejaBundle\Entity\Personas $fkPersona
+     * @param integer $fkPersona
      *
      * @return Usuarios
      */
-    public function setFkPersona(\BandejaBundle\Entity\Personas $fkPersona = null)
+    public function setFkPersona($fkPersona)
     {
         $this->fkPersona = $fkPersona;
 
