@@ -1,5 +1,6 @@
 AccessBundle\Entity\App:
     type: entity
+    repositoryClass: AccessBundle\Repository\AppRepository
     table: APP
     id:
         idApp:
@@ -45,4 +46,9 @@ AccessBundle\Entity\App:
             type: datetime
             nullable: true
             column: FECHA_E
+    oneToMany:
+        fkPermisos:
+            targetEntity: Permisos
+            mappedBy: fkApp
+            fetch: LAZY
     lifecycleCallbacks: {  }
