@@ -1,5 +1,6 @@
 BandejaBundle\Entity\Usuarios:
     type: entity
+    repositoryClass: BandejaBundle\Repository\UsuariosRepository
     table: USUARIOS
     indexes:
         FK_ID_PERSONA:

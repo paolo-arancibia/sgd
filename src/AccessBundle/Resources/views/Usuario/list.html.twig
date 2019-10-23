@@ -1,25 +1,114 @@
 {% extends 'AccessBundle:Default:layout.html.twig' %}
 
 {% block content %}
-  <table class="table">
-    <thead>
-      <tr>
-	<th scope="col">#</th>
-	<th scope="col">Nombre de Usuario</th>
-	<th scope="col">Datos personales</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-	<td></td>
-	<td></td>
-	<td></td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-	<tf colspan="3">1 de 2</tf>
-      </tr>
-    </tfoot>
-  </table>
+  <div class="my-3 container-fluid bg-light border border-light">
+    <div class="d-flex">
+      <h2 class="flex-grow-1 mb-5">
+	Usuarios
+      </h2>
+
+      <div class="">
+	<a class="btn btn-success" href="{{ url('usuario_new') }}"><i class="fas fa-plus"></i> Nuevo</a>
+      </div>
+    </div>
+
+    <table id="users" class="table">
+      <thead>
+	<tr>
+	  <th scope="col">Id</th>
+	  <th scope="col">Nombre de Usuario</th>
+	  <th scope="col">Rut</th>
+	  <th scope="col">Nombre Completo</th>
+	</tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+
+  {% stylesheets
+  '../vendor/datatables/datatables/media/css/dataTables.bootstrap.min.css'
+  filter='cssrewrite'
+  output='css/datatables.min.css'
+  combine=true %}
+  <link rel="stylesheet" href="{{ asset_url }}" />
+  {% endstylesheets %}
+
+  <style type="text/css">
+   .rotate {
+     -webkit-animation: spin 2s linear infinite;
+     -moz-animation: spin 2s linear infinite;
+     animation: spin 2s linear infinite ;
+   }
+
+   table.dataTable thead .sorting_asc:after {
+     content: "\2191";
+   }
+
+   table.dataTable thead .sorting::after {
+     opacity: 0.2;
+     content: "\2193";
+   }
+  </style>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  {% javascripts
+  '../vendor/datatables/datatables/media/js/jquery.dataTables.min.js'
+  '../vendor/datatables/datatables/media/js/dataTables.bootstrap4.min.js'
+  output='js/datatables.js'
+  combine=true %}
+  <script src="{{ asset_url }}"></script>
+  {% endjavascripts %}
+
+  <script type="text/javascript">
+   $(document).ready( function () {
+     $('#users').DataTable( {
+       ajax: '{{ url('usuario_ajax') }}',
+       columns: [
+	 { data: 'idUsuario'},
+	 { data: 'username' },
+	 { data: 'persona.rutdv' },
+	 { data: 'persona.nombrecompleto' }
+       ],
+       language: {
+	 lengthMenu: "Mostrar _MENU_ registros por pagina",
+	 sSearch: "Buscador: _INPUT_",
+	 info: "Mostrando pagina _PAGE_ de _PAGES_",
+	 infoEmpty: "Los registros no estan disponibles",
+	 zeroRecords: "No se encontraron registros",
+	 emptyTable: "No hay información disponible",
+	 loadingRecords: '<i class="rotate fas fa-spinner" style="-webkit-animation: spin 2s linear infinite; -moz-animation: spin 2s linear infinite; animation: spin 2s linear infinite ;"></i>',
+	 processing: '<i class="rotate fas fa-spinner style="-webkit-animation: spin 2s linear infinite; -moz-animation: spin 2s linear infinite; animation: spin 2s linear infinite ;""></i>',
+	 paginate: {
+	   first: 'Primero',
+           last: 'Segundo',
+	   previous: 'Anterior',
+	   next: 'Siguiente'
+	 }
+       },
+       rowCallback: function (row, data) {
+	 // if ($(row).children('td').length < 4)
+	 //  $('td:eq(0)', row).before('<td></td>');
+
+	 row.dataset.id = data.idUsuario;
+
+	 $(row).click( function (ev) {
+	   location.href = '{{ url('usuario_edit') }}' + '/'
+			 + this.getAttribute('data-id');
+
+	   ev.stopPropagation();
+	 } ).css('cursor', 'pointer');
+       },
+       autoWidth: false
+     } );
+   });
+  </script>
 {% endblock %}

@@ -261,6 +261,10 @@ class BandejaController extends Controller
                 $encargadoCriteria = new Criteria();
                 $encargadoCriteria->where( $expr );
 
+                $deptoRem = $this->getDoctrine()->getManager('default')
+                          ->getRepository('BandejaBundle:Departamentpos')
+                          ->find( $this->get('session')->get('departamento') );
+
                 $derivaciones = $d->getDerivaciones();
 
                 foreach ($derivaciones as $derivacion) {
@@ -274,7 +278,7 @@ class BandejaController extends Controller
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 1, 'nota' => $derivarData['nota_original']),
                         $d,
-                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $loginUser, $deptoRem,
                         $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
                     $em->persist($derivacion);
@@ -284,7 +288,7 @@ class BandejaController extends Controller
                     $derivacion = $this->createNewDerivacion(
                         array('tipo' => 2, 'nota' => $derivarData['nota_copias']),
                         $d,
-                        $loginUser, $loginUser->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkDepto(),
+                        $loginUser, $deptoRem,
                         $depto->getDepUsus()->matching($encargadoCriteria)->get(0)->getFkUsuario(), $depto);
 
                     $em->persist($derivacion);
