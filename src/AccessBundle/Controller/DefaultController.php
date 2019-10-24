@@ -23,10 +23,9 @@ class DefaultController extends Controller
         if (! $this->setOnSession())
             return $this->redirectToRoute('login_access');
 
-        /** @todo filter apps by ACL */
-        $apps = $this->getDoctrine()->getManager('customer')
+        $apps = $this->getDoctrine()->getManager('default')
               ->getRepository('AccessBundle:App')
-              ->findAll();
+              ->findByUser($this->getUser());
 
         return $this->render('AccessBundle:Default:index.html.twig', array(
             'apps' => $apps

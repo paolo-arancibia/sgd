@@ -57,7 +57,7 @@ class PersonaType extends AbstractType
                 'label' => 'Referencia a la dirección',
                 'required' => false,
             ])->add('nombre_comuna', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
-                'attr' => ['class' => 'form-control', 'value' => 'LA FLORIDA'],
+                'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Comuna donde vive',
             ])->add('fono', 'Symfony\Component\Form\Extension\Core\Type\NumberType', [

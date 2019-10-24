@@ -40,10 +40,5 @@ security:
                 path: /logout
                 target: /login
     access_control:
-        - { path: ^/recibidos, roles: ROLE_ACCESS }
-        - { path: ^/porrecibir, roles: ROLE_ACCESS }
-        - { path: ^/despachados, roles: ROLE_ACCESS }
-        - { path: ^/ver, roles: ROLE_ACCESS }
-        - { path: ^/nuevo, roles: ROLE_ACCESS }
-        - { path: ^/personas, roles: ROLE_ACCESS }
-        - { path: ^/departamentos, roles: ROLE_ACCESS }
+#        - { path: ^/access, roles: ROLE_OPERATIVE }
+#        - { path: ^/sgd, roles: ROLE_OPERATIVE }

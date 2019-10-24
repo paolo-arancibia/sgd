@@ -1,0 +1,47 @@
+AccessBundle\Entity\Perfiles:
+    type: entity
+    table: PERFILES
+    uniqueConstraints:
+        NOMBRE:
+            columns:
+                - NOMBRE
+    id:
+        idPerfil:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_PERFIL
+            generator:
+                strategy: IDENTITY
+    fields:
+        nombre:
+            type: string
+            nullable: false
+            length: 50
+            options:
+                fixed: false
+            column: NOMBRE
+        descripcion:
+            type: string
+            nullable: true
+            length: 500
+            options:
+                fixed: false
+            column: DESCRIPCION
+        fechaC:
+            type: datetime
+            nullable: false
+            column: FECHA_C
+        fechaM:
+            type: datetime
+            nullable: false
+            column: FECHA_M
+        fechaE:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: FECHA_E
+    lifecycleCallbacks: {  }
