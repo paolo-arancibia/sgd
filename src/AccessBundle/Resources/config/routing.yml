@@ -6,6 +6,12 @@ access_homepage:
     path:     //
     defaults: { _controller: AccessBundle:Default:index }
 
+access_passport:
+    path:     //passport/{id}
+    defaults: { _controller: AccessBundle:Default:passport, id: 0 }
+    requirements:
+        id: '\d+'
+
 usuario_view:
     path:     //updsuser
     defaults: { _controller: AccessBundle:Usuario:view }
