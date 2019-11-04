@@ -73,17 +73,17 @@ class DefaultController extends Controller
             $_SESSION['perfil'] = $mapping_perfil[$permisos[0]->getfkFkPerfil()->getNombre()];
 
             if ($_SESSION['perfil'] == '0')
-                return $this->redirect('http://localhost:8080/ccarino/consult.php');
+                return $this->redirect('http://app.laflorida.cl/ccarino/consult.php');
             elseif ($_SESSION['perfil'] == '4')
-                return $this->redirect('http://localhost:8080/ccarino/consult.php');
+                return $this->redirect('http://app.laflorida.cl/ccarino/consult.php');
             elseif ($_SESSION['perfil'] == '1')
-                return $this->redirect('http://localhost:8080/ccarino/consult.php');
+                return $this->redirect('http://app.laflorida.cl/ccarino/consult.php');
             elseif ($_SESSION['perfil'] == '5')
-                return $this->redirect('http://localhost:8080/ccarino/agenda.php');
+                return $this->redirect('http://app.laflorida.cl/ccarino/agenda.php');
             elseif ($_SESSION['perfil'] == '2')
-                return $this->redirect('http://localhost:8080/ccarino/agenda.php');
+                return $this->redirect('http://app.laflorida.cl/ccarino/agenda.php');
             elseif ($_SESSION['perfil'] == '3')
-                return $this->redirect('http://localhost:8080/ccarino/mis-talleres.php');
+                return $this->redirect('http://app.laflorida.cl/ccarino/mis-talleres.php');
         }
 
         $this->addFlash('warning', 'no se encontraron los permisos de la aplicación');
