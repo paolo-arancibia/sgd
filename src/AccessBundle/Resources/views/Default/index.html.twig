@@ -22,7 +22,7 @@
       {% if app.url starts with 'http' %}
         {% set url = app.url %}
       {% else %}
-        {% set url = url(app.url) %}
+        {% set url = url(app.url, {'id': app.idApp}) %}
       {% endif %}
 
       <div class="card justify-content-center mx-4 my-4 d-flex" style="width: 126px;">
