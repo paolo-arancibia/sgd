@@ -283,7 +283,7 @@ class UsuarioController extends Controller
             $em2->persist($persona);
             $em2->flush();
 
-            $this->addFlash('success', 'Datos personales actualizado');
+            $this->addFlash('success', 'Datos personales actualizados');
             return $this->redirectToRoute('usuario_list');
         }
 
@@ -316,6 +316,7 @@ class UsuarioController extends Controller
             $em->persist($permiso);
             $em->flush();
 
+	    $this->addFlash('success', 'Permiso guardado');
             return $this->redirectToRoute('usuario_edit', ['id' => $id]);
         }
 
