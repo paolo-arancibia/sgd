@@ -7,12 +7,22 @@
    #user-menu-dropdown > a {
      text-decoration: none !important;
    }
+
+   #fullname:link, #fullname:visited,
+   #fullname:hover, #fullname:active {
+     text-decoration: none !important;
+   }
+
+   #user-menu-dropdown:link, #user-menu-dropdown:visited,
+   #user-menu-dropdown:hover, #user-menu-dropdown:active {
+     text-decoration: none !important;
+   }
+
   </style>
 {% endblock %}
 
 {% block javascripts %}
   {{ parent() }}
-
   <script type="text/javascript">
    $(document).ready(function () {
      $('#user-menu-dropdown > a').click(function (e) {
@@ -33,15 +43,28 @@
           </a>
 
           <div id="user-menu-dropdown" class="dropdown-menu dropdown-menu-right" role="menu">
-            <a href="{{ url('usuario_view') }}" class="stretched-link dropdown-header text-primary">
+	    <h6 id="fullname" class="stretched-link dropdown-header text-primary text-decoration-none">
 	      <i class="fas fa-user"></i> &nbsp;
 	      <strong class="text-decoration-none">
 		{{ app.session.get('user_persona').nombres }}
 		{{ app.session.get('user_persona').apellidopaterno }}
 		{{ app.session.get('user_persona').apellidomaterno }}
 	      </strong>
-            </a>
+	    </h6>
 
+	    <a href="{{ url('usuario_view') }}" class="stretched-link dropdown-item" onclick="this.stopPropagation()">
+	      Cambiar Contraseña
+	    </a>
+	    {#
+            <a href="{{ url('usuario_view') }}" class="stretched-link dropdown-item text-primary">
+	    <i class="fas fa-user"></i> &nbsp;
+	    <strong class="text-decoration-none">
+	    {{ app.session.get('user_persona').nombres }}
+	    {{ app.session.get('user_persona').apellidopaterno }}
+	    {{ app.session.get('user_persona').apellidomaterno }}
+	    </strong>
+            </a>
+	    #}
             <div class="dropdown-divider"></div>
 
             <a class="dropdown-item" href="{{ url('logout') }}">
@@ -57,7 +80,7 @@
   <header class="mb-3 container-fluid d-flex">
     <div id="logo" class="col-2 text-left pl-0"><img src="{{ asset('../web/logo-lf.png') }}" /></div>
     <div class="col-auto text-left ml-auto pr-0">
-      <h3><strong>AppDesk</strong></h3>
+      <h3><a href="{{ url('access_apps') }}"><strong>AppDesk</strong></a></h3>
     </div>
   </header>
 

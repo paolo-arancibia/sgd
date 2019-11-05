@@ -1,0 +1,68 @@
+AccessBundle\Entity\Permisos:
+    type: entity
+    table: PERMISOS
+    indexes:
+        FK_ID_USUARIO:
+            columns:
+                - FK_ID_USUARIO
+        FK_ID_APP:
+            columns:
+                - FK_ID_APP
+        FK_FK_PERFIL:
+            columns:
+                - FK_FK_PERFIL
+    id:
+        idPermiso:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: ID_PERMISO
+            generator:
+                strategy: IDENTITY
+    fields:
+        fechaC:
+            type: datetime
+            nullable: false
+            column: FECHA_C
+        fechaM:
+            type: datetime
+            nullable: false
+            column: FECHA_M
+        fechaE:
+            type: datetime
+            nullable: true
+            column: FECHA_E
+    manyToOne:
+        fkFkPerfil:
+            targetEntity: Perfiles
+            cascade: {  }
+            fetch: EAGER
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_FK_PERFIL:
+                    referencedColumnName: ID_PERFIL
+            orphanRemoval: false
+        fkUsuario:
+            targetEntity: BandejaBundle\Entity\Usuarios
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_USUARIO:
+                    referencedColumnName: ID_USUARIO
+            orphanRemoval: false
+        fkApp:
+            targetEntity: App
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                FK_ID_APP:
+                    referencedColumnName: ID_APP
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

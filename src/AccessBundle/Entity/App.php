@@ -1,6 +1,7 @@
 <?php
-
 namespace AccessBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * App
@@ -42,6 +43,12 @@ class App
      */
     private $fechaE;
 
+    /**
+     * @var \Collection
+     *
+     * @ORM\OneToMany(targetEntity="AccessBundle\Entity\Permisos", mappedBy="fkApp", fetch="LAZY")
+     */
+    private $fkPermisos;
 
     /**
      * Get idApp
@@ -196,4 +203,54 @@ class App
     {
         return $this->fechaE;
     }
+
+    /**
+     * Get permisos
+     *
+     * @return \Collection
+     */
+    public function getFkPermisos()
+    {
+        return $this->fkPermisos;
+    }
+
+    /**
+     * Add a permiso to fkPermisos
+     *
+     * @param \Permisos $permiso
+     *
+     * @return App
+     */
+    public function addFkPermisos($permiso)
+    {
+        if( $this->fkPermisos->contains($permiso) )
+        {
+            return;
+        }
+
+        $this->fkPermisos->add($permiso);
+
+        return $this;
+    }
+
+    /**
+     * Remove a permiso from fkPermisos
+     *
+     * @param \Permisos $permiso
+     *
+     * @return App
+     */
+    public function removeFkPermisos($permisos)
+    {
+        if( ! $this->fkPermisos->contains($permiso) )
+        {
+            return;
+        }
+
+        $this->fkPermisos->removeElement($permiso);
+
+        return $this;
+    }
+
+
 }

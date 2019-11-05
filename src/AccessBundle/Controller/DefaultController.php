@@ -23,14 +23,71 @@ class DefaultController extends Controller
         if (! $this->setOnSession())
             return $this->redirectToRoute('login_access');
 
-        /** @todo filter apps by ACL */
-        $apps = $this->getDoctrine()->getManager('customer')
+        $apps = $this->getDoctrine()->getManager('default')
               ->getRepository('AccessBundle:App')
-              ->findAll();
+              ->findByUser($this->getUser());
 
         return $this->render('AccessBundle:Default:index.html.twig', array(
             'apps' => $apps
         ));
+    }
+
+    public function passportAction(Request $request, $id = 0)
+    {
+        $app = $this->getDoctrine()->getManager('default')
+             ->getRepository('AccessBundle\Entity\App')
+             ->findOneBy(['idApp' => $id]);
+
+        if (! $app) {
+            $this->addFlash('danger', 'No existe la aplicación solicitada');
+            return $this->redirectToRoute('access_apps');
+        }
+
+        $usuario = $this->getUser();
+
+        $permisos = $this->getDoctrine()->getManager('default')
+                  ->getRepository('AccessBundle:Permisos')
+                  ->findBy([
+                      'fkUsuario' => $usuario->getIdUsuario(),
+                      'fkApp' => $app->getIdApp(),
+                      'fechaE' => null
+                  ]);
+
+        // ccarino mapero de perfiles
+        if ($app->getIdApp() == 3) {
+            // ROL => rol_sistema_externo
+            $mapping_perfil = array(
+                'ROLE_ADMIN' => '0',    // admin,
+                'ROLE_CCARINO_ASISTENTE' => '4',
+                'ROLE_CCARINO_PSICOLOGO' => '1',
+                'ROLE_CCARINO_NUTRICIONISTA' => '5',
+                'ROLE_CCARINO_PSIQUIATRA' => '2',
+            );
+
+            // USUARIO => usuario_externo
+            $mapping_usuario = array(
+                '1' => '1',
+            );
+
+            $_SESSION['id_user'] = $mapping_usuario[ $usuario->getIdUsuario() ];
+            $_SESSION['perfil'] = $mapping_perfil[$permisos[0]->getfkFkPerfil()->getNombre()];
+
+            if ($_SESSION['perfil'] == '0')
+                return $this->redirect('http://localhost:8080/ccarino/consult.php');
+            elseif ($_SESSION['perfil'] == '4')
+                return $this->redirect('http://localhost:8080/ccarino/consult.php');
+            elseif ($_SESSION['perfil'] == '1')
+                return $this->redirect('http://localhost:8080/ccarino/consult.php');
+            elseif ($_SESSION['perfil'] == '5')
+                return $this->redirect('http://localhost:8080/ccarino/agenda.php');
+            elseif ($_SESSION['perfil'] == '2')
+                return $this->redirect('http://localhost:8080/ccarino/agenda.php');
+            elseif ($_SESSION['perfil'] == '3')
+                return $this->redirect('http://localhost:8080/ccarino/mis-talleres.php');
+        }
+
+        $this->addFlash('warning', 'no se encontraron los permisos de la aplicación');
+        return $this->redirectToRoute('access_apps');
     }
 
     public function loginAction()
