@@ -24,14 +24,17 @@ class PersonaType extends AbstractType
                 'attr' => ['class' => 'form-control w-auto d-inline', 'size' => 1],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => '',
+		'required' => false,
             ])->add('nombres', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Nombres',
+		'required' => false,
             ])->add('apellidopaterno', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Apellido Paterno',
+                'required' => false,
             ])->add('apellidomaterno', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
@@ -46,11 +49,13 @@ class PersonaType extends AbstractType
             ])->add('nombre_calle', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
-                'label' => 'Calle donde vive',
+                'label' => 'Calle donde vive',                                                                                                                                                                                                                                 
+                'required' => false,
             ])->add('numdirec', 'Symfony\Component\Form\Extension\Core\Type\NumberType', [
                 'attr' => ['class' => 'form-control text-right'],
                 'label_attr' => ['class' => 'form-label sr-only'],
                 'label' => 'Número de la propiedad donde vive',
+                'required' => false,
             ])->add('referenciadir', 'Symfony\Component\Form\Extension\Core\Type\TextType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
@@ -60,6 +65,7 @@ class PersonaType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
                 'label' => 'Comuna donde vive',
+		'required' => false,
             ])->add('fono', 'Symfony\Component\Form\Extension\Core\Type\NumberType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
@@ -82,7 +88,7 @@ class PersonaType extends AbstractType
                 'multiple' => false,
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'form-label'],
-                'label' => 'Sexo',
+                'label' => 'Género',
             ])
         ;
     }

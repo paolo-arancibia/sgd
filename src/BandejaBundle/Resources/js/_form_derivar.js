@@ -1,7 +1,7 @@
 $(".chosen-select").chosen({width: "100%"});
 
 $(".adjuntos").fileinput({
-    maxFileSize: 2048,
+    maxFileSize: 0,
     overwriteInitial: false,
     uploadAsync: false,
     uploadUrl: '/editar/guardar',
