@@ -29,6 +29,12 @@ BandejaBundle\Entity\Documentos:
             options:
                 unsigned: false
             column: NRO_EXPEDIENTE
+        nroDoc:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: NRO_DOC
         estado:
             type: integer
             nullable: true

@@ -96,6 +96,10 @@
 	<div class="col">{{ documento.fkTipoDoc.descripcion }}</div>
       </div>
       <div class="row">
+	<div class="col-5"><h5>Número Documento</h5></div>
+	<div class="col">{% if not documento.nroDoc %}<span class="text-muted">Sin n° de documento</span>{% else %}<b>{{ documento.nroDoc }}</b>{% endif %}</div>
+      </div>
+      <div class="row">
 	<div class="col-5"><h5>Número Expediente</h5></div>
 	<div class="col">{% if not documento.nroExpediente %}<span class="text-muted">Sin n° de expediente</span>{% else %}<b>{{ documento.nroExpediente }}</b>{% endif %}</div>
       </div>

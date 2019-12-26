@@ -32,6 +32,11 @@ class NuevoDocumentoType extends AbstractType
                 'choice_value' => function (TiposDocumentos $td = null) {
                     return $td ? $td->getIdTiposDoc() : '';
                 },
+            ])->add('nroDoc', 'Symfony\Component\Form\Extension\Core\Type\NumberType', [
+                'attr' => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'mb-0'],
+                'label' => 'Número Documento',
+                'required' => false,
             ])->add('nroExpediente', 'Symfony\Component\Form\Extension\Core\Type\NumberType', [
                 'attr' => ['class' => 'form-control'],
                 'label_attr' => ['class' => 'mb-0'],
