@@ -24,6 +24,13 @@ class Documentos
     /**
      * @var integer
      *
+     * @ORM\Column(name="NRO_DOC", type="integer", nullable=true)
+     */
+    private $nroDoc;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="NRO_EXPEDIENTE", type="integer", nullable=true)
      */
     private $nroExpediente;
@@ -158,6 +165,30 @@ class Documentos
     public function getNroExpediente()
     {
         return $this->nroExpediente;
+    }
+
+    /**
+     * Set nroDoc
+     *
+     * @param integer $nroDoc
+     *
+     * @return Documentos
+     */
+    public function setNroDoc($nroDoc)
+    {
+        $this->nroDoc = $nroDoc;
+
+        return $this;
+    }
+
+    /**
+     * Get nroDoc
+     *
+     * @return integer
+     */
+    public function getNroDoc()
+    {
+        return $this->nroDoc;
     }
 
     /**

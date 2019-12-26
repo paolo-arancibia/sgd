@@ -1054,6 +1054,7 @@ class BandejaController extends Controller
         $documento = new Documentos();
         $documento->setFkTipoDoc($nuevoData['fkTipoDoc']);
         $documento->setNroExpediente($nuevoData['nroExpediente']);
+        $documento->setNroDoc($nuevoData['nroDoc']);
         $documento->setFechaDoc( $nuevoData['fechaDoc'] );
         $documento->setAnt($nuevoData['ant']);
         $documento->setMat($nuevoData['mat']);
